@@ -36,8 +36,7 @@
       notifd
     ];
 
-    #TODO: remove pavucontrol
-    extraPackages = astalPackages ++ (with pkgs; [gjs pavucontrol]);
+    extraPackages = astalPackages ++ (with pkgs; [gjs]);
   in {
     packages.${system} = {
       default = pkgs.callPackage ./package.nix {inherit extraPackages ags;};
