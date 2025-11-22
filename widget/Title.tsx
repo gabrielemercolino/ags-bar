@@ -1,7 +1,7 @@
-import Hyprland from "gi://AstalHyprland"
 import { createBinding, With } from "ags"
+import AstalHyprland from "gi://AstalHyprland?version=0.1"
 
-const hyprland = Hyprland.get_default()
+const hyprland = AstalHyprland.get_default()
 
 export default function Title() {
   const focusedClient = createBinding(hyprland, "focusedClient")

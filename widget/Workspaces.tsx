@@ -1,10 +1,10 @@
-import Hyprland from "gi://AstalHyprland"
 import { createBinding, For } from "ags"
+import AstalHyprland from "gi://AstalHyprland?version=0.1"
 
-const hyprland = Hyprland.get_default()
+const hyprland = AstalHyprland.get_default()
 
 function getWorkspaceIds(
-  workspaces: Hyprland.Workspace[],
+  workspaces: AstalHyprland.Workspace[],
   minWorkspaces: number,
 ): number[] {
   const maxId = Math.max(minWorkspaces, ...workspaces.map((ws) => ws.id))
