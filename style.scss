@@ -1,0 +1,210 @@
+$bg-color: #2a1e3b;
+
+$fg-shutdown: #e87d9a;
+$fg-reboot: #e89368;
+$fg-lock: #d4ac76;
+
+$bg-workspace-active: #cfc0d9;
+$fg-workspace-active: #2a1e3b;
+
+$fg-title: #cfc0d9;
+
+$fg-connection: #70b8d4;
+$fg-connection-hover: #b88cce;
+
+$fg-battery: #d4ac76;
+$fg-battery-charging: #e89368; 
+
+$fg-audio: #d4ac76;
+$fg-audio-hover: #e89368;
+
+$fg-date: #b88cce;
+$fg-date-hover: #ea6d9c;
+
+$fg-calendar-today: #b88cce;
+$bg-calendar-selected: #b88cce;
+$fg-calendar-today-outline: #b88cce;
+
+$fg-clock: #b88cce; 
+
+$fg-notifications-app-border: #b88cce; 
+$fg-notifications-app-name: #70b8d4;
+$bg-notifications-app: rgba(#b88cce, 0.05);
+
+$fg-notifications-summary: #70b8d4;
+
+$font-families: "";
+
+window.Bar {
+  font-family: $font-families, JetBrainsMono Nerd Font;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 6px;
+
+  left {
+    system {
+      background-color: $bg-color;
+      border-radius: 10px;
+
+      button {
+        margin: 0px 3px;
+        padding: 4px 2px;
+        border: none;
+        background: transparent;
+      }
+
+      .shutdown { color: $fg-shutdown; }
+
+      .reboot { color: $fg-reboot; }
+
+      .lock { color: $fg-lock; margin-right: 4px; }
+
+      &:first-child { padding-left: 4px; }
+
+      &:last-child { padding-right: 4px; }
+    }
+
+    .workspaces {
+      background-color: $bg-color;
+      border-radius: 10px;
+      padding: 4px;
+
+      > button { 
+        margin: 0px 2px;
+        padding: 4px 10px;
+        background-color: transparent;
+
+        &.active,
+        &:hover {
+          background-color: $bg-workspace-active;
+          color: $fg-workspace-active;
+        }
+      }
+    }
+  }
+
+  center {
+    title {
+      background-color: $bg-color;
+      color: $fg-title;
+      padding: 4px 12px;
+      border-radius: 10px;
+
+      &.empty { padding: 0px; }
+    }
+  }
+
+  right {
+    connection,
+    status,
+    time,
+    apps {
+      background-color: $bg-color;
+      border-radius: 10px;
+      padding: 4px 12px;
+    }
+
+    connection {
+      internet, bluetooth { color: $fg-connection; }
+      bluetooth:hover { color: $fg-connection-hover; }
+    }
+
+    status {
+      battery { color: $fg-battery; &.charging { color: $fg-battery-charging; } }
+
+      audio { color: $fg-audio; &:hover {color: $fg-audio-hover;} }
+    }
+
+    time {
+      date {
+        > button { 
+          padding: 0px; 
+          background-color: $bg-color;
+
+          label { color: $fg-date; }
+          
+          &:hover label { color: $fg-date-hover; }
+        }
+
+        calendar {
+          label { 
+            border-radius: 10px; 
+            box-shadow: none;
+            outline: none;
+            transition: background 200ms ease;
+
+            .today { background: $fg-calendar-today; }
+            
+            &:selected { 
+              background: $bg-calendar-selected;
+              
+              & ~ .today { 
+                background: transparent; 
+                outline: 2px solid $fg-calendar-today-outline;
+                outline-offset: -1px;
+              }
+            }
+          }
+        }
+      }
+
+      clock { color: $fg-clock; }
+    }
+
+    apps {
+      padding: 4px;
+
+      tray item { padding: 4px; }
+
+      notifications {
+        > button { 
+          padding: 4px; 
+          background: transparent; 
+          border: none;
+          
+          &:hover { background: rgba(255, 255, 255, 0.1);}
+        }
+
+        pop-up {
+          padding: 8px;
+          border-radius: 10px;
+          background-color: $bg-color;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          min-width: 300px;
+  
+          > scrolledwindow { min-height: 100px; }
+
+          app-group {
+            border: 1px solid $fg-notifications-app-border;
+            border-radius: 10px;
+            padding: 8px;
+            margin-bottom: 4px;
+            background: $bg-notifications-app;
+
+            app-name, dismiss-btn { color: $fg-notifications-app-name; font-weight: bold; font-size: 18px; }
+            dismiss-btn {
+              padding: 4px;
+              border-radius: 10px;
+              &:hover { background: rgba(255, 255, 255, 0.1); }
+            }
+            
+            summary-group {
+              padding: 0px 8px;
+
+              summary, dismiss-btn { color: $fg-notifications-summary; font-weight: bold;}
+
+              bodies-container {
+                padding: 0px 8px;
+                border-radius: 10px;
+
+                &:hover { background: rgba(255, 255, 255, 0.1); } 
+              }              
+             
+              body { padding: 0px; background: transparent; }
+            }
+          }
+        }
+      }
+    }
+  }
+}
