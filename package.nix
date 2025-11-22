@@ -4,6 +4,7 @@
   pkgs,
   extraPackages,
   colors ? {},
+  commands ? {},
   gitRev ? "unknown",
 }: let
   entry = "app.ts";
@@ -17,6 +18,15 @@
       in ''sed -i '0,/\${varName}:/s|\${varName}: .*|\${varName}: ${value};|' "style.scss"''
     )
     colors
+  );
+
+  commandSubstitutions = lib.concatStringsSep "\n" (
+    lib.mapAttrsToList (
+      name: value: let
+        constName = lib.toUpper (lib.replaceStrings ["-"] ["_"] name); # Convert audio-command -> AUDIO_COMMAND
+      in ''sed -i '0,/const ${constName} =/s|const ${constName} = .*|const ${constName} = "${value}"|' "commands.ts"''
+    )
+    commands
   );
 in
   pkgs.stdenv.mkDerivation {
@@ -44,6 +54,7 @@ in
       cp -r * $out/share
 
       ${colorSubstitutions}
+      ${commandSubstitutions}
 
       ags bundle ${entry} $out/bin/${pname} -d "SRC='$out/share'"
 

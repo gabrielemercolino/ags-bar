@@ -1,9 +1,10 @@
 import { execAsync } from "ags/process"
-import Wp from "gi://AstalWp"
 import { createBinding, createComputed, With } from "gnim"
 import AstalBattery from "gi://AstalBattery?version=0.1"
+import { audioCommand } from "../commands"
+import AstalWp from "gi://AstalWp?version=0.1"
 
-const wireplumber = Wp.get_default()
+const wireplumber = AstalWp.get_default()
 
 export function Audio() {
   const muted = createBinding(wireplumber.get_default_speaker(), "mute")
@@ -19,7 +20,7 @@ export function Audio() {
   return (
     <button
       cssName="audio"
-      onClicked={() => execAsync("pavucontrol").catch(console.error)}
+      onClicked={() => execAsync(audioCommand()).catch(console.error)}
     >
       <With value={both}>
         {({ muted, volume }) => (

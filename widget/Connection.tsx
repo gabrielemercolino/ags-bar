@@ -1,18 +1,17 @@
-import Network from "gi://AstalNetwork"
 import AstalBluetooth from "gi://AstalBluetooth?version=0.1"
 import { createBinding, With } from "gnim"
 import { execAsync } from "ags/process"
+import AstalNetwork from "gi://AstalNetwork?version=0.1"
+import { bluetoothCommand } from "../commands"
 
-const network = Network.get_default()
+const network = AstalNetwork.get_default()
 
 export function Internet() {
   const wired = createBinding(network, "wired")
   const wifi = createBinding(network, "wifi")
 
   const name = wifi.as((wf) => {
-    if (wf && wf.get_ssid()) {
-      return `󰤨  ${wf.get_ssid()}`
-    }
+    if (wf && wf.get_ssid()) return `󰤨  ${wf.get_ssid()}`
     const wd = wired.get()
     return wd ? "󰀂  wired" : "󰖪  offline"
   })
@@ -29,7 +28,7 @@ export function Bluetooth() {
   return (
     <button
       cssName="bluetooth"
-      onClicked={() => execAsync("blueman-manager").catch(printerr)}
+      onClicked={() => execAsync(bluetoothCommand()).catch(printerr)}
     >
       <With value={on}>{(on) => <label label={on ? " on" : " off"} />}</With>
     </button>
