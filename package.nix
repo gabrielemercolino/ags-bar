@@ -23,7 +23,7 @@
   commandSubstitutions = lib.concatStringsSep "\n" (
     lib.mapAttrsToList (
       name: value: let
-        constName = lib.toUpper (lib.replaceStrings ["-"] ["_"] name); # Convert audio-command -> AUDIO_COMMAND
+        constName = "${lib.toUpper name}_COMMAND"; # Convert audio -> AUDIO_COMMAND
       in ''sed -i '0,/const ${constName} =/s|const ${constName} = .*|const ${constName} = "${value}"|' "commands.ts"''
     )
     commands
