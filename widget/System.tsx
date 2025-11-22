@@ -1,11 +1,12 @@
 import { exec } from "ags/process"
+import { lockCommand, rebootCommand, shutdownCommand } from "../commands"
 
 export function Shutdown() {
   return (
     <button
       class="shutdown"
       tooltipText="shutdown"
-      onClicked={() => exec(["systemctl", "poweroff"])}
+      onClicked={() => exec(shutdownCommand())}
     >
       󰐥
     </button>
@@ -17,7 +18,7 @@ export function Reboot() {
     <button
       class="reboot"
       tooltipText="reboot"
-      onClicked={() => exec(["systemctl", "reboot"])}
+      onClicked={() => exec(rebootCommand())}
     >
       󰜉
     </button>
@@ -25,7 +26,11 @@ export function Reboot() {
 }
 export function Lock() {
   return (
-    <button class="lock" tooltipText="lock" onClicked={() => exec("swaylock")}>
+    <button
+      class="lock"
+      tooltipText="lock"
+      onClicked={() => exec(lockCommand())}
+    >
       
     </button>
   )
