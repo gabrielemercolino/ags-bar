@@ -55,13 +55,14 @@ export function Battery() {
   return (
     <With value={both}>
       {({ charging, percentage }) => {
+        const rounded = Math.round(percentage * 100)
         return (
           <box
             visible={battery.isPresent}
             cssName="battery"
             class={charging ? "charging" : ""}
           >
-            {`${getIcon(percentage, charging)} ${percentage}%`}
+            {`${getIcon(rounded, charging)} ${rounded}%`}
           </box>
         )
       }}
