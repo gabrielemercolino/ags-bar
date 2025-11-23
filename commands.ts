@@ -1,4 +1,4 @@
-const SHUTDOWN_COMMAND = "systemctl shutdown"
+const SHUTDOWN_COMMAND = "systemctl poweroff"
 const REBOOT_COMMAND = "systemctl reboot"
 const LOCK_COMMAND = "swaylock"
 
