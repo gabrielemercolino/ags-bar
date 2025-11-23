@@ -10,7 +10,7 @@ export default function Tray() {
   const items = createBinding(tray, "items")
 
   return (
-    <box cssName="tray" spacing={4}>
+    <box cssName="tray" spacing={4} visible={items.as((it) => it.length > 0)}>
       <For each={items}>
         {(item) => {
           const icon = createBinding(item, "iconName")
