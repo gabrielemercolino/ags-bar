@@ -17,7 +17,19 @@ export function Internet() {
   })
 
   return (
-    <With value={name}>{(n) => <label cssName="internet" label={n} />}</With>
+    <With value={name}>
+      {(n) => (
+        <label
+          cssName="internet"
+          label={n}
+          tooltipText={
+            wifi.get().get_ssid()
+              ? createBinding(wifi.get(), "strength").as((s) => `${s}%`)
+              : undefined
+          }
+        />
+      )}
+    </With>
   )
 }
 
