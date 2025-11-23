@@ -52,6 +52,7 @@
 
         shellHook = ''
           echo
+          echo "to generate node_modules 'ags types -d . -u'"
           echo "To generate types run 'ags types -d .'"
           echo "To run the bar 'ags run app.ts'"
           echo
