@@ -7,7 +7,10 @@ import Button from "../components/Button"
 const tray = AstalTray.get_default()
 
 export default function Tray() {
-  const items = createBinding(tray, "items")
+  //TODO: fix properly `g_list_store_remove: assertion '!g_sequence_iter_is_end (it)' failed`
+  const items = createBinding(tray, "items").as((items) =>
+    items.filter((it) => it.get_title() !== null),
+  )
 
   return (
     <box cssName="tray" spacing={4} visible={items.as((it) => it.length > 0)}>
