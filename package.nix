@@ -61,14 +61,12 @@ in
       runHook preInstall
 
       mkdir -p $out/bin
-      mkdir -p $out/share
-      cp -r * $out/share
 
       ${colorSubstitutions}
       ${fontSubstitution}
       ${commandSubstitutions}
 
-      ags bundle ${entry} $out/bin/${pname} -d "SRC='$out/share'"
+      ags bundle ${entry} $out/bin/${pname} -d "SRC='.'"
 
       runHook postInstall
     '';
