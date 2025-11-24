@@ -21,7 +21,11 @@
     colors
   );
 
-  fontFamilyStr = lib.concatStringsSep ", " (map (f: f.name or (builtins.baseNameOf f)) fonts);
+  fontFamilyStr = lib.concatStringsSep ", " (map (f:
+    if lib.isString f
+    then f
+    else f.name)
+  fonts);
 
   fontSubstitution = lib.optionalString (fonts != []) ''
     sed -i '0,/\$font-families:/s|\$font-families: .*|\$font-families: "${fontFamilyStr}";|' "style.scss"
