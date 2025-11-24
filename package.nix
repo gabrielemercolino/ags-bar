@@ -5,6 +5,7 @@
   extraPackages,
   colors ? {},
   commands ? {},
+  fonts ? [],
   gitRev ? "unknown",
 }: let
   entry = "app.ts";
@@ -19,6 +20,12 @@
     )
     colors
   );
+
+  fontFamilyStr = lib.concatStringsSep ", " (map (f: f.name or (builtins.baseNameOf f)) fonts);
+
+  fontSubstitution = lib.optionalString (fonts != []) ''
+    sed -i '0,/\$font-families:/s|\$font-families: .*|\$font-families: "${fontFamilyStr}";|' "style.scss"
+  '';
 
   commandSubstitutions = lib.concatStringsSep "\n" (
     lib.mapAttrsToList (
@@ -54,6 +61,7 @@ in
       cp -r * $out/share
 
       ${colorSubstitutions}
+      ${fontSubstitution}
       ${commandSubstitutions}
 
       ags bundle ${entry} $out/bin/${pname} -d "SRC='$out/share'"
