@@ -1,5 +1,5 @@
 import AstalBluetooth from "gi://AstalBluetooth?version=0.1"
-import { createBinding, For, With } from "gnim"
+import { createBinding, createComputed, For, With } from "gnim"
 import AstalNetwork from "gi://AstalNetwork?version=0.1"
 import { Gtk } from "ags/gtk4"
 import { execAsync } from "ags/process"
@@ -12,7 +12,7 @@ export function Internet() {
   const wifi = createBinding(network, "wifi")
 
   const name = wifi.as((wf) => {
-    if (wf && wf.get_ssid()) return `󰤨  ${wf.get_ssid()}`
+    if (wf && wf.ssid) return `󰤨  ${wf.ssid}`
     const wd = wired.get()
     return wd ? "󰀂  wired" : "󰖪  offline"
   })
@@ -24,9 +24,9 @@ export function Internet() {
           cssName="internet"
           label={n}
           tooltipText={
-            wifi.get().get_ssid()
+            wifi.get().ssid
               ? createBinding(wifi.get(), "strength").as((s) => `${s}%`)
-              : wired.get().get_internet() != AstalNetwork.Internet.DISCONNECTED
+              : wired.get().internet != AstalNetwork.Internet.DISCONNECTED
                 ? createBinding(wired.get(), "device").as((d) => d.interface)
                 : undefined
           }
@@ -37,25 +37,40 @@ export function Internet() {
 }
 
 const bluetooth = AstalBluetooth.get_default()
+const adapter = bluetooth.get_adapter()
 
 export function Bluetooth() {
   const on = createBinding(bluetooth, "isPowered")
+  const connected = createBinding(bluetooth, "is_connected")
+
+  const both = createComputed([on, connected], (o, c) => ({
+    on: o,
+    connected: c,
+  }))
+
   return (
     <menubutton cssName="bluetooth">
-      <label label={on.as((on) => (on ? " on" : " off"))} />
+      <label
+        label={both.as(({ on, connected }) =>
+          connected ? "󰂱" : on ? "" : "󰂲",
+        )}
+      />
 
       <popover
+        cssName="pop-up"
         onClosed={() => {
-          const adapter = bluetooth.get_adapter()
           if (adapter?.discovering) adapter.stop_discovery()
         }}
         onShow={() => {
-          const adapter = bluetooth.get_adapter()
           if (adapter?.powered && !adapter?.discovering)
             adapter.start_discovery()
         }}
       >
-        <box orientation={Gtk.Orientation.VERTICAL} spacing={12}>
+        <box
+          cssName="container"
+          orientation={Gtk.Orientation.VERTICAL}
+          spacing={12}
+        >
           <BluetoothHeader />
           <scrolledwindow
             hscrollbarPolicy={Gtk.PolicyType.NEVER}
@@ -72,11 +87,9 @@ export function Bluetooth() {
 }
 
 function BluetoothHeader() {
-  const adapter = bluetooth.get_adapter()
-
   if (!adapter)
     return (
-      <box cssName="bluetooth-header">
+      <box cssName="header">
         <label label="No bluetooth adapter avaible" />
       </box>
     )
@@ -84,13 +97,15 @@ function BluetoothHeader() {
   const powered = createBinding(adapter, "powered")
 
   return (
-    <box cssName="bluetooth-header" spacing={8}>
+    <box cssName="header" spacing={8}>
       <label label="Bluetooth" hexpand halign={Gtk.Align.START} />
 
       <With value={powered}>
         {(powered) => (
           <switch
+            halign={Gtk.Align.END}
             active={powered}
+            class={powered ? "on" : "off"}
             onNotifyActive={() => {
               if (adapter.powered) {
                 if (adapter.discovering) adapter.stop_discovery()
@@ -114,10 +129,15 @@ function BluetoothDevicesList() {
   return (
     <With value={empty}>
       {(empty) => (
-        <box cssName="devices-list">
-          <label visible={empty} label="No devices found" />
+        <box cssName="devices">
+          <label
+            cssName="adapter-missing"
+            visible={empty}
+            label="No devices found"
+          />
 
           <box
+            cssName="container"
             visible={!empty}
             orientation={Gtk.Orientation.VERTICAL}
             spacing={4}
@@ -143,35 +163,59 @@ function BluetoothDevice({ device }: BluetoothDeviceParams) {
   return (
     <button
       cssName="device"
+      class={connected.as((c) => (c ? "connected" : ""))}
       onClicked={() => {
-        if (connected.get()) device.disconnect_device(console.log)
-        else if (paired.get()) device.connect_device(console.log)
+        if (adapter && !adapter.powered) adapter.powered = true
+        if (connected.get())
+          device.disconnect_device(
+            (device) =>
+              device &&
+              console.log("disconnected from", device.name ?? device.alias),
+          )
+        else if (paired.get())
+          device.connect_device(
+            (device) =>
+              device &&
+              console.log("connected to", device.name ?? device.alias),
+          )
         else
           execAsync(`bluetoothctl pair ${device.address}`) // using cli because the pair method hangs
             .catch(console.error)
       }}
     >
       <box spacing={8}>
-        <label cssName="icon" label={getDeviceIcon(device)} />
+        <label
+          tooltipText={device.icon ?? "unknown type"}
+          cssName="icon"
+          label={getDeviceIcon(device)}
+        />
 
         <label
           cssName="name"
-          class={connected.as((c) => (c ? "connected" : ""))}
-          label={device.get_name() ?? device.get_alias()}
+          label={device.name ?? device.alias}
+          tooltipText={device.name ?? device.alias}
           hexpand
           halign={Gtk.Align.START}
           maxWidthChars={20}
           ellipsize={Pango.EllipsizeMode.END}
         />
 
-        <label label={paired.as((p) => (p ? "" : ""))} />
+        <With value={paired}>
+          {(paired) => (
+            <label
+              cssName="paired-icon"
+              tooltipText={paired ? "paired" : "unknown"}
+              label={paired ? "" : ""}
+            />
+          )}
+        </With>
       </box>
     </button>
   )
 }
 
 function getDeviceIcon(device: AstalBluetooth.Device): string {
-  const icon = device.get_icon() || ""
+  const icon = device.icon || ""
   const iconMap: Record<string, string> = {
     "audio-headset": "",
     "audio-headphones": "",
@@ -181,5 +225,5 @@ function getDeviceIcon(device: AstalBluetooth.Device): string {
     "input-keyboard": "",
     "input-mouse": "󰦋",
   }
-  return iconMap[icon] || " "
+  return iconMap[icon] || ""
 }
