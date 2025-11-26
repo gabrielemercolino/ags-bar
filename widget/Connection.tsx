@@ -156,7 +156,7 @@ function BluetoothDevice({ device }: BluetoothDeviceParams) {
 
         <label
           cssName="name"
-          class={`${connected.as((c) => (c ? "connected" : ""))}`}
+          class={connected.as((c) => (c ? "connected" : ""))}
           label={device.get_name() ?? device.get_alias()}
           hexpand
           halign={Gtk.Align.START}
