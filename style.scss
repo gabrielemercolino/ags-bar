@@ -12,6 +12,12 @@ $fg-title: #cfc0d9;
 $fg-connection: #70b8d4;
 $fg-connection-hover: #b88cce;
 
+$fg-bluetooth-header: #70b8d4;
+$fg-bluetooth-adapter-missing: #e87d9a;
+$fg-bluetooth-device: #cfc0d9;
+$fg-bluetooth-device-hover: #b88cce;
+$fg-bluetooth-device-connected: #d4ac76;
+
 $fg-battery: #d4ac76;
 $fg-battery-charging: #e89368; 
 
@@ -101,12 +107,65 @@ window.Bar {
     apps {
       background-color: $bg-color;
       border-radius: 10px;
-      padding: 4px 12px;
+      padding: 4px 12px;margin: 0.1em 0.15em;
     }
 
     connection {
       internet, bluetooth { color: $fg-connection; }
-      bluetooth:hover { color: $fg-connection-hover; }
+      bluetooth {
+        > button {
+          padding: 0px;
+          background: transparent;
+
+          &:hover { color: $fg-connection-hover; }
+        }
+
+        pop-up {
+          border-radius: 10px;
+          background-color: $bg-color;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          min-width: 200px;
+
+          container {
+            padding: 8px;
+
+            header {
+              label { font-weight: bold; font-size: 18px; color: $fg-bluetooth-header; }
+
+              switch {
+                font-size: 18px;
+                border-radius: 10px;
+
+                &.on { background: $fg-bluetooth-header; }
+
+                slider {
+                  min-height: 16px;
+                  min-width: 16px;
+                  border: 0em solid transparent;
+                  border-radius: 10px;
+                  margin: 1px;
+                }
+              }
+            }
+
+            devices {
+              padding: 4px;
+
+              adapter-missing { color: $fg-bluetooth-adapter-missing; }
+
+              container {
+                device {
+                  color: $fg-bluetooth-device;
+
+                  &.connected { color: $fg-bluetooth-device-connected; }
+
+                  &:hover { color: $fg-bluetooth-device-hover; }
+                }
+              }
+            }
+          }
+        }
+      }
     }
 
     status {
