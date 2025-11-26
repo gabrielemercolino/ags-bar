@@ -147,7 +147,8 @@ function BluetoothDevice({ device }: BluetoothDeviceParams) {
         if (connected.get()) device.disconnect_device(console.log)
         else if (paired.get()) device.connect_device(console.log)
         else
-          execAsync(`bluetoothctl pair ${device.address}`).catch(console.error)
+          execAsync(`bluetoothctl pair ${device.address}`) // using cli because the pair method hangs
+            .catch(console.error)
       }}
     >
       <box spacing={8}>
