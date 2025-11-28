@@ -1,29 +1,29 @@
 @use 'colors';
 
-$status-background: colors.$common-background;
+$background: colors.$common-background;
 
-$status-audio-foreground:       colors.$base0A;
-$status-audio-hover-foreground: colors.$base09;
+$audio-foreground:       colors.$base0A;
+$audio-hover-foreground: colors.$base09;
 
-$status-battery-foreground:          colors.$base0A;
-$status-battery-charging-foreground: colors.$base09;
+$battery-foreground:          colors.$base0A;
+$battery-charging-foreground: colors.$base09;
 
 
 status {
-  background: $status-background;
+  background: $background;
   border-radius: 10px;
   padding: 4px 12px;
   margin: 0.1em 0.15em;
 
   audio { 
-    color: $status-audio-foreground;
+    color: $audio-foreground;
     
-    &:hover { color: $status-audio-hover-foreground; } 
+    &:hover { color: $audio-hover-foreground; } 
   }
 
   battery {
-    color: $status-battery-foreground; 
+    color: $battery-foreground; 
  
-    &.charging { color: $status-battery-charging-foreground; } 
+    &.charging { color: $battery-charging-foreground; } 
   }
 }

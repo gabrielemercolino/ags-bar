@@ -1,15 +1,15 @@
 @use 'colors';
 
-$workspaces-background: colors.$common-background;
+$background: colors.$common-background;
 
-$workspaces-button-inactive-background: colors.$common-background;
-$workspaces-button-inactive-foreground: colors.$common-foreground;
+$button-inactive-background: colors.$common-background;
+$button-inactive-foreground: colors.$common-foreground;
 
-$workspaces-button-active-background: colors.$base05;
-$workspaces-button-active-foreground: colors.$base01;
+$button-active-background: colors.$base05;
+$button-active-foreground: colors.$base01;
 
 .workspaces {
-  background: $workspaces-background;
+  background: $background;
   border-radius: 10px;
   padding: 4px;
 
@@ -20,8 +20,8 @@ $workspaces-button-active-foreground: colors.$base01;
 
     &.active,
     &:hover {
-      background: $workspaces-button-active-background;
-      color: $workspaces-button-active-foreground;
+      background: $button-active-background;
+      color: $button-active-foreground;
     }
   }
 }

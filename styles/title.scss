@@ -1,11 +1,11 @@
 @use 'colors';
 
-$title-background: colors.$common-background;
-$title-foreground: colors.$common-foreground;
+$background: colors.$common-background;
+$foreground: colors.$common-foreground;
 
 title {
-  background: $title-background;
-  color: $title-foreground;
+  background: $background;
+  color: $foreground;
   padding: 4px 12px;
   border-radius: 10px;
 
