@@ -1,0 +1,82 @@
+@use 'colors';
+
+$background: colors.$common-background;
+$foreground: colors.$common-foreground;
+
+$notifications-hover-background: rgba(255, 255, 255, 0.1);
+
+$notifications-popup-background: colors.$common-background;
+$notifications-popup-outline:    rgba(255, 255, 255, 0.1);
+
+$notifications-popup-app-background:       rgba(colors.$base0E, 0.05);
+$notifications-popup-app-foreground:       colors.$base0C;
+$notifications-popup-app-hover-foreground: rgba(255, 255, 255, 0.1);
+$notifications-popup-app-outline:          colors.$base0E;
+
+$notifications-popup-summary-foreground: colors.$base0F;
+
+$notifications-popup-body-hover-background: rgba(255, 255, 255, 0.1);
+
+apps {
+  background: $background;
+  border-radius: 10px;
+  margin: 0.1em 0.15em;
+  padding: 4px;
+
+  tray item { padding: 4px; }
+
+  notifications {
+    > button {
+      padding: 4px;
+      background: transparent;
+      border: none;
+
+      &:hover { background: $notifications-hover-background; }
+    }
+
+    pop-up {
+      padding: 8px;
+      border-radius: 10px;
+      background: $notifications-popup-background;
+      border: 1px solid $notifications-popup-outline;
+      min-width: 300px;
+
+      > scrolledwindow { min-height: 100px; }
+
+      app-group {
+        background: $notifications-popup-app-background;
+        border: 1px solid $notifications-popup-app-outline;
+        border-radius: 10px;
+        padding: 8px;
+        margin-bottom: 4px;
+
+        app-name, dismiss-btn {
+          color: $notifications-popup-app-foreground;
+          font-weight: bold;
+          font-size: 18px;
+        }
+
+        dismiss-btn {
+          padding: 4px;
+          border-radius: 10px;
+          &:hover { background: $notifications-popup-app-hover-foreground; }
+        }
+
+        summary-group {
+          padding: 0px 8px;
+
+          summary, dismiss-btn { color: $notifications-popup-summary-foreground; font-weight: bold; }
+
+          bodies-container {
+            padding: 0px 8px;
+            border-radius: 10px;
+
+            &:hover { background: $notifications-popup-body-hover-background; }
+          }
+
+          body { padding: 0px; background: transparent; }
+        }
+      }
+    }
+  }
+}

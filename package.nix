@@ -12,14 +12,63 @@
   pname = "ags-bar";
   system = pkgs.stdenv.hostPlatform.system;
 
-  colorSubstitutions = lib.concatStringsSep "\n" (
-    lib.mapAttrsToList (
-      name: value: let
-        varName = "$" + name; # nix escapes the interpolation with `$${name}`
-      in ''sed -i '0,/\${varName}:/s|\${varName}: .*|\${varName}: ${value};|' "style.scss"''
-    )
-    colors
-  );
+  flattenAttrs = prefix: attrs:
+    lib.concatLists (
+      lib.mapAttrsToList (
+        name: value: let
+          newPrefix = prefix ++ [name];
+        in
+          if lib.isAttrs value && !lib.isDerivation value
+          then flattenAttrs newPrefix value
+          else [
+            {
+              path = newPrefix;
+              inherit value;
+            }
+          ]
+      )
+      attrs
+    );
+
+  pathToScssVar = path: "$" + (lib.concatStringsSep "-" path);
+
+  modulesSubstitutions =
+    if colors ? overrides
+    then
+      lib.concatStringsSep "\n" (
+        lib.mapAttrsToList (
+          moduleName: moduleAttrs: let
+            flattened = flattenAttrs [] moduleAttrs;
+          in
+            lib.concatStringsSep "\n" (
+              map (
+                item: let
+                  varName = pathToScssVar item.path;
+                in ''sed -i "0,/${varName}:/s|${varName}: .*|${varName}: ${item.value};|" "styles/${moduleName}.scss"''
+              )
+              flattened
+            )
+        )
+        colors.overrides
+      )
+    else "";
+
+  base16Substitutions =
+    if colors ? base16
+    then
+      lib.concatStringsSep "\n" (
+        lib.mapAttrsToList (
+          name: value: let
+            varName = "$" + name; # nix escapes the interpolation with `$${name}`
+          in ''sed -i '0,/\${varName}:/s|\${varName}: .*|\${varName}: ${value};|' "styles/colors.scss"''
+        )
+        (lib.filterAttrs (
+            name: _value:
+              lib.hasPrefix "base" name
+          )
+          colors.base16)
+      )
+    else "";
 
   fontFamilyStr = lib.concatStringsSep ", " (map (f:
     if lib.isString f
@@ -28,7 +77,7 @@
   fonts);
 
   fontSubstitution = lib.optionalString (fonts != []) ''
-    sed -i '0,/\$font-families:/s|\$font-families: .*|\$font-families: "${fontFamilyStr}";|' "style.scss"
+    sed -i '0,/\$font-families:/s|\$font-families: .*|\$font-families: "${fontFamilyStr}";|' "styles/style.scss"
   '';
 
   commandSubstitutions = lib.concatStringsSep "\n" (
@@ -62,7 +111,8 @@ in
 
       mkdir -p $out/bin
 
-      ${colorSubstitutions}
+      ${base16Substitutions}
+      ${modulesSubstitutions}
       ${fontSubstitution}
       ${commandSubstitutions}
 

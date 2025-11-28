@@ -1,5 +1,5 @@
 import app from "ags/gtk4/app"
-import style from "./style.scss"
+import style from "./styles/style.scss"
 import Bar from "./widget/Bar"
 
 app.start({

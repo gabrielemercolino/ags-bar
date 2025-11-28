@@ -1,0 +1,29 @@
+@use 'colors';
+
+$background: colors.$common-background;
+
+$shutdown-foreground: colors.$base0F;
+$reboot-foreground:   colors.$base09;
+$lock-foreground:     colors.$base0A;
+
+system {
+  background: $background;
+  border-radius: 10px;
+
+  button {
+    margin: 0px 3px;
+    padding: 4px 2px;
+    border: none;
+    background: transparent;
+  }
+
+  .shutdown { color: $shutdown-foreground; }
+
+  .reboot { color: $reboot-foreground; }
+
+  .lock { color: $lock-foreground; margin-right: 4px; }
+
+  &:first-child { padding-left: 4px; }
+
+  &:last-child { padding-right: 4px; }
+}

@@ -1,0 +1,13 @@
+@use 'colors';
+
+$background: colors.$common-background;
+$foreground: colors.$common-foreground;
+
+title {
+  background: $background;
+  color: $foreground;
+  padding: 4px 12px;
+  border-radius: 10px;
+
+  &.empty { padding: 0px; }
+}

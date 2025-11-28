@@ -1,0 +1,29 @@
+@use 'colors';
+
+$background: colors.$common-background;
+
+$audio-foreground:       colors.$base0A;
+$audio-hover-foreground: colors.$base09;
+
+$battery-foreground:          colors.$base0A;
+$battery-charging-foreground: colors.$base09;
+
+
+status {
+  background: $background;
+  border-radius: 10px;
+  padding: 4px 12px;
+  margin: 0.1em 0.15em;
+
+  audio { 
+    color: $audio-foreground;
+    
+    &:hover { color: $audio-hover-foreground; } 
+  }
+
+  battery {
+    color: $battery-foreground; 
+ 
+    &.charging { color: $battery-charging-foreground; } 
+  }
+}

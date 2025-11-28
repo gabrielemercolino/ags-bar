@@ -1,0 +1,16 @@
+@use 'system';
+@use 'workspaces';
+@use 'title';
+@use 'connection';
+@use 'status';
+@use 'time';
+@use 'apps';
+
+$font-families: "";
+
+window.Bar {
+  font-family: $font-families, JetBrainsMono Nerd Font;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 6px;
+}

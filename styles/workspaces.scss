@@ -1,0 +1,27 @@
+@use 'colors';
+
+$background: colors.$common-background;
+
+$button-inactive-background: colors.$common-background;
+$button-inactive-foreground: colors.$common-foreground;
+
+$button-active-background: colors.$base05;
+$button-active-foreground: colors.$base01;
+
+.workspaces {
+  background: $background;
+  border-radius: 10px;
+  padding: 4px;
+
+  > button { 
+    margin: 0px 2px;
+    padding: 4px 10px;
+    background: transparent;
+
+    &.active,
+    &:hover {
+      background: $button-active-background;
+      color: $button-active-foreground;
+    }
+  }
+}
