@@ -1,0 +1,12 @@
+@import 'colors'
+@import 'system'
+@import 'workspaces'
+
+$font-families: "";
+
+window.Bar {
+  font-family: $font-families, JetBrainsMono Nerd Font;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 6px;
+}

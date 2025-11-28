@@ -1,0 +1,24 @@
+$workspaces-background: $common-background;
+
+$workspaces-button-inactive-background: $common-background;
+$workspaces-button-inactive-foreground: $common-foreground;
+$workspaces-button-active-background:   $base05;
+$workspaces-button-active-foreground:   $base01;
+
+.workspaces {
+  background: $workspaces-background;
+  border-radius: 10px;
+  padding: 4px;
+
+  > button { 
+    margin: 0px 2px;
+    padding: 4px 10px;
+    background: transparent;
+
+    &.active,
+    &:hover {
+      background: $workspaces-button-active-background;
+      color: $workspaces-button-active-foreground;
+    }
+  }
+}

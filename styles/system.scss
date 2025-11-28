@@ -1,0 +1,27 @@
+$system-background: $common-background;
+
+$system-shutdown-foreground: $base0F;
+$system-reboot-foreground:   $base09;
+$system-lock-foreground:     $base0A;
+
+system {
+  background: $system-background;
+  border-radius: 10px;
+
+  button {
+    margin: 0px 3px;
+    padding: 4px 2px;
+    border: none;
+    background: transparent;
+  }
+
+  .shutdown { color: $system-shutdown-foreground; }
+
+  .reboot { color: $system-reboot-foreground; }
+
+  .lock { color: $system-reboot-foreground; margin-right: 4px; }
+
+  &:first-child { padding-left: 4px; }
+
+  &:last-child { padding-right: 4px; }
+}

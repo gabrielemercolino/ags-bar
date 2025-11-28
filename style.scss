@@ -42,53 +42,6 @@ $fg-notifications-summary: #70b8d4;
 $font-families: "";
 
 window.Bar {
-  font-family: $font-families, JetBrainsMono Nerd Font;
-  font-size: 14px;
-  font-weight: 600;
-  margin: 6px;
-
-  left {
-    system {
-      background-color: $bg-color;
-      border-radius: 10px;
-
-      button {
-        margin: 0px 3px;
-        padding: 4px 2px;
-        border: none;
-        background: transparent;
-      }
-
-      .shutdown { color: $fg-shutdown; }
-
-      .reboot { color: $fg-reboot; }
-
-      .lock { color: $fg-lock; margin-right: 4px; }
-
-      &:first-child { padding-left: 4px; }
-
-      &:last-child { padding-right: 4px; }
-    }
-
-    .workspaces {
-      background-color: $bg-color;
-      border-radius: 10px;
-      padding: 4px;
-
-      > button { 
-        margin: 0px 2px;
-        padding: 4px 10px;
-        background-color: transparent;
-
-        &.active,
-        &:hover {
-          background-color: $bg-workspace-active;
-          color: $fg-workspace-active;
-        }
-      }
-    }
-  }
-
   center {
     title {
       background-color: $bg-color;
