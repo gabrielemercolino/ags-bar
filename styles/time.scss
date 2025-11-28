@@ -1,0 +1,55 @@
+@use 'colors';
+
+$background: colors.$common-background;
+
+$date-foreground:       colors.$base0E;
+$date-hover-foreground: colors.$base08;
+
+$calendar-today-foreground: colors.$base0E;
+$calendar-today-outline:    colors.$base0E;
+
+$calendar-selected-background: colors.$base0E;
+$calendar-selected-foreground: colors.$common-foreground;
+
+$clock-foreground: colors.$base0E;
+
+time {
+  background: $background;
+  border-radius: 10px;
+  padding: 4px 12px;
+  margin: 0.1em 0.15em;
+
+  date {
+    > button { 
+      padding: 0px; 
+      background: transparent;
+
+      label { color: $date-foreground; }
+
+      &:hover label { color: $date-hover-foreground; }
+    }
+
+    calendar {
+      label {
+        border-radius: 10px;
+        box-shadow: none;
+        outline: none;
+        transition: background 200ms ease;
+
+        .today { background: $calendar-today-foreground; }
+            
+        &:selected {
+          background: $calendar-selected-background;
+
+          & ~ .today {
+            background: transparent;
+            outline: 2px solid $calendar-today-outline;
+            outline-offset: -1px;
+          }
+        }
+      }
+    }
+  }
+
+  clock { color: $clock-foreground; }
+}
