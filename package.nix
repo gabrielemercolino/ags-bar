@@ -12,82 +12,90 @@
   pname = "ags-bar";
   system = pkgs.stdenv.hostPlatform.system;
 
+  # Generate sed command to replace an SCSS variable
+  makeSedSubstitution = file: varName: value: ''sed -i '0,/${varName}:/s|${varName}: .*|${varName}: ${value};|' '${file}' '';
+
+  # Generate sed command to replace a TypeScript constant
+  makeCommandSubstitution = file: constName: value: ''sed -i '0,/const ${constName} =/s|const ${constName} = .*|const ${constName} = "${value}"|' "${file}"'';
+
+  # Converts path to SCSS variable: ["a", "b", "c"] -> "$a-b-c"
+  pathToScssVar = path:
+    path
+    |> lib.concatStringsSep "-"
+    |> (name: "$" + name);
+
+  # Flatten nested attribute set into list of path-value pairs
+  # { a.b.c = "x"; } -> [ { path = ["a" "b" "c"]; value = "x"; } ]
   flattenAttrs = prefix: attrs:
-    lib.concatLists (
-      lib.mapAttrsToList (
-        name: value: let
-          newPrefix = prefix ++ [name];
-        in
-          if lib.isAttrs value && !lib.isDerivation value
-          then flattenAttrs newPrefix value
-          else [
-            {
-              path = newPrefix;
-              inherit value;
-            }
-          ]
-      )
-      attrs
+    attrs
+    |> lib.mapAttrsToList (name: value: {
+      path = prefix ++ [name];
+      inherit value;
+      isNested = lib.isAttrs value && !lib.isDerivation value;
+    })
+    |> lib.concatMap (
+      item:
+        if item.isNested
+        then flattenAttrs item.path item.value
+        else [{inherit (item) path value;}]
     );
 
-  pathToScssVar = path: "$" + (lib.concatStringsSep "-" path);
-
+  # Generate substitutions for module-specific overrides
   modulesSubstitutions =
-    if colors ? overrides
-    then
-      lib.concatStringsSep "\n" (
-        lib.mapAttrsToList (
-          moduleName: moduleAttrs: let
-            flattened = flattenAttrs [] moduleAttrs;
-          in
-            lib.concatStringsSep "\n" (
-              map (
-                item: let
-                  varName = pathToScssVar item.path;
-                in ''sed -i "0,/${varName}:/s|${varName}: .*|${varName}: ${item.value};|" "styles/${moduleName}.scss"''
-              )
-              flattened
-            )
+    colors.overrides or {}
+    |> lib.mapAttrsToList (
+      moduleName: moduleAttrs:
+        moduleAttrs
+        |> flattenAttrs []
+        |> map (
+          item:
+            makeSedSubstitution
+            "styles/${moduleName}.scss"
+            (pathToScssVar item.path)
+            item.value
         )
-        colors.overrides
-      )
-    else "";
-
-  base16Substitutions =
-    if colors ? base16
-    then
-      lib.concatStringsSep "\n" (
-        lib.mapAttrsToList (
-          name: value: let
-            varName = "$" + name; # nix escapes the interpolation with `$${name}`
-          in ''sed -i '0,/\${varName}:/s|\${varName}: .*|\${varName}: ${value};|' "styles/colors.scss"''
-        )
-        (lib.filterAttrs (
-            name: _value:
-              lib.hasPrefix "base" name
-          )
-          colors.base16)
-      )
-    else "";
-
-  fontFamilyStr = lib.concatStringsSep ", " (map (f:
-    if lib.isString f
-    then f
-    else f.name)
-  fonts);
-
-  fontSubstitution = lib.optionalString (fonts != []) ''
-    sed -i '0,/\$font-families:/s|\$font-families: .*|\$font-families: "${fontFamilyStr}";|' "styles/style.scss"
-  '';
-
-  commandSubstitutions = lib.concatStringsSep "\n" (
-    lib.mapAttrsToList (
-      name: value: let
-        constName = "${lib.toUpper name}_COMMAND"; # Convert audio -> AUDIO_COMMAND
-      in ''sed -i '0,/const ${constName} =/s|const ${constName} = .*|const ${constName} = "${value}"|' "commands.ts"''
+        |> lib.concatStringsSep "\n"
     )
+    |> lib.concatStringsSep "\n";
+
+  # Generate base16 color substitutions
+  base16Substitutions =
+    colors.base16 or {}
+    |> lib.filterAttrs (name: _: lib.hasPrefix "base" name)
+    |> lib.mapAttrsToList (
+      name: value:
+        makeSedSubstitution
+        "styles/colors.scss"
+        ("$" + name)
+        value
+    )
+    |> lib.concatStringsSep "\n";
+
+  # Generate font family substitution
+  fontSubstitution =
+    fonts
+    |> map (f:
+      if lib.isString f
+      then f
+      else f.name)
+    |> lib.concatStringsSep ", "
+    |> (
+      families:
+        lib.optionalString (fonts != [])
+        (makeSedSubstitution "styles/style.scss" "$font-families" families)
+    );
+
+  # Generate command substitutions
+  commandSubstitutions =
     commands
-  );
+    |> lib.mapAttrsToList (
+      name: value:
+        makeCommandSubstitution
+        "commands.ts"
+        "${lib.toUpper name}_COMMAND"
+        value
+    )
+    |> lib.concatStringsSep "\n";
 in
   pkgs.stdenv.mkDerivation {
     inherit pname;
@@ -115,6 +123,7 @@ in
       ${modulesSubstitutions}
       ${fontSubstitution}
       ${commandSubstitutions}
+
 
       ags bundle ${entry} $out/bin/${pname} -d "SRC='.'"
 
