@@ -1,8 +1,10 @@
-$system-background: $common-background;
+@use 'colors';
 
-$system-shutdown-foreground: $base0F;
-$system-reboot-foreground:   $base09;
-$system-lock-foreground:     $base0A;
+$system-background: colors.$common-background;
+
+$system-shutdown-foreground: colors.$base0F;
+$system-reboot-foreground:   colors.$base09;
+$system-lock-foreground:     colors.$base0A;
 
 system {
   background: $system-background;
@@ -19,7 +21,7 @@ system {
 
   .reboot { color: $system-reboot-foreground; }
 
-  .lock { color: $system-reboot-foreground; margin-right: 4px; }
+  .lock { color: $system-lock-foreground; margin-right: 4px; }
 
   &:first-child { padding-left: 4px; }
 

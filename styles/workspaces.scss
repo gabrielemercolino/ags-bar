@@ -1,9 +1,12 @@
-$workspaces-background: $common-background;
+@use 'colors';
 
-$workspaces-button-inactive-background: $common-background;
-$workspaces-button-inactive-foreground: $common-foreground;
-$workspaces-button-active-background:   $base05;
-$workspaces-button-active-foreground:   $base01;
+$workspaces-background: colors.$common-background;
+
+$workspaces-button-inactive-background: colors.$common-background;
+$workspaces-button-inactive-foreground: colors.$common-foreground;
+
+$workspaces-button-active-background: colors.$base05;
+$workspaces-button-active-foreground: colors.$base01;
 
 .workspaces {
   background: $workspaces-background;
