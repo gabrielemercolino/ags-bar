@@ -1,6 +1,7 @@
-@import 'colors'
-@import 'system'
-@import 'workspaces'
+@use 'system';
+@use 'workspaces';
+@use 'title';
+@use 'connection';
 
 $font-families: "";
 
