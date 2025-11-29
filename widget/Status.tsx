@@ -67,8 +67,6 @@ export function Battery() {
     var hours = Math.floor((seconds % (3600 * 24)) / 3600)
     var minutes = Math.floor((seconds % 3600) / 60)
 
-    console.log(hours, minutes)
-
     const h = hours <= 0 ? "" : `${hours}h, `
     const m = minutes <= 0 ? "" : `${minutes}m`
 
