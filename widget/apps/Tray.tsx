@@ -16,7 +16,7 @@ export default function Tray() {
     <box cssName="tray" spacing={4} visible={items.as((it) => it.length > 0)}>
       <For each={items}>
         {(item) => {
-          const icon = createBinding(item, "iconName")
+          const icon = createBinding(item, "gicon")
           const menuModel = createBinding(item, "menuModel")
           const actionGroup = createBinding(item, "actionGroup")
 
@@ -61,7 +61,7 @@ export default function Tray() {
                       }}
                       onLeftClick={() => item.activate(0, 0)}
                     >
-                      <image iconName={icon} />
+                      <image gicon={icon} />
                     </Button>
                   )
                 }}
