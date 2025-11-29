@@ -1,45 +1,13 @@
 import AstalBluetooth from "gi://AstalBluetooth?version=0.1"
-import { createBinding, createComputed, For, With } from "gnim"
-import AstalNetwork from "gi://AstalNetwork?version=0.1"
+import Pango from "gi://Pango?version=1.0"
+import { createBinding, createComputed, For, With } from "ags"
 import { Gtk } from "ags/gtk4"
 import { execAsync } from "ags/process"
-import Pango from "gi://Pango?version=1.0"
-
-const network = AstalNetwork.get_default()
-
-export function Internet() {
-  const wired = createBinding(network, "wired")
-  const wifi = createBinding(network, "wifi")
-
-  const name = wifi.as((wf) => {
-    if (wf && wf.ssid) return `󰤨  ${wf.ssid}`
-    const wd = wired.get()
-    return wd ? "󰀂  wired" : "󰖪  offline"
-  })
-
-  return (
-    <With value={name}>
-      {(n) => (
-        <label
-          cssName="internet"
-          label={n}
-          tooltipText={
-            wifi.get().ssid
-              ? createBinding(wifi.get(), "strength").as((s) => `${s}%`)
-              : wired.get().internet != AstalNetwork.Internet.DISCONNECTED
-                ? createBinding(wired.get(), "device").as((d) => d.interface)
-                : undefined
-          }
-        />
-      )}
-    </With>
-  )
-}
 
 const bluetooth = AstalBluetooth.get_default()
 const adapter = bluetooth.get_adapter()
 
-export function Bluetooth() {
+export default function Bluetooth() {
   const on = createBinding(bluetooth, "isPowered")
   const connected = createBinding(bluetooth, "is_connected")
 

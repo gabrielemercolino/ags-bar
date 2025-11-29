@@ -1,8 +1,8 @@
-import { Gtk } from "ags/gtk4"
 import AstalTray from "gi://AstalTray"
 import GLib from "gi://GLib"
-import { createBinding, createComputed, For, With } from "gnim"
-import Button from "../components/Button"
+import { createBinding, createComputed, For, With } from "ags"
+import { Gtk } from "ags/gtk4"
+import Button from "../../components/Button"
 
 const tray = AstalTray.get_default()
 

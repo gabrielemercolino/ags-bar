@@ -1,7 +1,7 @@
+import { Gtk } from "ags/gtk4"
 import { createPoll } from "ags/time"
-import Gtk from "gi://Gtk?version=4.0"
 
-export function Date() {
+export default function Date() {
   const date = createPoll("", 60_000, 'date "+%a %d %b"')
 
   return (
@@ -11,18 +11,5 @@ export function Date() {
         <Gtk.Calendar cssName="calendar" />
       </popover>
     </menubutton>
-  )
-}
-
-export function Clock() {
-  const time = createPoll("", 1000, 'date "+%H:%M"')
-
-  return (
-    <label
-      cssName="clock"
-      hexpand
-      halign={Gtk.Align.CENTER}
-      label={time.as((t) => ` ${t}`)}
-    />
   )
 }
