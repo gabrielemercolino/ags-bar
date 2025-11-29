@@ -1,5 +1,6 @@
 import { Gtk } from "ags/gtk4"
 import AstalNotifd from "gi://AstalNotifd?version=0.1"
+import Pango from "gi://Pango?version=1.0"
 import { createBinding, With } from "gnim"
 
 const notifd = AstalNotifd.get_default()
@@ -145,12 +146,16 @@ type NotificationBodyProps = {
 }
 function NotificationBody({ notification, onClick }: NotificationBodyProps) {
   const body = notification.get_body()
-  const maxChars = 60
-  const truncated =
-    body.length > maxChars ? body.substring(0, maxChars) + "..." : body
   return (
     <button cssName="body" onClicked={onClick}>
-      <label label={truncated} useMarkup={true} halign={Gtk.Align.START} wrap />
+      <label
+        label={body}
+        useMarkup={true}
+        halign={Gtk.Align.START}
+        wrap
+        maxWidthChars={60}
+        ellipsize={Pango.EllipsizeMode.END}
+      />
     </button>
   )
 }
