@@ -2,7 +2,6 @@ import AstalBluetooth from "gi://AstalBluetooth?version=0.1"
 import Pango from "gi://Pango?version=1.0"
 import { createBinding, createComputed, For, With } from "ags"
 import { Gtk } from "ags/gtk4"
-import { execAsync } from "ags/process"
 
 const bluetooth = AstalBluetooth.get_default()
 const adapter = bluetooth.get_adapter()
@@ -146,9 +145,11 @@ function BluetoothDevice({ device }: BluetoothDeviceParams) {
               device &&
               console.log("connected to", device.name ?? device.alias),
           )
-        else
-          execAsync(`bluetoothctl pair ${device.address}`) // using cli because the pair method hangs
-            .catch(console.error)
+        else {
+          adapter?.set_pairable(true)
+          device.pair()
+          adapter?.set_pairable(false)
+        }
       }}
     >
       <box spacing={8}>
