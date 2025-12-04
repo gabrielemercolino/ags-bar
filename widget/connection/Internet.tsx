@@ -1,10 +1,7 @@
 import AstalNetwork from "gi://AstalNetwork?version=0.1"
 import { Accessor, createBinding, createComputed, With } from "ags"
-import NM from "gi://NM?version=1.0"
 
 const network = AstalNetwork.get_default()
-const wired = network.wired
-const wifi = network.wifi
 
 type ConnectionState =
   | {
@@ -24,14 +21,13 @@ type ConnectionState =
     }
 
 export default function Internet() {
-  const wifiEnabled = createBinding(wifi, "enabled")
-  const wifiSsid = createBinding(wifi, "ssid")
-  const wiredDevice = createBinding(wired, "device")
+  const connectivity = createBinding(network, "primary")
 
   const connectionState: Accessor<ConnectionState> = createComputed(() => {
-    if (wifiEnabled() && wifiSsid()) return getWiFiState(wifi)
-    if (wiredDevice().state === NM.DeviceState.ACTIVATED)
-      return getWiredState(wired)
+    if (connectivity() == AstalNetwork.Primary.WIFI)
+      return getWiFiState(network.wifi)
+    if (connectivity() == AstalNetwork.Primary.WIRED)
+      return getWiredState(network.wired)
     return {
       type: "offline",
       icon: "󰖪",
@@ -39,15 +35,17 @@ export default function Internet() {
   })
 
   return (
-    <With value={connectionState}>
-      {(state) => (
-        <label
-          cssName="internet"
-          label={state.icon}
-          tooltipText={generateTooltip(state)}
-        />
-      )}
-    </With>
+    <box>
+      <With value={connectionState}>
+        {(state) => (
+          <label
+            cssName="internet"
+            label={state.icon}
+            tooltipText={generateTooltip(state)}
+          />
+        )}
+      </With>
+    </box>
   )
 }
 
