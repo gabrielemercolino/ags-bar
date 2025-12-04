@@ -21,7 +21,7 @@ system {
 
   .reboot { color: $reboot-foreground; }
 
-  .lock { color: $lock-foreground; margin-right: 4px; }
+  .lock { color: $lock-foreground; margin-right: 8px; }
 
   &:first-child { padding-left: 4px; }
 
