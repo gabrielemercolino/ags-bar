@@ -13,17 +13,12 @@ export default function Battery() {
     (t) => `Empty in ${secondsToHM(t)}`,
   )
 
-  const merged = createComputed(
-    [charging, percentage, timeToFull, timeToEmpty],
-    (c, p, ttf, tte) => {
-      return {
-        charging: c,
-        percentage: p,
-        timeToFull: ttf,
-        timeToEmpty: tte,
-      }
-    },
-  )
+  const merged = createComputed(() => ({
+    charging: charging(),
+    percentage: percentage(),
+    timeToFull: timeToFull(),
+    timeToEmpty: timeToEmpty(),
+  }))
 
   return (
     <With value={merged}>

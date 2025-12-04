@@ -20,16 +20,11 @@ export default function Tray() {
           const menuModel = createBinding(item, "menuModel")
           const actionGroup = createBinding(item, "actionGroup")
 
-          const bindings = createComputed(
-            [icon, menuModel, actionGroup],
-            (i, m, a) => {
-              return {
-                icon: i,
-                menuModel: m,
-                actionGroup: a,
-              }
-            },
-          )
+          const bindings = createComputed(() => ({
+            icon: icon(),
+            menuModel: menuModel(),
+            actionGroup: actionGroup(),
+          }))
 
           return (
             <box cssName="item-container">

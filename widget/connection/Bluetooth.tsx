@@ -10,9 +10,9 @@ export default function Bluetooth() {
   const on = createBinding(bluetooth, "isPowered")
   const connected = createBinding(bluetooth, "is_connected")
 
-  const both = createComputed([on, connected], (o, c) => ({
-    on: o,
-    connected: c,
+  const both = createComputed(() => ({
+    on: on(),
+    connected: connected(),
   }))
 
   return (
@@ -133,13 +133,13 @@ function BluetoothDevice({ device }: BluetoothDeviceParams) {
       class={connected.as((c) => (c ? "connected" : ""))}
       onClicked={() => {
         if (adapter && !adapter.powered) adapter.powered = true
-        if (connected.get())
+        if (connected())
           device.disconnect_device(
             (device) =>
               device &&
               console.log("disconnected from", device.name ?? device.alias),
           )
-        else if (paired.get())
+        else if (paired())
           device.connect_device(
             (device) =>
               device &&

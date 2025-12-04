@@ -9,12 +9,10 @@ export default function Audio() {
   const muted = createBinding(wireplumber.get_default_speaker(), "mute")
   const volume = createBinding(wireplumber.get_default_speaker(), "volume")
 
-  const both = createComputed([muted, volume], (m, v) => {
-    return {
-      muted: m,
-      volume: v,
-    }
-  })
+  const both = createComputed(() => ({
+    muted: muted(),
+    volume: volume(),
+  }))
 
   return (
     <button
