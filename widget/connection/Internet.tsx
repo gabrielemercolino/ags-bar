@@ -1,28 +1,49 @@
 import AstalNetwork from "gi://AstalNetwork?version=0.1"
-import { Accessor, createBinding, createComputed, With } from "ags"
+import { Accessor, createBinding, createComputed, createConnection, createState, For, With } from "ags"
+import Gtk from "gi://Gtk?version=4.0"
+import Pango from "gi://Pango"
+import AstalTray from "gi://AstalTray?version=0.1"
 
 const network = AstalNetwork.get_default()
 
 export default function Internet() {
   const connectivity = createBinding(network, "primary")
 
-  const connectionState = createComputed(() => {
-    if (connectivity() === AstalNetwork.Primary.WIFI) return "wifi"
-    if (connectivity() === AstalNetwork.Primary.WIRED) return "wired"
+  const state = connectivity.as(c => {
+    if (c === AstalNetwork.Primary.WIFI) return "wifi"
+    if (c === AstalNetwork.Primary.WIRED) return "wired"
     return "offline"
   })
 
   return (
-    <box>
-      <With value={connectionState}>
+    <menubutton cssName="internet">
+      <With value={state}>
         {(state) => {
           if (state === "wifi") return <WiFiWidget />
           if (state === "wired") return <WiredWidget />
-          else
-            return <label cssName="internet" label="󰖪" tooltipText="offline" />
+          else return <label label="󰖪" tooltipText="offline" />
         }}
       </With>
-    </box>
+
+      <popover
+        cssName="pop-up"
+        onShow={() => {
+          if (
+            state() == "wifi" &&
+            network.wifi.enabled &&
+            !network.wifi.scanning
+          )
+            network.wifi.scan()
+        }}
+      >
+        <With value={state}>
+          {(state) => {
+            if (state == "wired") return <WiredPopover />
+            return <WiFiPopover />
+          }}
+        </With>
+      </popover>
+    </menubutton>
   )
 }
 
@@ -32,7 +53,7 @@ function WiFiWidget() {
 
   const state = createComputed(() => ({
     strength: strength(),
-    icon: getWifiIcon(strength()),
+    icon: getWiFiIcon(strength()),
     ssid: ssid(),
   }))
 
@@ -41,7 +62,6 @@ function WiFiWidget() {
       <With value={state}>
         {(state) => (
           <label
-            cssName="internet"
             label={state.icon}
             tooltipText={`${state.ssid} ${state.strength}%`}
           />
@@ -57,16 +77,172 @@ function WiredWidget() {
   return (
     <box>
       <With value={name}>
-        {(name) => <label cssName="internet" label="󰀂" tooltipText={name} />}
+        {(name) => <label label="󰀂" tooltipText={name} />}
       </With>
     </box>
   )
 }
 
-function getWifiIcon(strength: number): string {
+function WiFiPopover() {
+  const powered = createBinding(network.wifi, "enabled")
+  const devices = createBinding(network.wifi, "accessPoints")
+  const empty = devices.as(devices => devices.length == 0)
+
+  return (
+    <box
+      cssName="container"
+      orientation={Gtk.Orientation.VERTICAL}
+      spacing={12}
+    >
+      <box cssName="header">
+        <label label="WiFi" hexpand halign={Gtk.Align.START} />
+        <With value={powered}>
+          {(powered) =>
+            <switch
+              halign={Gtk.Align.END}
+              active={powered}
+              class={powered ? "on" : "off"}
+              onNotifyActive={() => {
+                if (network.wifi.enabled) {
+                  network.wifi.enabled = false
+                } else {
+                  network.wifi.enabled = true
+                  if (!network.wifi.scanning) network.wifi.scan()
+                }
+              }}
+            />
+          }
+        </With>
+      </box>
+
+      <scrolledwindow
+        hscrollbarPolicy={Gtk.PolicyType.NEVER}
+        maxContentHeight={400}
+        propagateNaturalHeight
+        propagateNaturalWidth
+      >
+        <box cssName="wifi-devices">
+          <With value={empty}>
+            {(empty) =>
+              <box
+                cssName="container"
+                visible={!empty}
+                orientation={Gtk.Orientation.VERTICAL}
+                spacing={4}
+              >
+                <For each={devices}>
+                  {(device) => <WiFiAccessPoint device={device} />}
+                </For>
+              </box>
+            }
+          </With>
+        </box>
+      </scrolledwindow>
+    </box>
+  )
+}
+
+type WiFiDeviceParams = {
+  device: AstalNetwork.AccessPoint
+}
+
+function WiFiAccessPoint({ device }: WiFiDeviceParams) {
+  const strength = createBinding(device, "strength")
+
+  const known =
+    network
+      .wifi
+      .device
+      .availableConnections
+      .find(c => c.get_id() === device.ssid) !== undefined
+
+  return (
+    <button
+      cssName="device"
+      //TODO: add class for active accessPoint
+      onClicked={() => {
+        if (known) device.activate(null, (accessPoint) => {
+          if (accessPoint)
+            console.log("connected to", accessPoint.bssid, getWiFiFrequencyIcon(accessPoint.frequency))
+          else
+            console.error("failed to connect")
+        })
+        else console.error("not known") //TODO: ask for password
+      }}
+    >
+      <box spacing={8}>
+        <label
+          tooltipText={strength.as(s => `${s}%`)}
+          cssName="icon"
+          label={getWiFiIcon(device.strength)}
+        />
+
+        <label
+          cssName="name"
+          label={device.ssid ?? device.bssid}
+          tooltipText={device.ssid ?? device.bssid}
+          hexpand
+          halign={Gtk.Align.START}
+          maxWidthChars={20}
+          ellipsize={Pango.EllipsizeMode.END}
+        />
+
+        <label
+          cssName="frequency"
+          label={getWiFiFrequencyIcon(device.frequency)}
+        />
+
+        <label
+          cssName="lock-icon"
+          label={getWiFiPasswordIcon(device)}
+          tooltipText={known ? "known" : device.requires_password ? "requires password" : "free"}
+        />
+      </box>
+    </button>
+  )
+}
+
+function WiredPopover() {
+  const name = createBinding(network.wired.device, "interface")
+
+  return (
+    <box
+      cssName="container"
+      orientation={Gtk.Orientation.VERTICAL}
+      spacing={12}
+    >
+      <box cssName="header"><label label="Wired" hexpand /></box>
+      <box cssName="wired-device">
+        <label label="󰀂" halign={Gtk.Align.START} hexpand />
+        <label label={name} halign={Gtk.Align.END} />
+      </box>
+    </box>
+  )
+}
+
+function getWiFiIcon(strength: number) {
   if (strength >= 80) return "󰤨"
   if (strength >= 60) return "󰤥"
   if (strength >= 40) return "󰤢"
   if (strength >= 20) return "󰤟"
   return "󰤯"
+}
+
+function getWiFiFrequencyIcon(frequency: number) {
+  if (frequency <= 2500) return "2.4G"
+  return "5.0G"
+}
+
+function getWiFiPasswordIcon(device: AstalNetwork.AccessPoint) {
+  if (!device.requires_password) return ""
+
+  const known =
+    network
+      .wifi
+      .device
+      .availableConnections
+      .find(c => c.get_id() === device.ssid) !== undefined
+
+  if (known) return ""
+  return ""
 }
