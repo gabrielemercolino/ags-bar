@@ -86,7 +86,6 @@ function WiredWidget() {
 function WiFiPopover() {
   const powered = createBinding(network.wifi, "enabled")
   const devices = createBinding(network.wifi, "accessPoints")
-  const empty = devices.as(devices => devices.length == 0)
 
   return (
     <box
@@ -116,26 +115,22 @@ function WiFiPopover() {
       </box>
 
       <scrolledwindow
+        visible={powered}
         hscrollbarPolicy={Gtk.PolicyType.NEVER}
         maxContentHeight={400}
         propagateNaturalHeight
         propagateNaturalWidth
       >
         <box cssName="wifi-devices">
-          <With value={empty}>
-            {(empty) =>
-              <box
-                cssName="container"
-                visible={!empty}
-                orientation={Gtk.Orientation.VERTICAL}
-                spacing={4}
-              >
-                <For each={devices}>
-                  {(device) => <WiFiAccessPoint device={device} />}
-                </For>
-              </box>
-            }
-          </With>
+          <box
+            cssName="container"
+            orientation={Gtk.Orientation.VERTICAL}
+            spacing={4}
+          >
+            <For each={devices}>
+              {(device) => <WiFiAccessPoint device={device} />}
+            </For>
+          </box>
         </box>
       </scrolledwindow>
     </box>
