@@ -76,9 +76,9 @@ function BluetoothHeader() {
             onNotifyActive={() => {
               if (adapter.powered) {
                 if (adapter.discovering) adapter.stop_discovery()
-                adapter.powered = false
+                adapter.set_powered(false)
               } else {
-                adapter.powered = true
+                adapter.set_powered(true)
                 adapter.start_discovery()
               }
             }}
