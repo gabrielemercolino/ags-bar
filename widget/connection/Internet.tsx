@@ -93,8 +93,9 @@ function WiFiPopover() {
       orientation={Gtk.Orientation.VERTICAL}
       spacing={12}
     >
-      <box cssName="header">
+      <box cssName="header" spacing={8}>
         <label label="WiFi" hexpand halign={Gtk.Align.START} />
+
         <With value={powered}>
           {(powered) =>
             <switch
