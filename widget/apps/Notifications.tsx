@@ -5,9 +5,6 @@ import { createBinding, With } from "gnim"
 
 const notifd = AstalNotifd.get_default()
 
-// clear at startup
-notifd.notifications.forEach((n) => n.dismiss())
-
 export default function Notifications() {
   const notifications = createBinding(notifd, "notifications")
 
