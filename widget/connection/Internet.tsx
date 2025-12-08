@@ -104,9 +104,9 @@ function WiFiPopover() {
               class={powered ? "on" : "off"}
               onNotifyActive={() => {
                 if (network.wifi.enabled) {
-                  network.wifi.enabled = false
+                  network.wifi.set_enabled(false)
                 } else {
-                  network.wifi.enabled = true
+                  network.wifi.set_enabled(true)
                   if (!network.wifi.scanning) network.wifi.scan()
                 }
               }}
