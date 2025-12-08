@@ -40,6 +40,7 @@ export default function Bluetooth() {
         >
           <BluetoothHeader />
           <scrolledwindow
+            visible={on}
             hscrollbarPolicy={Gtk.PolicyType.NEVER}
             maxContentHeight={400}
             propagateNaturalHeight
@@ -91,31 +92,19 @@ function BluetoothHeader() {
 
 function BluetoothDevicesList() {
   const devices = createBinding(bluetooth, "devices")
-  const empty = devices.as((devices) => devices.length == 0)
 
   return (
-    <With value={empty}>
-      {(empty) => (
-        <box cssName="devices">
-          <label
-            cssName="adapter-missing"
-            visible={empty}
-            label="No devices found"
-          />
-
-          <box
-            cssName="container"
-            visible={!empty}
-            orientation={Gtk.Orientation.VERTICAL}
-            spacing={4}
-          >
-            <For each={devices}>
-              {(device) => <BluetoothDevice device={device} />}
-            </For>
-          </box>
-        </box>
-      )}
-    </With>
+    <box cssName="devices">
+      <box
+        cssName="container"
+        orientation={Gtk.Orientation.VERTICAL}
+        spacing={4}
+      >
+        <For each={devices}>
+          {(device) => <BluetoothDevice device={device} />}
+        </For>
+      </box>
+    </box>
   )
 }
 
