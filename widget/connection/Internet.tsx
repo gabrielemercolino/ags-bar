@@ -229,8 +229,8 @@ function getWiFiIcon(strength: number) {
 }
 
 function getWiFiFrequencyIcon(frequency: number) {
-  if (frequency <= 2500) return "2.4G"
-  return "5.0G"
+  const f = Math.floor(frequency / 100)
+  return `${f / 10}G`
 }
 
 function getWiFiPasswordIcon(device: AstalNetwork.AccessPoint) {
@@ -243,6 +243,6 @@ function getWiFiPasswordIcon(device: AstalNetwork.AccessPoint) {
       .availableConnections
       .find(c => c.get_id() === device.ssid) !== undefined
 
-  if (known) return ""
+  if (known) return ""
   return ""
 }
