@@ -13,6 +13,7 @@ import Notifications from "./apps/Notifications"
 import Shutdown from "./system/Shutdown"
 import Reboot from "./system/Reboot"
 import Lock from "./system/Lock"
+import Microphone from "./status/Microphone"
 
 export default function Bar(gdkmonitor: Gdk.Monitor) {
   const { TOP, LEFT, RIGHT } = Astal.WindowAnchor
@@ -66,6 +67,7 @@ function Right() {
         <Bluetooth />
       </box>
       <box cssName="status" spacing={12}>
+        <Microphone />
         <Audio />
         <Battery />
       </box>
