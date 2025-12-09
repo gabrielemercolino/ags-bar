@@ -2,8 +2,17 @@
 
 $background: colors.$common-background;
 
-$audio-foreground: colors.$base0A;
-$audio-hover-foreground: colors.$base09;
+$audio-input-foreground: colors.$base0A;
+$audio-input-hover-foreground: colors.$base09;
+
+$audio-input-popup-background: colors.$common-background;
+$audio-input-popup-slider-background: colors.$base0A;
+
+$audio-output-foreground: colors.$base0A;
+$audio-output-hover-foreground: colors.$base09;
+
+$audio-output-popup-background: colors.$common-background;
+$audio-output-popup-slider-background: colors.$base0A;
 
 $battery-foreground: colors.$base0A;
 $battery-charging-foreground: colors.$base09;
@@ -15,11 +24,98 @@ status {
   padding: 4px 12px;
   margin: 0.1em 0.15em;
 
-  audio {
-    color: $audio-foreground;
 
-    &:hover {
-      color: $audio-hover-foreground;
+  audio-input {
+    color: $audio-input-foreground;
+
+    >button {
+      padding: 0px;
+      background: transparent;
+
+      &:hover {
+        color: $audio-input-hover-foreground;
+      }
+    }
+
+    pop-up {
+      all: unset;
+      background: $audio-input-popup-background;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      min-width: 100px;
+
+      microphones {
+        padding: 4px;
+        margin-top: -8px;
+
+        microphone {
+          padding-left: 8px;
+          min-width: 250px;
+
+          >button {
+            padding: 0px;
+            background: none;
+          }
+
+          scale {
+            highlight {
+              background: $audio-input-popup-slider-background;
+              min-height: 10px;
+            }
+
+            slider {
+              opacity: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  audio-output {
+    color: $audio-output-foreground;
+
+    >button {
+      padding: 0px;
+      background: transparent;
+
+      &:hover {
+        color: $audio-output-hover-foreground;
+      }
+    }
+
+    pop-up {
+      all: unset;
+      background: $audio-output-popup-background;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      min-width: 100px;
+
+      speakers {
+        padding: 4px;
+        margin-top: -8px;
+
+        speaker {
+          padding-left: 8px;
+          min-width: 250px;
+
+          >button {
+            padding: 0px;
+            background: none;
+          }
+
+          scale {
+            highlight {
+              background: $audio-output-popup-slider-background;
+              min-height: 10px;
+            }
+
+            slider {
+              opacity: 0;
+            }
+          }
+        }
+      }
     }
   }
 
