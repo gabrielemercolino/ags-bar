@@ -2,10 +2,10 @@
 
 $background: colors.$common-background;
 
-$audio-foreground:       colors.$base0A;
+$audio-foreground: colors.$base0A;
 $audio-hover-foreground: colors.$base09;
 
-$battery-foreground:          colors.$base0A;
+$battery-foreground: colors.$base0A;
 $battery-charging-foreground: colors.$base09;
 
 
@@ -15,15 +15,19 @@ status {
   padding: 4px 12px;
   margin: 0.1em 0.15em;
 
-  audio { 
+  audio {
     color: $audio-foreground;
-    
-    &:hover { color: $audio-hover-foreground; } 
+
+    &:hover {
+      color: $audio-hover-foreground;
+    }
   }
 
   battery {
-    color: $battery-foreground; 
- 
-    &.charging { color: $battery-charging-foreground; } 
+    color: $battery-foreground;
+
+    &.charging {
+      color: $battery-charging-foreground;
+    }
   }
 }
