@@ -4,7 +4,7 @@ import Workspaces from "./Workspaces"
 import Title from "./Title"
 import Internet from "./connection/Internet"
 import Bluetooth from "./connection/Bluetooth"
-import Audio from "./status/Audio"
+import Speaker from "./status/Speaker"
 import Battery from "./status/Battery"
 import Clock from "./time/Clock"
 import Date from "./time/Date"
@@ -68,7 +68,7 @@ function Right() {
       </box>
       <box cssName="status" spacing={12}>
         <Microphone />
-        <Audio />
+        <Speaker />
         <Battery />
       </box>
       <box cssName="time" spacing={12}>

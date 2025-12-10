@@ -5,7 +5,7 @@ import Pango from "gi://Pango"
 
 const wireplumber = AstalWp.get_default()
 
-export default function Audio() {
+export default function Speaker() {
   const all_speakers = createBinding(wireplumber, "nodes")
     .as(nodes => nodes.filter(n => n.get_media_class() === AstalWp.MediaClass.AUDIO_SINK))
 
@@ -41,7 +41,7 @@ function DefaultSpeakerWidget() {
           return (
             <label
               label={speaker_state.as(({ muted, volume }) =>
-                `${getVolumeIcon(muted, volume)} ${Math.round(volume * 100)}%`)}
+                `${getIcon(muted, volume)} ${Math.round(volume * 100)}%`)}
             />
           )
         }
@@ -63,7 +63,7 @@ function SpeakerEntry({ speaker }: SpeakerEntryProps) {
       <button onClicked={() => speaker.set_mute(!speaker.get_mute())}>
         <label
           cssName="icon"
-          label={speaker_state.as(({ muted, volume }) => getVolumeIcon(muted, volume))}
+          label={speaker_state.as(({ muted, volume }) => getIcon(muted, volume))}
           tooltipMarkup={muted.as(m => m ? "unmute" : "mute")}
         />
       </button>
@@ -85,7 +85,7 @@ function SpeakerEntry({ speaker }: SpeakerEntryProps) {
   )
 }
 
-function getVolumeIcon(muted: boolean, volume: number) {
+function getIcon(muted: boolean, volume: number) {
   if (muted) return " "
 
   const v = Math.round(volume * 100)
