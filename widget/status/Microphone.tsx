@@ -3,12 +3,10 @@ import { createBinding, createComputed, For, With } from "ags";
 import { Gtk } from "ags/gtk4";
 import Pango from "gi://Pango";
 
-const wireplumber = AstalWp.get_default()
+const audio = AstalWp.get_default().audio
 
 export default function Microphone() {
-  const all_microphones = createBinding(wireplumber, "nodes")
-    .as(nodes => nodes.filter(n => n.get_media_class() === AstalWp.MediaClass.AUDIO_SOURCE))
-
+  const all_microphones = createBinding(audio, "microphones")
 
   return (
     <menubutton cssName="audio-input">
@@ -29,7 +27,7 @@ export default function Microphone() {
 
 
 function DefaultMicrophoneWidget() {
-  const default_microphone = createBinding(wireplumber, "default_microphone")
+  const default_microphone = createBinding(audio, "default_microphone")
 
   return (
     <With value={default_microphone}>
@@ -53,7 +51,7 @@ function DefaultMicrophoneWidget() {
 
 
 type MicrophoneEntryProps = {
-  microphone: AstalWp.Node
+  microphone: AstalWp.Endpoint
 }
 function MicrophoneEntry({ microphone }: MicrophoneEntryProps) {
   const muted = createBinding(microphone, "mute")

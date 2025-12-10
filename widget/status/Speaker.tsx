@@ -3,11 +3,10 @@ import { Accessor, createBinding, createComputed, For, With } from "ags"
 import { Gtk } from "ags/gtk4"
 import Pango from "gi://Pango"
 
-const wireplumber = AstalWp.get_default()
+const audio = AstalWp.get_default().audio
 
 export default function Speaker() {
-  const all_speakers = createBinding(wireplumber, "nodes")
-    .as(nodes => nodes.filter(n => n.get_media_class() === AstalWp.MediaClass.AUDIO_SINK))
+  const all_speakers = createBinding(audio, "speakers")
 
   return (
     <menubutton cssName="audio-output">
@@ -28,7 +27,7 @@ export default function Speaker() {
 
 
 function DefaultSpeakerWidget() {
-  const default_speaker = createBinding(wireplumber, "default_speaker")
+  const default_speaker = createBinding(audio, "default_speaker")
 
   return (
     <With value={default_speaker}>
@@ -51,7 +50,7 @@ function DefaultSpeakerWidget() {
 }
 
 type SpeakerEntryProps = {
-  speaker: AstalWp.Node
+  speaker: AstalWp.Endpoint
 }
 function SpeakerEntry({ speaker }: SpeakerEntryProps) {
   const muted = createBinding(speaker, "mute")
