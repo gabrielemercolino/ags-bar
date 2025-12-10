@@ -127,7 +127,7 @@ The structure under `overrides.<module>` maps directly to SCSS variable names:
 - **Window Title**: Shows the active window's initial title
 - **Network**: WiFi status and signal strength or wired connection
 - **Bluetooth**: Bluetooth control and device list with connect/disconnect/pair functionality
-- **Audio**: Volume control with click support (see commands)
+- **Microphone & Speaker**: Volume control with popups
 - **Battery**: Battery percentage and charging status (not shown if not present)
 - **Date & Clock**: Date with calendar popup and time display
 - **Notifications**: Grouped notification center with click & dismiss actions
