@@ -56,9 +56,14 @@ type MicrophoneEntryProps = {
 function MicrophoneEntry({ microphone }: MicrophoneEntryProps) {
   const muted = createBinding(microphone, "mute")
   const volume = createBinding(microphone, "volume")
+  const is_default = createBinding(microphone, "is_default")
 
   return (
-    <box css_name="microphone" spacing={8}>
+    <box
+      css_name="microphone"
+      class={is_default.as(d => d ? "default" : "")}
+      spacing={8}
+    >
       <button onClicked={() => microphone.set_mute(!microphone.get_mute())}>
         <label
           cssName="icon"
@@ -77,6 +82,7 @@ function MicrophoneEntry({ microphone }: MicrophoneEntryProps) {
 
       <slider
         value={volume}
+        class={is_default.as(d => d ? "default" : "")}
         hexpand
         onChangeValue={(_source, _scroll_type, val) => microphone.set_volume(val)}
       />

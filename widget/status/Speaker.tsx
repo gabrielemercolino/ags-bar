@@ -56,9 +56,14 @@ function SpeakerEntry({ speaker }: SpeakerEntryProps) {
   const muted = createBinding(speaker, "mute")
   const volume = createBinding(speaker, "volume")
   const speaker_state = createComputed(() => ({ muted: muted(), volume: volume() }))
+  const is_default = createBinding(speaker, "is_default")
 
   return (
-    <box css_name="speaker" spacing={8}>
+    <box
+      cssName="speaker"
+      class={is_default.as(d => d ? "default" : "")}
+      spacing={8}
+    >
       <button onClicked={() => speaker.set_mute(!speaker.get_mute())}>
         <label
           cssName="icon"
@@ -77,6 +82,7 @@ function SpeakerEntry({ speaker }: SpeakerEntryProps) {
 
       <slider
         value={volume}
+        class={is_default.as(d => d ? "default" : "")}
         hexpand
         onChangeValue={(_source, _scroll_type, val) => speaker.set_volume(val)}
       />
