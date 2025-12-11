@@ -7,6 +7,7 @@ const audio = AstalWp.get_default().audio
 
 export default function Speaker() {
   const all_speakers = createBinding(audio, "speakers")
+    .as(all => all.sort((a, _b) => a.get_is_default() ? -1 : 1)) // put the default on top
   const default_not_avaible = all_speakers.as(all => all.find(m => m.get_is_default()) == undefined)
 
   return (
