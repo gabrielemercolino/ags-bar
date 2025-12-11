@@ -6,6 +6,7 @@ $audio-input-foreground: colors.$base0A;
 $audio-input-hover-foreground: colors.$base09;
 
 $audio-input-popup-background: colors.$common-background;
+$audio-input-popup-warning-foreground: colors.$base08;
 $audio-input-popup-slider-background: colors.$base0A;
 $audio-input-popup-default-foreground: colors.$base09;
 
@@ -13,6 +14,7 @@ $audio-output-foreground: colors.$base0A;
 $audio-output-hover-foreground: colors.$base09;
 
 $audio-output-popup-background: colors.$common-background;
+$audio-output-popup-warning-foreground: colors.$base08;
 $audio-output-popup-slider-background: colors.$base0A;
 $audio-output-popup-default-foreground: colors.$base09;
 
@@ -50,8 +52,13 @@ status {
         padding: 4px;
         margin-top: -8px;
 
+        warning {
+          padding: 0px 8px;
+          color: $audio-input-popup-warning-foreground;
+        }
+
         microphone {
-          padding-left: 8px;
+          padding: 0px 8px;
           min-width: 250px;
 
           &.default {
@@ -105,8 +112,13 @@ status {
         padding: 4px;
         margin-top: -8px;
 
+        warning {
+          padding: 0px 8px;
+          color: $audio-output-popup-warning-foreground;
+        }
+
         speaker {
-          padding-left: 8px;
+          padding: 0px 8px;
           min-width: 250px;
 
           &.default {

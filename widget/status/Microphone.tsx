@@ -7,6 +7,7 @@ const audio = AstalWp.get_default().audio
 
 export default function Microphone() {
   const all_microphones = createBinding(audio, "microphones")
+  const default_not_avaible = all_microphones.as(all => all.find(m => m.get_is_default()) == undefined)
 
   return (
     <menubutton cssName="audio-input">
@@ -16,6 +17,14 @@ export default function Microphone() {
           cssName="microphones"
           orientation={Gtk.Orientation.VERTICAL}
         >
+          <box
+            cssName="warning"
+            visible={default_not_avaible}
+            spacing={8}
+          >
+            <label label="" />
+            <label label="default microphone is not avaible" />
+          </box>
           <For each={all_microphones}>
             {microphone => <MicrophoneEntry microphone={microphone} />}
           </For>
@@ -60,7 +69,7 @@ function MicrophoneEntry({ microphone }: MicrophoneEntryProps) {
 
   return (
     <box
-      css_name="microphone"
+      cssName="microphone"
       class={is_default.as(d => d ? "default" : "")}
       spacing={8}
     >
@@ -85,6 +94,12 @@ function MicrophoneEntry({ microphone }: MicrophoneEntryProps) {
         class={is_default.as(d => d ? "default" : "")}
         hexpand
         onChangeValue={(_source, _scroll_type, val) => microphone.set_volume(val)}
+      />
+
+      <label
+        visible={is_default}
+        label=""
+        tooltipText="default microphone"
       />
     </box>
   )
