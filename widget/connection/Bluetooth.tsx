@@ -7,10 +7,10 @@ const bluetooth = AstalBluetooth.get_default()
 const adapter = bluetooth.get_adapter()
 
 export default function Bluetooth() {
-  const on = createBinding(bluetooth, "isPowered")
+  const on = createBinding(bluetooth, "is_powered")
   const connected = createBinding(bluetooth, "is_connected")
 
-  const both = createComputed(() => ({
+  const status = createComputed(() => ({
     on: on(),
     connected: connected(),
   }))
@@ -18,7 +18,7 @@ export default function Bluetooth() {
   return (
     <menubutton cssName="bluetooth">
       <label
-        label={both.as(({ on, connected }) =>
+        label={status.as(({ on, connected }) =>
           connected ? "󰂱" : on ? "" : "󰂲",
         )}
       />
