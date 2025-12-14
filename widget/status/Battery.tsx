@@ -6,12 +6,10 @@ const battery = AstalBattery.get_default()
 export default function Battery() {
   const charging = createBinding(battery, "charging")
   const percentage = createBinding(battery, "percentage")
-  const timeToFull = createBinding(battery, "timeToFull").as((t) =>
-    t > 0 ? `Full in ${secondsToHM(t)}` : "Full",
-  )
-  const timeToEmpty = createBinding(battery, "timeToEmpty").as(
-    (t) => `Empty in ${secondsToHM(t)}`,
-  )
+  const timeToFull = createBinding(battery, "time_to_full")
+    .as((t) => t > 0 ? `Full in ${secondsToHM(t)}` : "Full")
+  const timeToEmpty = createBinding(battery, "time_to_empty")
+    .as((t) => `Empty in ${secondsToHM(t)}`)
 
   const merged = createComputed(() => ({
     charging: charging(),
