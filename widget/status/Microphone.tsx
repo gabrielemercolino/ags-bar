@@ -18,14 +18,6 @@ export default function Microphone() {
           cssName="microphones"
           orientation={Gtk.Orientation.VERTICAL}
         >
-          <box
-            cssName="warning"
-            visible={default_not_avaible}
-            spacing={8}
-          >
-            <label label="" />
-            <label label="default microphone is not avaible" />
-          </box>
           <For each={all_microphones}>
             {microphone => <MicrophoneEntry microphone={microphone} />}
           </For>
@@ -97,11 +89,20 @@ function MicrophoneEntry({ microphone }: MicrophoneEntryProps) {
         onChangeValue={(_source, _scroll_type, val) => microphone.set_volume(val)}
       />
 
-      <label
+      <button
         visible={is_default}
-        label=""
-        tooltipText="default microphone"
-      />
+        tooltipText="unset default"
+      >
+        <label label="" />
+      </button>
+
+      <button
+        visible={is_default.as(d => !d)}
+        tooltipText="set as default"
+        onClicked={() => microphone.set_is_default(true)}
+      >
+        <label label="" />
+      </button>
     </box>
   )
 }

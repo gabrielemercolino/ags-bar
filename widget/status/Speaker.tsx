@@ -8,7 +8,6 @@ const audio = AstalWp.get_default().audio
 export default function Speaker() {
   const all_speakers = createBinding(audio, "speakers")
     .as(all => all.sort((a, _b) => a.get_is_default() ? -1 : 1)) // put the default on top
-  const default_not_avaible = all_speakers.as(all => all.find(m => m.get_is_default()) == undefined)
 
   return (
     <menubutton cssName="audio-output">
@@ -18,20 +17,12 @@ export default function Speaker() {
           cssName="speakers"
           orientation={Gtk.Orientation.VERTICAL}
         >
-          <box
-            cssName="warning"
-            visible={default_not_avaible}
-            spacing={8}
-          >
-            <label label="" />
-            <label label="default speaker is not avaible" />
-          </box>
           <For each={all_speakers}>
             {speaker => <SpeakerEntry speaker={speaker} />}
           </For>
         </box>
       </popover>
-    </menubutton>
+    </menubutton >
   )
 }
 
@@ -97,11 +88,20 @@ function SpeakerEntry({ speaker }: SpeakerEntryProps) {
         onChangeValue={(_source, _scroll_type, val) => speaker.set_volume(val)}
       />
 
-      <label
+      <button
         visible={is_default}
-        label=""
-        tooltipText="default speaker"
-      />
+        tooltipText="unset default"
+      >
+        <label label="" />
+      </button>
+
+      <button
+        visible={is_default.as(d => !d)}
+        tooltipText="set as default"
+        onClicked={() => speaker.set_is_default(true)}
+      >
+        <label label="" />
+      </button>
     </box>
   )
 }
