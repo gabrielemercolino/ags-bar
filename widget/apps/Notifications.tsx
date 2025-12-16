@@ -1,7 +1,7 @@
 import { Gtk } from "ags/gtk4"
+import { createBinding, For, With } from "ags"
 import AstalNotifd from "gi://AstalNotifd?version=0.1"
 import Pango from "gi://Pango?version=1.0"
-import { createBinding, With } from "gnim"
 
 const notifd = AstalNotifd.get_default()
 
@@ -40,17 +40,11 @@ export default function Notifications() {
           maxContentHeight={600}
           propagateNaturalHeight
         >
-          <With value={groupedNotifications}>
-            {(gn) => {
-              return (
-                <box orientation={Gtk.Orientation.VERTICAL}>
-                  {Array.from(gn.entries()).map(([appName, summaries]) => (
-                    <AppGroup appName={appName} summaries={summaries} />
-                  ))}
-                </box>
-              )
-            }}
-          </With>
+          <For each={groupedNotifications}>
+            {([appName, summaries]) => (
+              <AppGroup appName={appName} summaries={summaries} />
+            )}
+          </For>
         </scrolledwindow>
       </popover>
       
