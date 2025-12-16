@@ -90,18 +90,10 @@ function MicrophoneEntry({ microphone }: MicrophoneEntryProps) {
       />
 
       <button
-        visible={is_default}
-        tooltipText="unset default"
+        tooltipText={is_default.as(d => d ? "default" : "set as default")}
+        onClicked={() => microphone.set_is_default(!microphone.is_default)}
       >
-        <label label="" />
-      </button>
-
-      <button
-        visible={is_default.as(d => !d)}
-        tooltipText="set as default"
-        onClicked={() => microphone.set_is_default(true)}
-      >
-        <label label="" />
+        <label label={is_default.as(d => d ? "" : "")} />
       </button>
     </box>
   )

@@ -89,18 +89,10 @@ function SpeakerEntry({ speaker }: SpeakerEntryProps) {
       />
 
       <button
-        visible={is_default}
-        tooltipText="unset default"
+        tooltipText={is_default.as(d => d ? "default" : "set as default")}
+        onClicked={() => speaker.set_is_default(!speaker.is_default)}
       >
-        <label label="" />
-      </button>
-
-      <button
-        visible={is_default.as(d => !d)}
-        tooltipText="set as default"
-        onClicked={() => speaker.set_is_default(true)}
-      >
-        <label label="" />
+        <label label={is_default.as(d => d ? "" : "")} />
       </button>
     </box>
   )
