@@ -1,7 +1,8 @@
 import AstalWp from "gi://AstalWp"
 import { Accessor, createBinding, createComputed, For, With } from "ags"
-import { Gtk } from "ags/gtk4"
+import { Gdk, Gtk } from "ags/gtk4"
 import Pango from "gi://Pango"
+import Button from "../../components/Button"
 
 const audio = AstalWp.get_default().audio
 
@@ -10,7 +11,11 @@ export default function Speaker() {
     .as(all => all.sort((a, _b) => a.get_is_default() ? -1 : 1)) // put the default on top
 
   return (
-    <menubutton cssName="audio-output">
+
+    <menubutton
+      cssName="audio-output"
+      cursor={Gdk.Cursor.new_from_name("pointer", null)}
+    >
       <DefaultSpeakerWidget />
       <popover cssName="pop-up">
         <box
@@ -65,13 +70,13 @@ function SpeakerEntry({ speaker }: SpeakerEntryProps) {
       class={is_default.as(d => d ? "default" : "")}
       spacing={8}
     >
-      <button onClicked={() => speaker.set_mute(!speaker.get_mute())}>
+      <Button onClicked={() => speaker.set_mute(!speaker.get_mute())}>
         <label
           cssName="icon"
           label={speaker_state.as(({ muted, volume }) => getIcon(muted, volume))}
           tooltipMarkup={muted.as(m => m ? "unmute" : "mute")}
         />
-      </button>
+      </Button>
 
       <label
         cssName="name"
@@ -86,14 +91,27 @@ function SpeakerEntry({ speaker }: SpeakerEntryProps) {
         class={is_default.as(d => d ? "default" : "")}
         hexpand
         onChangeValue={(_source, _scroll_type, val) => speaker.set_volume(val)}
+        cursor={Gdk.Cursor.new_from_name("grab", null)}
+        $={(self) => {
+          const gesture = Gtk.GestureClick.new()
+
+          const set_cursor_helper = (name: string) =>
+            self.set_cursor(Gdk.Cursor.new_from_name(name, null))
+
+          gesture.connect("pressed", () => set_cursor_helper("grabbing"))
+          gesture.connect("released", () => set_cursor_helper("grab"))
+          gesture.connect("unpaired-release", () => set_cursor_helper("grab"))
+
+          self.add_controller(gesture)
+        }}
       />
 
-      <button
+      <Button
         tooltipText={is_default.as(d => d ? "default" : "set as default")}
         onClicked={() => speaker.set_is_default(!speaker.is_default)}
       >
         <label label={is_default.as(d => d ? "" : "")} />
-      </button>
+      </Button>
     </box>
   )
 }

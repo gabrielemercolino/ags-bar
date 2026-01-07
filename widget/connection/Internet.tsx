@@ -3,6 +3,8 @@ import { Accessor, createBinding, createComputed, createConnection, createState,
 import Gtk from "gi://Gtk?version=4.0"
 import Pango from "gi://Pango"
 import AstalTray from "gi://AstalTray?version=0.1"
+import Button from "../../components/Button"
+import { Gdk } from "ags/gtk4"
 
 const network = AstalNetwork.get_default()
 
@@ -16,7 +18,10 @@ export default function Internet() {
   })
 
   return (
-    <menubutton cssName="internet">
+    <menubutton
+      cssName="internet"
+      cursor={Gdk.Cursor.new_from_name("pointer", null)}
+    >
       <With value={state}>
         {(state) => {
           if (state === "wifi") return <WiFiWidget />
@@ -153,7 +158,7 @@ function WiFiAccessPoint({ device }: WiFiDeviceParams) {
       .find(c => c.get_id() === device.ssid) !== undefined
 
   return (
-    <button
+    <Button
       cssName="device"
       //TODO: add class for active accessPoint
       onClicked={() => {
@@ -194,7 +199,7 @@ function WiFiAccessPoint({ device }: WiFiDeviceParams) {
           tooltipText={known ? "known" : device.requires_password ? "requires password" : "free"}
         />
       </box>
-    </button>
+    </Button>
   )
 }
 

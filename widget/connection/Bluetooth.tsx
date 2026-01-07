@@ -1,7 +1,7 @@
 import AstalBluetooth from "gi://AstalBluetooth?version=0.1"
 import Pango from "gi://Pango?version=1.0"
 import { createBinding, createComputed, For, With } from "ags"
-import { Gtk } from "ags/gtk4"
+import { Gdk, Gtk } from "ags/gtk4"
 
 const bluetooth = AstalBluetooth.get_default()
 const adapter = bluetooth.get_adapter()
@@ -16,7 +16,10 @@ export default function Bluetooth() {
   }))
 
   return (
-    <menubutton cssName="bluetooth">
+    <menubutton
+      cssName="bluetooth"
+      cursor={Gdk.Cursor.new_from_name("pointer", null)}
+    >
       <label
         label={status.as(({ on, connected }) =>
           connected ? "󰂱" : on ? "" : "󰂲",

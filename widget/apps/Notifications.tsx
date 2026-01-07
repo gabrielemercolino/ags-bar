@@ -1,7 +1,8 @@
-import { Gtk } from "ags/gtk4"
+import { Gdk, Gtk } from "ags/gtk4"
 import { createBinding, For, With } from "ags"
 import AstalNotifd from "gi://AstalNotifd?version=0.1"
 import Pango from "gi://Pango?version=1.0"
+import Button from "../../components/Button"
 
 const notifd = AstalNotifd.get_default()
 
@@ -33,7 +34,10 @@ export default function Notifications() {
   })
 
   return (
-    <menubutton cssName="notifications">
+    <menubutton
+      cssName="notifications"
+      cursor={Gdk.Cursor.new_from_name("pointer", null)}
+    >
       <popover cssName="pop-up">
         <scrolledwindow
           hscrollbarPolicy={Gtk.PolicyType.NEVER}
@@ -67,14 +71,14 @@ function AppGroup({ appName, summaries }: AppGroupProps) {
           halign={Gtk.Align.START}
           hexpand
         />
-        <button
+        <Button
           cssName="dismiss-btn"
           onClicked={() =>
             summaries.forEach((s) => s.forEach((n) => n.dismiss()))
           }
         >
           󰆴
-        </button>
+        </Button>
       </box>
 
       <box orientation={Gtk.Orientation.VERTICAL} spacing={6}>
@@ -104,12 +108,12 @@ function SummaryGroup({ summary, notifications }: SummaryGroupProps) {
           halign={Gtk.Align.START}
           hexpand
         />
-        <button
+        <Button
           cssName="dismiss-btn"
           onClicked={() => notifications.forEach((n) => n.dismiss())}
         >
           󰆴
-        </button>
+        </Button>
       </box>
 
       <box

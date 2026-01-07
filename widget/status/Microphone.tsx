@@ -1,7 +1,8 @@
 import AstalWp from "gi://AstalWp";
 import { createBinding, createComputed, For, With } from "ags";
-import { Gtk } from "ags/gtk4";
+import { Gdk, Gtk } from "ags/gtk4";
 import Pango from "gi://Pango";
+import Button from "../../components/Button";
 
 const audio = AstalWp.get_default().audio
 
@@ -11,7 +12,10 @@ export default function Microphone() {
   const default_not_avaible = all_microphones.as(all => all.find(m => m.get_is_default()) == undefined)
 
   return (
-    <menubutton cssName="audio-input">
+    <menubutton
+      cssName="audio-input"
+      cursor={Gdk.Cursor.new_from_name("pointer", null)}
+    >
       <DefaultMicrophoneWidget />
       <popover cssName="pop-up">
         <box
@@ -41,8 +45,7 @@ function DefaultMicrophoneWidget() {
 
           return (
             <label
-              label={microphone_state.as(({ muted, volume }) =>
-                `${getIcon(muted)} ${Math.round(volume * 100)}%`)}
+              label={muted.as((muted) => getIcon(muted))}
             />
           )
         }
@@ -66,13 +69,13 @@ function MicrophoneEntry({ microphone }: MicrophoneEntryProps) {
       class={is_default.as(d => d ? "default" : "")}
       spacing={8}
     >
-      <button onClicked={() => microphone.set_mute(!microphone.get_mute())}>
+      <Button onClicked={() => microphone.set_mute(!microphone.get_mute())}>
         <label
           cssName="icon"
           label={muted.as((muted) => getIcon(muted))}
           tooltipMarkup={muted.as(m => m ? "unmute" : "mute")}
         />
-      </button>
+      </Button>
 
       <label
         cssName="name"
@@ -87,14 +90,27 @@ function MicrophoneEntry({ microphone }: MicrophoneEntryProps) {
         class={is_default.as(d => d ? "default" : "")}
         hexpand
         onChangeValue={(_source, _scroll_type, val) => microphone.set_volume(val)}
+        cursor={Gdk.Cursor.new_from_name("grab", null)}
+        $={(self) => {
+          const gesture = Gtk.GestureClick.new()
+
+          const set_cursor_helper = (name: string) =>
+            self.set_cursor(Gdk.Cursor.new_from_name(name, null))
+
+          gesture.connect("pressed", () => set_cursor_helper("grabbing"))
+          gesture.connect("released", () => set_cursor_helper("grab"))
+          gesture.connect("unpaired-release", () => set_cursor_helper("grab"))
+
+          self.add_controller(gesture)
+        }}
       />
 
-      <button
+      <Button
         tooltipText={is_default.as(d => d ? "default" : "set as default")}
         onClicked={() => microphone.set_is_default(!microphone.is_default)}
       >
         <label label={is_default.as(d => d ? "" : "")} />
-      </button>
+      </Button>
     </box>
   )
 }

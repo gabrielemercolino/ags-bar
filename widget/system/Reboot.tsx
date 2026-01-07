@@ -1,14 +1,15 @@
 import { exec } from "ags/process"
 import { rebootCommand } from "../../commands"
+import Button from "../../components/Button"
 
 export default function Reboot() {
   return (
-    <button
+    <Button
       class="reboot"
       tooltipText="reboot"
       onClicked={() => exec(rebootCommand())}
     >
       󰜉
-    </button>
+    </Button>
   )
 }

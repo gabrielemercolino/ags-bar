@@ -1,5 +1,6 @@
 import { createBinding, For } from "ags"
 import AstalHyprland from "gi://AstalHyprland?version=0.1"
+import Button from "../components/Button"
 
 const hyprland = AstalHyprland.get_default()
 
@@ -31,14 +32,14 @@ export default function Workspaces({ minWorkspaces = 3 }) {
     <box class="workspaces">
       <For each={workspaceIds}>
         {(id) => (
-          <button
+          <Button
             class={focusedWorkspace.as((focused) =>
               getWorkspaceClasses(id, focused.id),
             )}
             onClicked={() => hyprland.dispatch("workspace", id.toString())}
           >
             {id}
-          </button>
+          </Button>
         )}
       </For>
     </box>

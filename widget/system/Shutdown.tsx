@@ -1,14 +1,15 @@
 import { exec } from "ags/process"
 import { shutdownCommand } from "../../commands"
+import Button from "../../components/Button"
 
 export default function Shutdown() {
   return (
-    <button
+    <Button
       class="shutdown"
       tooltipText="shutdown"
       onClicked={() => exec(shutdownCommand())}
     >
       󰐥
-    </button>
+    </Button>
   )
 }
