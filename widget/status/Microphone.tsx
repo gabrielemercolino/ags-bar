@@ -40,8 +40,6 @@ function DefaultMicrophoneWidget() {
       {
         (microphone) => {
           const muted = createBinding(microphone, "mute")
-          const volume = createBinding(microphone, "volume")
-          const microphone_state = createComputed(() => ({ muted: muted(), volume: volume() }))
 
           return (
             <label

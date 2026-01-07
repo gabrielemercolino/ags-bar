@@ -45,8 +45,7 @@ function DefaultSpeakerWidget() {
 
           return (
             <label
-              label={speaker_state.as(({ muted, volume }) =>
-                `${getIcon(muted, volume)} ${Math.round(volume * 100)}%`)}
+              label={speaker_state.as(({ muted, volume }) => getIcon(muted, volume))}
             />
           )
         }
