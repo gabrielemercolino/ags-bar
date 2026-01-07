@@ -5,7 +5,7 @@ type ButtonProps = {
   onLeftClick?: (self: Gtk.Widget) => void
   onRightClick?: (self: Gtk.Widget) => void
   cssName?: string
-  children?: JSX.Element | JSX.Element[]
+  children?: JSX.Element | JSX.Element[] | string | number
   [key: string]: any
 }
 
@@ -20,6 +20,7 @@ export default function Button({
     <button
       cssName={cssName}
       onClicked={onLeftClick}
+      cursor={Gdk.Cursor.new_from_name("pointer", null)}
       {...props}
       $={(self) => {
         if (onRightClick) {
