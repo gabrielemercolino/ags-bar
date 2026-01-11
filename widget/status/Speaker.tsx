@@ -46,6 +46,7 @@ function DefaultSpeakerWidget() {
           return (
             <label
               label={speaker_state.as(({ muted, volume }) => getIcon(muted, volume))}
+              tooltip_text={speaker_state.as(({ volume, muted }) => muted ? "muted" : `${Math.round(volume * 100)}%`)}
             />
           )
         }

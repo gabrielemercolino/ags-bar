@@ -40,10 +40,13 @@ function DefaultMicrophoneWidget() {
       {
         (microphone) => {
           const muted = createBinding(microphone, "mute")
+          const volume = createBinding(microphone, "volume")
+          const microphone_state = createComputed(() => ({ muted: muted(), volume: volume() }))
 
           return (
             <label
               label={muted.as((muted) => getIcon(muted))}
+              tooltip_text={microphone_state.as(({ volume, muted }) => muted ? "muted" : `${Math.round(volume * 100)}%`)}
             />
           )
         }
