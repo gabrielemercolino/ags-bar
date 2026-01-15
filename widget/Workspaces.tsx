@@ -5,10 +5,9 @@ import Button from "../components/Button"
 const hyprland = AstalHyprland.get_default()
 
 function getWorkspaceIds(
-  workspaces: AstalHyprland.Workspace[],
-  minWorkspaces: number,
+  workspaces: AstalHyprland.Workspace[]
 ): number[] {
-  const maxId = Math.max(minWorkspaces, ...workspaces.map((ws) => ws.id))
+  const maxId = Math.max(...workspaces.map((ws) => ws.id))
   return Array.from({ length: maxId }, (_, i) => i + 1)
 }
 
@@ -18,14 +17,14 @@ function getWorkspaceClasses(id: number, focusedId: number): string {
   return classes.join(" ")
 }
 
-export default function Workspaces({ minWorkspaces = 3 }) {
+export default function Workspaces() {
   const workspaces = createBinding(hyprland, "workspaces")
   const focusedWorkspace = createBinding(hyprland, "focusedWorkspace")
 
   const workspaceIds = workspaces.as((wss) => {
     const sorted = wss.sort((a, b) => a.id - b.id).filter((ws) => ws.id > 0)
 
-    return getWorkspaceIds(sorted, minWorkspaces)
+    return getWorkspaceIds(sorted)
   })
 
   return (
