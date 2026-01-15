@@ -1,8 +1,7 @@
 import AstalNetwork from "gi://AstalNetwork?version=0.1"
-import { Accessor, createBinding, createComputed, createConnection, createState, For, With } from "ags"
+import { Accessor, createBinding, createComputed, For, With } from "ags"
 import Gtk from "gi://Gtk?version=4.0"
 import Pango from "gi://Pango"
-import AstalTray from "gi://AstalTray?version=0.1"
 import Button from "../../components/Button"
 import { Gdk } from "ags/gtk4"
 
