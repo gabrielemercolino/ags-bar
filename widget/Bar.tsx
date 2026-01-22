@@ -10,10 +10,8 @@ import Clock from "./time/Clock"
 import Date from "./time/Date"
 import Tray from "./apps/Tray"
 import Notifications from "./apps/Notifications"
-import Shutdown from "./system/Shutdown"
-import Reboot from "./system/Reboot"
-import Lock from "./system/Lock"
 import Microphone from "./status/Microphone"
+import System from "./System"
 
 export default function Bar(gdkmonitor: Gdk.Monitor) {
   const { TOP, LEFT, RIGHT } = Astal.WindowAnchor
@@ -40,12 +38,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
 function Left() {
   return (
     <box cssName="left" spacing={16}>
-      <box cssName="system">
-        <Shutdown />
-        <Reboot />
-        <Lock />
-      </box>
-
+      <System />
       <Workspaces />
     </box>
   )
