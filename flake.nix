@@ -36,7 +36,11 @@
       notifd
     ];
 
-    extraPackages = astalPackages ++ (with pkgs; [gjs]);
+    extraPackages = astalPackages ++ [pkgs.gjs];
+
+    ags' = ags.packages.${system}.default.override {
+      inherit extraPackages;
+    };
   in {
     packages.${system} = {
       default = pkgs.callPackage ./package.nix {inherit extraPackages ags;};
@@ -44,15 +48,11 @@
 
     devShells.${system} = {
       default = pkgs.mkShell {
-        buildInputs = [
-          (ags.packages.${system}.default.override {
-            inherit extraPackages;
-          })
-        ];
+        buildInputs = [ags' pkgs.gjs];
 
         shellHook = ''
           echo
-          echo "to generate node_modules 'ags types -d . -u'"
+          echo "To generate node_modules 'ags types -d . -u'"
           echo "To generate types run 'ags types -d .'"
           echo "To run the bar 'ags run app.ts'"
           echo
