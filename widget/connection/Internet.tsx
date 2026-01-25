@@ -17,10 +17,7 @@ export default function Internet() {
   })
 
   return (
-    <menubutton
-      cssName="internet"
-      cursor={Gdk.Cursor.new_from_name("pointer", null)}
-    >
+    <menubutton cssName="internet" cursor={Gdk.Cursor.new_from_name("pointer", null)}>
       <With value={state}>
         {(state) => {
           if (state === "wifi") return <WiFiWidget />
@@ -59,12 +56,7 @@ function WiFiWidget() {
   return (
     <box>
       <With value={state}>
-        {(state) => (
-          <label
-            label={state.icon}
-            tooltipText={`${state.ssid} ${state.strength}%`}
-          />
-        )}
+        {(state) => <label label={state.icon} tooltipText={`${state.ssid} ${state.strength}%`} />}
       </With>
     </box>
   )
