@@ -16,6 +16,8 @@ export default function Internet() {
     return "offline"
   })
 
+  const wiredVisible = state(s => s === "wired")
+
   return (
     <menubutton cssName="internet" cursor={Gdk.Cursor.new_from_name("pointer", null)}>
       <With value={state}>
@@ -34,8 +36,10 @@ export default function Internet() {
             network.wifi.scan()
         }}
       >
-        <box cssName="container" orientation={Gtk.Orientation.VERTICAL} spacing={8}>
-          <WiredPopover visible={state(s => s === "wired").peek()} />
+        <box cssName="container" orientation={Gtk.Orientation.VERTICAL} spacing={wiredVisible(w => w ? 8 : 0)}>
+          <revealer revealChild={wiredVisible} transitionType={Gtk.RevealerTransitionType.SLIDE_DOWN} transitionDuration={500} >
+            <WiredPopover visible={wiredVisible} />
+          </revealer>
           <WiFiPopover />
         </box>
       </popover>
@@ -75,13 +79,13 @@ function WiredWidget() {
 }
 
 type WiredPopoverParams = {
-  visible: boolean
+  visible: Accessor<boolean> | boolean
 }
 function WiredPopover({ visible }: WiredPopoverParams) {
   const name = visible ? createBinding(network.wired.device, "interface") : ""
 
   return (
-    <box visible={visible} cssName="wired-popover" orientation={Gtk.Orientation.VERTICAL}>
+    <box cssName="wired-popover" orientation={Gtk.Orientation.VERTICAL}>
       <box cssName="header">
         <label label="Wired" hexpand halign={Gtk.Align.START} />
       </box>
