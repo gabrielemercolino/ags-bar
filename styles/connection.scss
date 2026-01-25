@@ -7,16 +7,15 @@ $internet-hover-foreground: colors.$base0E;
 
 $internet-popup-background: colors.$common-background;
 
-$internet-popup-header-foreground: colors.$base0C;
+$internet-popup-wired-foreground: colors.$common-foreground;
+$internet-popup-wired-hover-foreground: colors.$base0E;
 
-$internet-popup-switch-active-background: colors.$base0C;
+$internet-popup-wifi-switch-active-background: colors.$base0C;
 
-$internet-popup-device-wired-foreground: colors.$common-foreground;
-$internet-popup-device-wired-hover-foreground: colors.$base0E;
+$internet-popup-wifi-offline-foreground: colors.$base0F;
 
-$internet-popup-device-wifi-foreground: colors.$common-foreground;
-$internet-popup-device-wifi-hover-foreground: colors.$base0E;
-$internet-popup-device-wifi-connected-foreground: colors.$base0A;
+$internet-popup-wifi-device-foreground: colors.$common-foreground;
+$internet-popup-wifi-device-hover-foreground: colors.$base0E;
 
 $bluetooth-foreground: colors.$base0C;
 $bluetooth-hover-foreground: colors.$base0E;
@@ -57,58 +56,62 @@ connection {
       background: $internet-popup-background;
       border-radius: 10px;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      min-width: 100px;
+      padding: 0px 10px;
 
       container {
-        padding: 8px;
-
-        header {
-          label {
-            color: $internet-popup-header-foreground;
+        wired-popover {
+          header {
             font-weight: bold;
             font-size: 18px;
           }
 
-          switch {
+          body {
+            padding-left: 10px;
+            color: $internet-popup-wired-foreground;
+
+            &:hover {
+              color: $internet-popup-wired-hover-foreground;
+            }
+          }
+        }
+
+        wifi-popover {
+          header {
+            font-weight: bold;
             font-size: 18px;
-            border-radius: 10px;
 
-            &.on {
-              background: $internet-popup-switch-active-background;
-            }
+            switch {
+              font-size: 18px;
+              border-radius: 12px;
 
-            slider {
-              min-height: 16px;
-              min-width: 16px;
-              border: 0em solid transparent;
-              border-radius: 10px;
-              margin: 1px;
-            }
-          }
-        }
-
-        wired-device {
-          padding: 4px;
-          color: $internet-popup-device-wired-foreground;
-
-          &:hover {
-            color: $internet-popup-device-wired-hover-foreground;
-          }
-        }
-
-        wifi-devices {
-          padding: 4px;
-
-          container {
-            device {
-              color: $internet-popup-device-wifi-foreground;
-
-              &.connected {
-                color: $internet-popup-device-wifi-connected-foreground;
+              &.on {
+                background: $internet-popup-wifi-switch-active-background;
               }
 
+              slider {
+                min-height: 16px;
+                min-width: 16px;
+                border: 0em solid transparent;
+                border-radius: 10px;
+                margin: 1px;
+              }
+            }
+          }
+
+          body {
+            padding: 10px 0px;
+
+            offline {
+              color: $internet-popup-wifi-offline-foreground;
+            }
+
+            device {
+              background: transparent;
+              padding: 0px 10px;
+              color: $internet-popup-wifi-device-foreground;
+
               &:hover {
-                color: $internet-popup-device-wifi-hover-foreground;
+                color: $internet-popup-wifi-device-hover-foreground;
               }
             }
           }
