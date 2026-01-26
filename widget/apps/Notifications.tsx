@@ -17,16 +17,18 @@ export default function Notifications() {
         <scrolledwindow
           hscrollbarPolicy={Gtk.PolicyType.NEVER}
           maxContentHeight={300}
+          maxContentWidth={250}
           propagateNaturalHeight
-          propagateNaturalWidth
         >
           <With value={manager.getTree()}>
             {
               (tree) => (
                 <box orientation={Gtk.Orientation.VERTICAL}>
                   {
-                    Array.from(tree.entries()).map(([appName, summaries]) =>
-                      <AppGroup appName={appName} summaries={summaries} />)
+                    Array.from(tree.entries())
+                      .map(([appName, summaries]) =>
+                        <AppGroup appName={appName} summaries={summaries} />
+                      )
                   }
                 </box>
               )
@@ -106,7 +108,6 @@ function NotificationBody({ notification, onClick }: NotificationBodyProps) {
         useMarkup={true}
         halign={Gtk.Align.START}
         wrap
-        maxWidthChars={60}
         ellipsize={Pango.EllipsizeMode.END}
       />
     </button>
