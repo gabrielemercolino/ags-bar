@@ -79,10 +79,10 @@ function WiredWidget() {
 }
 
 type WiredPopoverParams = {
-  visible: Accessor<boolean> | boolean
+  visible: Accessor<boolean>
 }
 function WiredPopover({ visible }: WiredPopoverParams) {
-  const name = visible ? createBinding(network.wired.device, "interface") : ""
+  const name = visible(v => v ? network.wired?.device?.interface ?? "" : "")
 
   return (
     <box cssName="wired-popover" orientation={Gtk.Orientation.VERTICAL}>
