@@ -141,7 +141,7 @@ function WiFiDevicesList() {
         {
           (device) => {
             const strength = createBinding(device, "strength")
-            const name = createBinding(device, "ssid")
+            const name = device.get_ssid() ?? device.get_bssid()
 
             return (
               <Button
