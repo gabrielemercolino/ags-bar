@@ -11,6 +11,7 @@
   };
 
   outputs = {
+    self,
     nixpkgs,
     ags,
     ...
@@ -37,7 +38,14 @@
     };
   in {
     packages.${system} = {
-      default = pkgs.callPackage ./package.nix {inherit extraPackages ags;};
+      default = pkgs.callPackage ./package.nix {
+        inherit extraPackages ags;
+        gitRev = self.rev or "dirty";
+      };
+    };
+
+    homeManagerModules.default = import ./home-module.nix {
+      basePackage = self.packages.${system}.default;
     };
 
     devShells.${system} = {
