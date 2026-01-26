@@ -49,10 +49,7 @@
         |> flattenAttrs []
         |> map (
           item:
-            makeSedSubstitution
-            "styles/${moduleName}.scss"
-            (pathToScssVar item.path)
-            item.value
+            makeSedSubstitution "styles/${moduleName}.scss" (pathToScssVar item.path) item.value
         )
         |> lib.concatStringsSep "\n"
     )
@@ -64,10 +61,7 @@
     |> lib.filterAttrs (name: _: lib.hasPrefix "base" name)
     |> lib.mapAttrsToList (
       name: value:
-        makeSedSubstitution
-        "styles/colors.scss"
-        ("$" + name)
-        value
+        makeSedSubstitution "styles/colors.scss" ("$" + name) value
     )
     |> lib.concatStringsSep "\n";
 
@@ -90,10 +84,7 @@
     commands
     |> lib.mapAttrsToList (
       name: value:
-        makeCommandSubstitution
-        "commands.ts"
-        "${lib.toUpper name}_COMMAND"
-        value
+        makeCommandSubstitution "commands.ts" "${lib.toUpper name}_COMMAND" value
     )
     |> lib.concatStringsSep "\n";
 in
