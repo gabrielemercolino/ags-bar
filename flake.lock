@@ -2,9 +2,7 @@
   "nodes": {
     "ags": {
       "inputs": {
-        "astal": [
-          "astal"
-        ],
+        "astal": "astal",
         "nixpkgs": [
           "nixpkgs"
         ]
@@ -26,6 +24,7 @@
     "astal": {
       "inputs": {
         "nixpkgs": [
+          "ags",
           "nixpkgs"
         ]
       },
@@ -61,7 +60,6 @@
     "root": {
       "inputs": {
         "ags": "ags",
-        "astal": "astal",
         "nixpkgs": "nixpkgs"
       }
     }
