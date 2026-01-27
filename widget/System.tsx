@@ -1,5 +1,5 @@
 import { exec } from "ags/process"
-import { lockCommand, rebootCommand, shutdownCommand } from "../commands"
+import { lock, reboot, shutdown } from "../commands"
 import Button from "../components/Button"
 
 export default function System() {
@@ -17,7 +17,7 @@ function Shutdown() {
     <Button
       class="shutdown"
       tooltipText="shutdown"
-      onClicked={() => exec(shutdownCommand())}
+      onClicked={() => exec(shutdown())}
     >
       󰐥
     </Button>
@@ -29,7 +29,7 @@ function Reboot() {
     <Button
       class="reboot"
       tooltipText="reboot"
-      onClicked={() => exec(rebootCommand())}
+      onClicked={() => exec(reboot())}
     >
       󰜉
     </Button>
@@ -41,7 +41,7 @@ function Lock() {
     <Button
       class="lock"
       tooltipText="lock"
-      onClicked={() => exec(lockCommand())}
+      onClicked={() => exec(lock())}
     >
       
     </Button>
