@@ -12,7 +12,7 @@ export default function Date() {
       cursor={Gdk.Cursor.new_from_name("pointer", null)}
     >
       <label label={date.as((d) => `󰸘 ${d}`)} />
-      <popover>
+      <popover cssName="pop-up">
         <Gtk.Calendar cssName="calendar" />
       </popover>
     </menubutton>
