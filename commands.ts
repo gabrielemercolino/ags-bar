@@ -1,7 +1,5 @@
-const SHUTDOWN_COMMAND = "systemctl poweroff"
-const REBOOT_COMMAND = "systemctl reboot"
-const LOCK_COMMAND = "swaylock"
+import commands from "./commands.json"
 
-export const shutdownCommand = () => SHUTDOWN_COMMAND
-export const rebootCommand = () => REBOOT_COMMAND
-export const lockCommand = () => LOCK_COMMAND
+export const shutdown = () => commands.shutdown
+export const reboot = () => commands.reboot
+export const lock = () => commands.lock

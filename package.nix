@@ -15,9 +15,6 @@
   # Generate sed command to replace an SCSS variable
   makeSedSubstitution = file: varName: value: ''sed -i '0,/${varName}:/s|${varName}: .*|${varName}: ${value};|' '${file}' '';
 
-  # Generate sed command to replace a TypeScript constant
-  makeCommandSubstitution = file: constName: value: ''sed -i '0,/const ${constName} =/s|const ${constName} = .*|const ${constName} = "${value}"|' "${file}"'';
-
   # Converts path to SCSS variable: ["a", "b", "c"] -> "$a-b-c"
   pathToScssVar = path:
     path
@@ -80,18 +77,19 @@
     );
 
   # Generate command substitutions
-  commandSubstitutions =
-    commands
-    |> lib.mapAttrsToList (
-      name: value:
-        makeCommandSubstitution "commands.ts" "${lib.toUpper name}_COMMAND" value
-    )
-    |> lib.concatStringsSep "\n";
+  commandSubstitutions = let
+    defaultCommands = {
+      shutdown = "systemctl poweroff";
+      reboot = "systemctl reboot";
+      lock = "swaylock";
+    };
+    finalCommands = defaultCommands // commands;
+  in ''echo '${builtins.toJSON finalCommands}' > commands.json'';
 in
   pkgs.stdenv.mkDerivation {
     inherit pname;
     src = ./.;
-    version = lib.substring 0 8 gitRev;
+    version = gitRev;
 
     nativeBuildInputs = with pkgs; [
       wrapGAppsHook3
