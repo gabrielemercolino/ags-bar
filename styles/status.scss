@@ -40,7 +40,6 @@ status {
     }
 
     pop-up {
-      all: unset;
       background: $audio-input-popup-background;
       border-radius: 10px;
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -95,7 +94,6 @@ status {
     }
 
     pop-up {
-      all: unset;
       background: $audio-output-popup-background;
       border-radius: 10px;
       border: 1px solid rgba(255, 255, 255, 0.1);
