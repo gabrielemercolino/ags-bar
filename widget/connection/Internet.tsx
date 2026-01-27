@@ -124,7 +124,7 @@ function WiFiPopover() {
           hscrollbarPolicy={Gtk.PolicyType.NEVER}
         >
           <With value={enabled}>
-            {(enabled) => enabled ? <WiFiDevicesList /> : <label cssName="offline" label="WiFi is disabled" valign={Gtk.Align.START} />}
+            {(enabled) => enabled ? <WiFiDevicesList /> : <WiFiDisabled />}
           </With>
         </scrolledwindow>
       </box>
@@ -160,6 +160,18 @@ function WiFiDevicesList() {
         }
       </For >
     </box>
+  )
+}
+
+function WiFiDisabled() {
+  return (
+    <label
+      cssName="offline"
+      label="WiFi is disabled"
+      halign={Gtk.Align.CENTER}
+      valign={Gtk.Align.CENTER}
+      hexpand
+    />
   )
 }
 
