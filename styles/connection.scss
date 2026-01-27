@@ -46,9 +46,6 @@ connection {
     color: $internet-foreground;
 
     >button {
-      padding: 0px;
-      background: transparent;
-
       &:hover {
         color: $internet-hover-foreground;
       }
@@ -127,9 +124,6 @@ connection {
     color: $bluetooth-foreground;
 
     >button {
-      padding: 0px;
-      background: transparent;
-
       &:hover {
         color: $bluetooth-hover-foreground;
       }

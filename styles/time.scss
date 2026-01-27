@@ -21,9 +21,6 @@ time {
 
   date {
     > button { 
-      padding: 0px; 
-      background: transparent;
-
       label { color: $date-foreground; }
 
       &:hover label { color: $date-hover-foreground; }

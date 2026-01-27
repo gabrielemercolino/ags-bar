@@ -30,8 +30,6 @@ apps {
   notifications {
     >button {
       padding: 4px;
-      background: transparent;
-      border: none;
 
       &:hover {
         background: $notifications-hover-background;

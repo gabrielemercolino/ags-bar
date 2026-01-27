@@ -31,9 +31,6 @@ status {
     color: $audio-input-foreground;
 
     >button {
-      padding: 0px;
-      background: transparent;
-
       &:hover {
         color: $audio-input-hover-foreground;
       }
@@ -55,11 +52,6 @@ status {
 
           &.default {
             color: $audio-input-popup-default-foreground;
-          }
-
-          >button {
-            padding: 0px;
-            background: none;
           }
 
           scale {
@@ -85,9 +77,6 @@ status {
     color: $audio-output-foreground;
 
     >button {
-      padding: 0px;
-      background: transparent;
-
       &:hover {
         color: $audio-output-hover-foreground;
       }
@@ -109,11 +98,6 @@ status {
 
           &.default {
             color: $audio-output-popup-default-foreground;
-          }
-
-          >button {
-            padding: 0px;
-            background: none;
           }
 
           scale {
