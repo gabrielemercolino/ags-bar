@@ -5,6 +5,8 @@ $background: colors.$common-background;
 $date-foreground: colors.$base0E;
 $date-hover-foreground: colors.$base08;
 
+$calendar-background: $background;
+
 $calendar-today-foreground: colors.$base0E;
 $calendar-today-outline: colors.$base0E;
 
@@ -30,26 +32,46 @@ time {
       }
     }
 
-    calendar {
-      label {
-        border-radius: 10px;
+    pop-up {
+      background: $calendar-background;
+      padding: 0;
+
+      calendar {
+        margin: 0;
+        background: transparent;
+        border: none;
         box-shadow: none;
-        outline: none;
-        transition: background 200ms ease;
+        color: colors.$common-foreground;
 
-        &.today {
-          background: $calendar-today-foreground;
-          outline: 2px solid $calendar-today-outline;
-          outline-offset: -1px;
+        header,
+        button {
+          color: $date-foreground;
 
-          &:not(:selected) {
-            background: transparent;
+          &:hover {
+            color: $date-hover-foreground;
           }
         }
 
-        &:selected {
-          background: $calendar-selected-background;
-          color: $calendar-selected-foreground;
+        label {
+          border-radius: 10px;
+          box-shadow: none;
+          outline: none;
+          transition: background 200ms ease;
+
+          &.today {
+            background: $calendar-today-foreground;
+            outline: 2px solid $calendar-today-outline;
+            outline-offset: -1px;
+
+            &:not(:selected) {
+              background: transparent;
+            }
+          }
+
+          &:selected {
+            background: $calendar-selected-background;
+            color: $calendar-selected-foreground;
+          }
         }
       }
     }
