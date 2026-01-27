@@ -2,11 +2,11 @@
 
 $background: colors.$common-background;
 
-$date-foreground:       colors.$base0E;
+$date-foreground: colors.$base0E;
 $date-hover-foreground: colors.$base08;
 
 $calendar-today-foreground: colors.$base0E;
-$calendar-today-outline:    colors.$base0E;
+$calendar-today-outline: colors.$base0E;
 
 $calendar-selected-background: colors.$base0E;
 $calendar-selected-foreground: colors.$common-foreground;
@@ -20,10 +20,14 @@ time {
   margin: 0.1em 0.15em;
 
   date {
-    > button { 
-      label { color: $date-foreground; }
+    >button {
+      label {
+        color: $date-foreground;
+      }
 
-      &:hover label { color: $date-hover-foreground; }
+      &:hover label {
+        color: $date-hover-foreground;
+      }
     }
 
     calendar {
@@ -33,12 +37,14 @@ time {
         outline: none;
         transition: background 200ms ease;
 
-        .today { background: $calendar-today-foreground; }
-            
+        .today {
+          background: $calendar-today-foreground;
+        }
+
         &:selected {
           background: $calendar-selected-background;
 
-          & ~ .today {
+          &~.today {
             background: transparent;
             outline: 2px solid $calendar-today-outline;
             outline-offset: -1px;
@@ -48,5 +54,7 @@ time {
     }
   }
 
-  clock { color: $clock-foreground; }
+  clock {
+    color: $clock-foreground;
+  }
 }
