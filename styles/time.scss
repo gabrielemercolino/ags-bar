@@ -9,7 +9,7 @@ $calendar-today-foreground: colors.$base0E;
 $calendar-today-outline: colors.$base0E;
 
 $calendar-selected-background: colors.$base0E;
-$calendar-selected-foreground: colors.$common-foreground;
+$calendar-selected-foreground: colors.$common-background;
 
 $clock-foreground: colors.$base0E;
 
@@ -37,18 +37,19 @@ time {
         outline: none;
         transition: background 200ms ease;
 
-        .today {
+        &.today {
           background: $calendar-today-foreground;
+          outline: 2px solid $calendar-today-outline;
+          outline-offset: -1px;
+
+          &:not(:selected) {
+            background: transparent;
+          }
         }
 
         &:selected {
           background: $calendar-selected-background;
-
-          &~.today {
-            background: transparent;
-            outline: 2px solid $calendar-today-outline;
-            outline-offset: -1px;
-          }
+          color: $calendar-selected-foreground;
         }
       }
     }
