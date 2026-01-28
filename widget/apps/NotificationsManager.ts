@@ -12,8 +12,6 @@ export class NotificationsManager {
   constructor() {
     this.notifd.connect("notified", (_, id) => this.add(id))
     this.notifd.connect("resolved", (_, id) => this.remove(id))
-
-    this.notifd.get_notifications().forEach(n => this.add(n.get_id()))
   }
 
   getTree(): Accessor<NotificationTree> {
