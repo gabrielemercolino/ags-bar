@@ -106,14 +106,15 @@ in
       runHook preInstall
 
       mkdir -p $out/bin
+      mkdir -p $out/share
 
       ${base16Substitutions}
       ${modulesSubstitutions}
       ${fontSubstitution}
       ${commandSubstitutions}
 
-
-      ags bundle ${entry} $out/bin/${pname} -d "SRC='.'"
+      cp -r commands.{json,ts} app.ts components/ widget/ styles/ $out/share
+      ags bundle ${entry} $out/bin/${pname} -d "SRC='$out/share'"
 
       runHook postInstall
     '';
