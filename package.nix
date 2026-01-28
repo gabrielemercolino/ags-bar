@@ -10,7 +10,6 @@
 }: let
   entry = "app.ts";
   pname = "ags-bar";
-  system = pkgs.stdenv.hostPlatform.system;
 
   # Generate sed command to replace an SCSS variable
   makeSedSubstitution = file: varName: value: ''sed -i '0,/${varName}:/s|${varName}: .*|${varName}: ${value};|' '${file}' '';
@@ -94,7 +93,7 @@ in
     nativeBuildInputs = with pkgs; [
       wrapGAppsHook3
       gobject-introspection
-      ags.packages.${system}.default
+      ags
     ];
 
     buildInputs = extraPackages;

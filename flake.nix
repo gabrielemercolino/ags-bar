@@ -39,8 +39,9 @@
   in {
     packages.${system} = {
       default = pkgs.callPackage ./package.nix {
-        inherit extraPackages ags;
+        inherit extraPackages;
         gitRev = self.rev or "dirty";
+        ags = ags';
       };
     };
 
