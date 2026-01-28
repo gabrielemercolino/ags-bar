@@ -1,9 +1,9 @@
 import { Gdk, Gtk } from "ags/gtk4"
-import { createBinding, createState, For, With } from "ags"
+import { With, createBinding, createState } from "ags"
 import AstalNotifd from "gi://AstalNotifd?version=0.1"
-import Pango from "gi://Pango?version=1.0"
-import Button from "../../components/Button"
 import { NotificationsManager } from "./NotificationsManager"
+import Button from "../../components/Button"
+import Pango from "gi://Pango?version=1.0"
 
 const manager = new NotificationsManager()
 
@@ -23,12 +23,10 @@ export default function Notifications() {
           <With value={manager.getTree()}>
             {
               (tree) => (
-                <box orientation={Gtk.Orientation.VERTICAL}>
-                  {
-                    Array.from(tree.entries())
-                      .map(([appName, summaries]) =>
-                        <AppGroup appName={appName} summaries={summaries} />
-                      )
+                <box orientation={Gtk.Orientation.VERTICAL} spacing={12} cssName="notifications-container">
+                  {tree.size === 0 ? <label label="No notifications" cssName="placeholder" />
+                    : Array.from(tree)
+                      .map(([key, notifications]) => <NotificationGroup groupKey={key} notifications={notifications} />)
                   }
                 </box>
               )
@@ -41,75 +39,87 @@ export default function Notifications() {
   )
 }
 
-type AppGroupProps = {
-  appName: string
-  summaries: Map<string, Array<AstalNotifd.Notification>>
-}
-function AppGroup({ appName, summaries }: AppGroupProps) {
-  return (
-    <box cssName="app-group" orientation={Gtk.Orientation.VERTICAL} spacing={8}>
-      <box>
-        <label cssName="app-name" label={appName} halign={Gtk.Align.START} hexpand />
-        <Button cssName="dismiss-btn" onClicked={() => manager.dismissAllForApp(appName)}>
-          󰆴
-        </Button>
-      </box>
-
-      <box orientation={Gtk.Orientation.VERTICAL} spacing={6}>
-        {Array.from(summaries.entries()).map(([summary, notifs]) => (
-          <SummaryGroup app={appName} summary={summary} notifications={notifs} />
-        ))}
-      </box>
-    </box>
-  )
-}
-
-type SummaryGroupProps = {
-  app: string
-  summary: string
+type NotificationGroupParams = {
+  groupKey: string,
   notifications: Array<AstalNotifd.Notification>
 }
-function SummaryGroup({ app, summary, notifications }: SummaryGroupProps) {
+
+function NotificationGroup({ groupKey, notifications }: NotificationGroupParams) {
+  const [expanded, setExpanded] = createState(false)
+  const first = notifications[0]
+
+  const handleBodyClick = () => {
+    first.get_actions().at(0)?.invoke()
+    manager.dismiss(groupKey)
+  }
+
   return (
-    <box cssName="summary-group" orientation={Gtk.Orientation.VERTICAL} spacing={4}>
-      <box>
-        <label cssName="summary" label={summary} halign={Gtk.Align.START} hexpand />
-        <Button cssName="dismiss-btn" onClicked={() => manager.dismissAllForSummary(app, summary)}>
-          󰆴
-        </Button>
+    <box orientation={Gtk.Orientation.VERTICAL} cssName="notification-group">
+      <box orientation={Gtk.Orientation.HORIZONTAL} spacing={8}>
+        <box orientation={Gtk.Orientation.VERTICAL} hexpand halign={Gtk.Align.START}>
+          <label
+            label={first.get_app_name()}
+            halign={Gtk.Align.START}
+            cssName="app-name"
+          />
+          <label
+            label={first.get_summary()}
+            halign={Gtk.Align.START}
+            cssName="summary"
+          />
+        </box>
+        <Button cssName="delete-button" onLeftClick={() => manager.dismiss(groupKey)} valign={Gtk.Align.START}></Button>
       </box>
 
-      <box
-        cssName="bodies-container" orientation={Gtk.Orientation.VERTICAL} spacing={2}>
-        {notifications.map((notif) => (
-          <NotificationBody
-            notification={notif}
-            onClick={() => {
-              notif.get_actions().at(0)?.invoke()
-              manager.dismissAllForSummary(app, summary)
-            }}
-          />
-        ))}
-      </box>
+      <Button onLeftClick={handleBodyClick} cssName="bodies-button">
+        <With value={expanded}>
+          {(isExpanded) => (
+            <box orientation={Gtk.Orientation.VERTICAL} cssName="bodies" spacing={4}>
+              {(isExpanded ? notifications : notifications.slice(-3)).map(n => (
+                <NotificationBody notification={n} />
+              ))}
+            </box>
+          )}
+        </With>
+      </Button>
+
+      {notifications.length > 3 && (
+        <Button
+          onLeftClick={() => setExpanded(!expanded())}
+          halign={Gtk.Align.START}
+          cssName="expand-button"
+        >
+          <label label={expanded(e => e ? "" : "")} />
+        </Button>
+      )}
     </box>
   )
 }
 
-type NotificationBodyProps = {
+type NotificationBodyParams = {
   notification: AstalNotifd.Notification
-  onClick: () => void
 }
-function NotificationBody({ notification, onClick }: NotificationBodyProps) {
-  const body = notification.get_body()
+
+function NotificationBody({ notification }: NotificationBodyParams) {
+  const image = createBinding(notification, "image")
+
   return (
-    <button cssName="body" onClicked={onClick}>
+    <box orientation={Gtk.Orientation.HORIZONTAL} spacing={8}>
+      <image
+        visible={image(i => !!i)}
+        file={image}
+        pixelSize={24}
+        valign={Gtk.Align.START}
+      />
       <label
-        label={body}
-        useMarkup={true}
+        cssName="body"
+        label={notification.get_body()}
+        useMarkup
         halign={Gtk.Align.START}
-        wrap
+        hexpand
         ellipsize={Pango.EllipsizeMode.END}
       />
-    </button>
+    </box>
   )
 }
+
