@@ -1,0 +1,72 @@
+@use 'colors';
+
+$background: colors.$common-background;
+$foreground: colors.$base0A;
+$foreground-hover: colors.$base09;
+
+$popup-background: $background;
+$popup-foreground: $foreground;
+
+$popup-title-foreground: $foreground;
+
+$popup-list-item-foreground: $foreground;
+$popup-list-item-foreground-selected: $foreground-hover;
+$popup-list-item-slider-background: $foreground;
+
+audio {
+  background: $background;
+  color: $foreground;
+  border-radius: 10px;
+  padding: 4px 12px;
+
+  &:hover {
+    color: $foreground-hover;
+  }
+
+  pop-up {
+    background: $popup-background;
+    color: $popup-foreground;
+
+    column {
+
+      title {
+        font-size: 1.1em;
+        color: $popup-title-foreground;
+        background: transparent;
+      }
+
+      list {
+        margin: 0 10px 10px 10px;
+        background: colors.$base00;
+        border-radius: 10px;
+
+        microphone,
+        speaker {
+          padding: 0 10px;
+          color: $popup-list-item-foreground;
+          border-radius: 10px;
+
+          &.selected {
+            color: $popup-list-item-foreground-selected;
+          }
+
+
+          scale {
+            highlight {
+              background: $popup-list-item-slider-background;
+              min-height: 10px;
+            }
+
+            &.selected highlight {
+              background: $popup-list-item-foreground-selected;
+            }
+
+            slider {
+              opacity: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+}
