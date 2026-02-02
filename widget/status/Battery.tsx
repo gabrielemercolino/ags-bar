@@ -19,21 +19,24 @@ export default function Battery() {
   }))
 
   return (
-    <With value={merged}>
-      {({ charging, percentage, timeToFull, timeToEmpty }) => {
-        const rounded = Math.round(percentage * 100)
-        return (
-          <box
-            visible={battery.isPresent}
-            cssName="battery"
-            tooltipText={charging ? timeToFull : timeToEmpty}
-            class={charging ? "charging" : ""}
-          >
-            {`${getIcon(rounded, charging)} ${rounded}%`}
-          </box>
-        )
-      }}
-    </With>
+    <box visible={battery.isPresent}>
+      <With value={merged}>
+        {({ charging, percentage, timeToFull, timeToEmpty }) => {
+          const rounded = Math.round(percentage * 100)
+          return (
+            <box
+              cssName="battery"
+              class={charging ? "charging" : ""}
+            >
+              <label
+                label={`${getIcon(rounded, charging)} ${rounded}%`}
+                tooltipText={charging ? timeToFull : timeToEmpty}
+              />
+            </box>
+          )
+        }}
+      </With>
+    </box>
   )
 }
 
@@ -49,8 +52,8 @@ function secondsToHM(seconds: number) {
   var hours = Math.floor((seconds % (3600 * 24)) / 3600)
   var minutes = Math.floor((seconds % 3600) / 60)
 
-  const h = hours <= 0 ? "" : `${hours}h`
-  const m = minutes <= 0 ? "" : `, ${minutes}m`
+  const h = hours <= 0 ? "" : `${hours}`
+  const m = minutes <= 0 ? "" : `:${minutes}`
 
   return h + m
 }
