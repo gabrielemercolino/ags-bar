@@ -21,7 +21,7 @@ export default function AudioMenu() {
       cssName="audio"
       cursor={Gdk.Cursor.new_from_name("pointer", null)}
     >
-      <box orientation={Gtk.Orientation.HORIZONTAL} spacing={8}>
+      <box orientation={Gtk.Orientation.HORIZONTAL} spacing={12}>
         <box>
           <With value={defaultMicrophone}>
             {(mic) => {
