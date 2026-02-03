@@ -2,8 +2,6 @@ import app from "ags/gtk4/app"
 import { Astal, Gdk, Gtk } from "ags/gtk4"
 import Workspaces from "./Workspaces"
 import Title from "./Title"
-import Internet from "./connection/Internet"
-import Bluetooth from "./connection/Bluetooth"
 import Battery from "./status/Battery"
 import Clock from "./time/Clock"
 import Date from "./time/Date"
@@ -11,6 +9,7 @@ import Tray from "./apps/Tray"
 import Notifications from "./apps/Notifications"
 import System from "./System"
 import AudioMenu from "./Audio"
+import Connection from "./Connection"
 
 export default function Bar(gdkmonitor: Gdk.Monitor) {
   const { TOP, LEFT, RIGHT } = Astal.WindowAnchor
@@ -54,11 +53,7 @@ function Center() {
 function Right() {
   return (
     <box cssName="right" spacing={16} halign={Gtk.Align.END}>
-      <box cssName="connection" spacing={8}>
-        <Internet />
-        <Bluetooth />
-      </box>
-
+      <Connection />
       <AudioMenu />
       <Battery />
 
