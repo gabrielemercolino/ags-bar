@@ -3,7 +3,7 @@ import AstalBluetooth from "gi://AstalBluetooth?version=0.1"
 import { Accessor, createBinding, createComputed, For, With } from "ags"
 import { Gdk, Gtk } from "ags/gtk4"
 import Pango from "gi://Pango"
-import Button from "../../components/Button"
+import Button from "../components/Button"
 
 const network = AstalNetwork.get_default()
 const bluetooth = AstalBluetooth.get_default()
