@@ -28,17 +28,21 @@ export default function Connection() {
 }
 
 function NetworkWidget() {
-  const wiredState = createBinding(network.wired, "state")
-  const wifiStrength = createBinding(network.wifi, "strength")
-  const wifiEnabled = createBinding(network.wifi, "enabled")
+  const connectivity = createBinding(network, "primary")
 
-  const state = createComputed(() => {
-    const wired = wiredState() === AstalNetwork.DeviceState.ACTIVATED
-    const wifiOn = wifiEnabled()
+  const state = connectivity.as(c => {
     const wifiAP = network.wifi?.get_active_access_point()
-
-    if (wired) return { type: "wired" as const, name: network.wired?.device?.interface || "" }
-    if (wifiOn) return { type: "wifi" as const, name: wifiAP?.get_ssid() || wifiAP?.get_bssid() || "", strength: wifiStrength() }
+    if (c === AstalNetwork.Primary.WIRED)
+      return {
+        type: "wired" as const,
+        name: network.wired?.device?.interface || ""
+      }
+    if (c === AstalNetwork.Primary.WIFI)
+      return {
+        type: "wifi" as const,
+        name: wifiAP?.get_ssid() || wifiAP?.get_bssid() || "",
+        strength: createBinding(network.wifi, "strength")
+      }
     return { type: "offline" as const }
   })
 
@@ -47,7 +51,7 @@ function NetworkWidget() {
       <With value={state}>
         {(state) => {
           if (state.type === "wired") return <label label="󰀂" tooltipText={state.name} />
-          if (state.type === "wifi") return <label label={getWiFiIcon(state.strength)} tooltipText={state.name} />
+          if (state.type === "wifi") return <label label={state.strength(getWiFiIcon)} tooltipText={state.name} />
           return <label label="󰖪" />
         }}
       </With>
@@ -78,6 +82,7 @@ function BluetoothWidget() {
 }
 
 function WiredSection() {
+  if (!network.wired) return <></>
   const state = createBinding(network.wired, "state")
   const visible = state.as(s => s === AstalNetwork.DeviceState.ACTIVATED)
   const iface = createBinding(network.wired?.device, "interface")
