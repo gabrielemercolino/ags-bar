@@ -11,12 +11,14 @@ $popup-wired-device-foreground: $foreground-hover;
 $popup-wired-device-connected-background: colors.$base00;
 
 $popup-wifi-header-foreground: $foreground;
+$popup-wifi-switch-enabled-background: $foreground;
 $popup-wifi-disabled-foreground: $foreground-hover;
 $popup-wifi-device-foreground: $foreground;
 $popup-wifi-device-connected-foreground: $foreground-hover;
 $popup-wifi-device-connected-background: colors.$base00;
 
 $popup-bluetooth-header-foreground: $foreground;
+$popup-bluetooth-switch-enabled-background: $foreground;
 $popup-bluetooth-disabled-foreground: $foreground-hover;
 $popup-bluetooth-device-foreground: $foreground;
 $popup-bluetooth-device-connected-foreground: $foreground-hover;
@@ -59,9 +61,11 @@ connection {
         font-size: 1.1em;
       }
 
-      switch {
-        font-size: 10px;
-        border-radius: 12px;
+      switch slider {
+        min-height: 16px;
+        min-width: 16px;
+        border-radius: 10px;
+        margin: 1px;
       }
 
       scrolledwindow {
@@ -80,6 +84,10 @@ connection {
     wifi {
       header {
         color: $popup-wifi-header-foreground;
+      }
+
+      switch.on {
+        background: $popup-wifi-switch-enabled-background;
       }
 
       scrolledwindow {
@@ -102,6 +110,10 @@ connection {
     bluetooth {
       header {
         color: $popup-bluetooth-header-foreground;
+      }
+
+      switch.on {
+        background: $popup-bluetooth-switch-enabled-background;
       }
 
       scrolledwindow {
