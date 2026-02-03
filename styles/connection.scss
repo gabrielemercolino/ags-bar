@@ -1,182 +1,121 @@
 @use 'colors';
 
 $background: colors.$common-background;
+$foreground: colors.$base0C;
+$foreground-hover: colors.$base0E;
 
-$internet-foreground: colors.$base0C;
-$internet-hover-foreground: colors.$base0E;
+$popup-background: $background;
 
-$internet-popup-background: colors.$common-background;
+$popup-wired-header-foreground: $foreground;
+$popup-wired-device-foreground: $foreground-hover;
+$popup-wired-device-connected-background: colors.$base00;
 
-$internet-popup-wired-header-foreground: colors.$base0C;
+$popup-wifi-header-foreground: $foreground;
+$popup-wifi-disabled-foreground: $foreground-hover;
+$popup-wifi-device-foreground: $foreground;
+$popup-wifi-device-connected-foreground: $foreground-hover;
+$popup-wifi-device-connected-background: colors.$base00;
 
-$internet-popup-wired-device-foreground: colors.$common-foreground;
-$internet-popup-wired-device-hover-foreground: colors.$base0E;
-
-$internet-popup-wifi-header-foreground: colors.$base0C;
-$internet-popup-wifi-header-switch-active-background: colors.$base0C;
-
-$internet-popup-wifi-offline-foreground: colors.$base0F;
-
-$internet-popup-wifi-device-foreground: colors.$common-foreground;
-$internet-popup-wifi-device-hover-foreground: colors.$base0E;
-
-$bluetooth-foreground: colors.$base0C;
-$bluetooth-hover-foreground: colors.$base0E;
-
-$bluetooth-popup-background: colors.$common-background;
-
-$bluetooth-popup-header-background: colors.$common-background;
-$bluetooth-popup-header-foreground: colors.$base0C;
-
-$bluetooth-popup-switch-active-background: colors.$base0C;
-
-$bluetooth-popup-adapter_missing-foreground: colors.$base0F;
-
-$bluetooth-popup-device-foreground: colors.$common-foreground;
-$bluetooth-popup-device-hover-foreground: colors.$base0E;
-$bluetooth-popup-device-connected-foreground: colors.$base0A;
+$popup-bluetooth-header-foreground: $foreground;
+$popup-bluetooth-disabled-foreground: $foreground-hover;
+$popup-bluetooth-device-foreground: $foreground;
+$popup-bluetooth-device-connected-foreground: $foreground-hover;
+$popup-bluetooth-device-connected-background: colors.$base00;
 
 connection {
   background: $background;
+  color: $foreground;
   border-radius: 10px;
   padding: 4px 12px;
-  margin: 0.1em 0.15em;
 
-  internet {
-    color: $internet-foreground;
-
-    >button {
-      &:hover {
-        color: $internet-hover-foreground;
-      }
-    }
-
-    pop-up {
-      background: $internet-popup-background;
-      padding: 0px 10px;
-
-      container {
-        wired-popover {
-          header {
-            font-weight: bold;
-            font-size: 18px;
-            color: $internet-popup-wired-header-foreground;
-          }
-
-          body {
-            padding-left: 10px;
-            color: $internet-popup-wired-device-foreground;
-
-            &:hover {
-              color: $internet-popup-wired-device-hover-foreground;
-            }
-          }
-        }
-
-        wifi-popover {
-          header {
-            font-weight: bold;
-            font-size: 18px;
-            color: $internet-popup-wifi-header-foreground;
-
-            switch {
-              font-size: 18px;
-              border-radius: 12px;
-
-              &.on {
-                background: $internet-popup-wifi-header-switch-active-background;
-              }
-
-              slider {
-                min-height: 16px;
-                min-width: 16px;
-                border-radius: 10px;
-                margin: 1px;
-              }
-            }
-          }
-
-          body {
-            padding: 10px 0px;
-
-            offline {
-              color: $internet-popup-wifi-offline-foreground;
-            }
-
-            device {
-              background: transparent;
-              padding: 0px 10px;
-              color: $internet-popup-wifi-device-foreground;
-
-              &:hover {
-                color: $internet-popup-wifi-device-hover-foreground;
-              }
-            }
-          }
-        }
-      }
-    }
+  &:hover {
+    color: $foreground-hover;
   }
 
-  bluetooth {
-    color: $bluetooth-foreground;
+  pop-up {
+    background: $popup-background;
 
-    >button {
-      &:hover {
-        color: $bluetooth-hover-foreground;
+    wired {
+      header {
+        font-size: 1.1em;
+        color: $popup-wired-header-foreground;
+        background: transparent;
+      }
+
+      device {
+        padding: 5px 10px;
+        border-radius: 10px;
+        color: $popup-wired-device-foreground;
+        background: $popup-wired-device-connected-background;
       }
     }
 
-    pop-up {
-      background: $bluetooth-popup-background;
-      min-width: 200px;
+    wifi,
+    bluetooth {
+      margin: 0 10px 10px 10px;
 
-      container {
-        padding: 8px;
+      header {
+        background: transparent;
+        font-size: 1.1em;
+      }
 
-        header {
-          label {
-            color: $bluetooth-popup-header-foreground;
-            font-weight: bold;
-            font-size: 18px;
-          }
+      switch {
+        font-size: 10px;
+        border-radius: 12px;
+      }
 
-          switch {
-            font-size: 18px;
-            border-radius: 12px;
-
-            &.on {
-              background: $bluetooth-popup-switch-active-background;
-            }
-
-            slider {
-              min-height: 16px;
-              min-width: 16px;
-              border-radius: 10px;
-              margin: 1px;
-            }
-          }
+      scrolledwindow {
+        device {
+          padding: 5px 10px;
+          border-radius: 10px;
         }
 
-        devices {
-          padding: 4px;
+        disabled,
+        error {
+          padding: 10px;
+        }
+      }
+    }
 
-          adapter-missing {
-            color: $bluetooth-popup-adapter_missing-foreground;
+    wifi {
+      header {
+        color: $popup-wifi-header-foreground;
+      }
+
+      scrolledwindow {
+        disabled {
+          color: $popup-wifi-disabled-foreground;
+        }
+
+        device {
+          background: transparent;
+          color: $popup-wifi-device-foreground;
+
+          &.connected {
+            background: $popup-wifi-device-connected-background;
+            color: $popup-wifi-device-connected-foreground;
           }
+        }
+      }
+    }
 
-          container {
-            device {
-              color: $bluetooth-popup-device-foreground;
+    bluetooth {
+      header {
+        color: $popup-bluetooth-header-foreground;
+      }
 
-              &.connected {
-                color: $bluetooth-popup-device-connected-foreground;
-              }
+      scrolledwindow {
+        disabled {
+          color: $popup-wifi-disabled-foreground;
+        }
 
-              &:hover {
-                color: $bluetooth-popup-device-hover-foreground;
-              }
-            }
+        device {
+          background: transparent;
+          color: $popup-bluetooth-device-foreground;
+
+          &.connected {
+            background: $popup-bluetooth-device-connected-background;
+            color: $popup-bluetooth-device-connected-foreground;
           }
         }
       }
