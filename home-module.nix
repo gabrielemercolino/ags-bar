@@ -51,7 +51,9 @@ in {
     systemd.user.services.ags-bar = mkIf cfg.systemd.enable {
       Unit = {
         Description = "AGS Bar";
-        PartOf = ["graphical-session.target"];
+        PartOf = [config.wayland.systemd.target];
+        After = [config.wayland.systemd.target];
+        ConditionEnvironment = "WAYLAND_DISPLAY";
       };
 
       Service = {
@@ -60,7 +62,7 @@ in {
         RestartSec = 3;
       };
 
-      Install.WantedBy = ["graphical-session.target"];
+      Install.WantedBy = [config.wayland.systemd.target];
     };
   };
 }
