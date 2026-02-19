@@ -1,7 +1,7 @@
 import { Gdk, Gtk } from "ags/gtk4"
 import { With, createBinding, createState } from "ags"
 import AstalNotifd from "gi://AstalNotifd?version=0.1"
-import { NotificationsManager } from "./NotificationsManager"
+import { NotificationsManager } from "../../managers/Notifications"
 import Button from "../../components/Button"
 import Pango from "gi://Pango?version=1.0"
 
