@@ -4,10 +4,14 @@ import { Accessor, createBinding, createComputed, For, With } from "ags"
 import { Gdk, Gtk } from "ags/gtk4"
 import Pango from "gi://Pango"
 import Button from "../components/Button"
+import { WiFiManager, WiredManager } from "../managers/Connection"
 
 const network = AstalNetwork.get_default()
 const bluetooth = AstalBluetooth.get_default()
 const adapter = bluetooth?.get_adapter()
+
+const wifiManager = new WiFiManager()
+const wiredManager = new WiredManager()
 
 export default function Connection() {
   return (
@@ -17,7 +21,9 @@ export default function Connection() {
         <BluetoothWidget />
       </box>
 
-      <popover cssName="pop-up">
+      <popover cssName="pop-up" onNotifyVisible={() => {
+        wifiManager.scan()
+      }}>
         <box orientation={Gtk.Orientation.HORIZONTAL} spacing={12}>
           <NetworkColumn />
           <BluetoothColumn />
@@ -35,12 +41,12 @@ function NetworkWidget() {
     if (c === AstalNetwork.Primary.WIRED)
       return {
         type: "wired" as const,
-        name: network.wired?.device?.interface || ""
+        name: wiredManager.getDevice().as(d => d?.get_iface() || "")
       }
     if (c === AstalNetwork.Primary.WIFI)
       return {
         type: "wifi" as const,
-        name: wifiAP?.get_ssid() || wifiAP?.get_bssid() || "",
+        name: wifiManager.getCurrent().as(c => c?.get_ssid() || c?.get_bssid() || ""),
         strength: createBinding(network.wifi, "strength")
       }
     return { type: "offline" as const }
@@ -82,18 +88,15 @@ function BluetoothWidget() {
 }
 
 function WiredSection() {
-  if (!network.wired) return <></>
-  const state = createBinding(network.wired, "state")
-  const visible = state.as(s => s === AstalNetwork.DeviceState.ACTIVATED)
-  const iface = createBinding(network.wired?.device, "interface")
-
+  const visible = wiredManager.isActivated()
+  const iface = wiredManager.getDevice().as(d => d?.get_iface() || "Unknown")
   return (
     <revealer revealChild={visible} transitionType={Gtk.RevealerTransitionType.SLIDE_DOWN}>
       <box cssName="wired" orientation={Gtk.Orientation.VERTICAL} spacing={8}>
         <label cssName="header" label="Wired" hexpand halign={Gtk.Align.START} />
         <box cssName="device" spacing={8}>
           <label label="󰀂" />
-          <label label={iface.as(i => i || "Unknown")} />
+          <label label={iface} />
         </box>
       </box>
     </revealer>
@@ -101,8 +104,8 @@ function WiredSection() {
 }
 
 function NetworkColumn() {
-  const enabled = createBinding(network.wifi, "enabled")
-  const accessPoints = createBinding(network.wifi, "accessPoints")
+  const enabled = wifiManager.isEnabled()
+  const accessPoints = wifiManager.getAll()
 
   return (
     <box cssName="wifi" orientation={Gtk.Orientation.VERTICAL} spacing={8} widthRequest={250}>
@@ -191,12 +194,10 @@ function DeviceList<T>({
 }
 
 function WiFiDeviceRow({ accessPoint }: { accessPoint: AstalNetwork.AccessPoint }) {
-  const connected = createBinding(network, "wifi", "active_access_point")
-    .as(a => a ? a.get_bssid() === accessPoint.get_bssid() : false)
+  const connected = wifiManager.getCurrent().as(c => c?.get_bssid() === accessPoint.get_bssid() || false)
   const strength = createBinding(accessPoint, "strength")
   const name = accessPoint.get_ssid() || accessPoint.get_bssid()
   const frequency = accessPoint.get_frequency()
-
 
   return (
     <Button
