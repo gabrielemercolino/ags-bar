@@ -1,13 +1,14 @@
 {
   description = "My Ags bar";
 
+  nixConfig = {
+    extra-substituters = [ "https://ags.cachix.org" ];
+    extra-trusted-public-keys = [ "ags.cachix.org-1:naAvMrz0CuYqeyGNyLgE010iUiuf/qx6kYrUv3NwAJ8=" ];
+  };
+
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
-
-    ags = {
-      url = "github:aylur/ags";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    ags.url = "github:aylur/ags";
   };
 
   outputs =
