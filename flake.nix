@@ -34,7 +34,7 @@
         notifd
       ];
 
-      extraPackages = astalPackages ++ [ pkgs.gjs ];
+      extraPackages = astalPackages;
 
       ags' = ags.packages.${system}.default.override {
         inherit extraPackages;
