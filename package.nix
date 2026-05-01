@@ -91,7 +91,7 @@ in
     version = gitRev;
 
     nativeBuildInputs = with pkgs; [
-      wrapGAppsHook3
+      makeWrapper
       gobject-introspection
       ags
     ];
@@ -113,8 +113,11 @@ in
       ${fontSubstitution}
       ${commandSubstitutions}
 
-      cp -r commands.{json,ts} app.ts components/ widget/ styles/ $out/share
-      ags bundle ${entry} $out/bin/${pname} -d "SRC='$out/share'"
+      cp -r commands.{json,ts} app.ts components/ widget/ styles/ managers/ $out/share
+
+      makeWrapper ${ags}/bin/ags $out/bin/${pname} \
+        --run "cd $out/share" \
+        --add-flags "run $out/share/app.ts"
 
       runHook postInstall
     '';
