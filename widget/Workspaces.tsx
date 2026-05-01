@@ -1,5 +1,5 @@
 import { createBinding, For } from "ags"
-import AstalHyprland from "gi://AstalHyprland?version=0.1"
+import AstalHyprland from "gi://AstalHyprland"
 import Button from "../components/Button"
 
 const hyprland = AstalHyprland.get_default()

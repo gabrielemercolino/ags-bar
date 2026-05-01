@@ -1,4 +1,4 @@
-import AstalBattery from "gi://AstalBattery?version=0.1"
+import AstalBattery from "gi://AstalBattery"
 import { createBinding, createComputed, With } from "ags"
 
 const battery = AstalBattery.get_default()

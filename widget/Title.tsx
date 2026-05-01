@@ -1,5 +1,5 @@
 import { createBinding, With } from "ags"
-import AstalHyprland from "gi://AstalHyprland?version=0.1"
+import AstalHyprland from "gi://AstalHyprland"
 
 const hyprland = AstalHyprland.get_default()
 

@@ -1,5 +1,5 @@
-import AstalNetwork from "gi://AstalNetwork?version=0.1"
-import AstalBluetooth from "gi://AstalBluetooth?version=0.1"
+import AstalNetwork from "gi://AstalNetwork"
+import AstalBluetooth from "gi://AstalBluetooth"
 import { Accessor, createBinding, createComputed, For, With } from "ags"
 import { Gdk, Gtk } from "ags/gtk4"
 import Pango from "gi://Pango"

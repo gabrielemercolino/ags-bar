@@ -1,4 +1,4 @@
-import AstalNotifd from "gi://AstalNotifd?version=0.1";
+import AstalNotifd from "gi://AstalNotifd";
 import { Accessor, createState } from "ags";
 
 type NotificationTree = Map<string, Array<AstalNotifd.Notification>>

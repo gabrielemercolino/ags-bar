@@ -1,5 +1,4 @@
-import { Gdk } from "ags/gtk4"
-import Gtk from "gi://Gtk?version=4.0"
+import { Gdk, Gtk } from "ags/gtk4"
 
 type ButtonProps = {
   onLeftClick?: (self: Gtk.Widget) => void
