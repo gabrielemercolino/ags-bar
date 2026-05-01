@@ -58,6 +58,7 @@
           buildInputs = [
             ags'
             pkgs.gjs
+            pkgs.typescript-language-server
           ];
 
           shellHook = ''
