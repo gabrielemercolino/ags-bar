@@ -35,7 +35,7 @@ export default function Workspaces() {
             class={focusedWorkspace.as((focused) =>
               getWorkspaceClasses(id, focused.id),
             )}
-            onClicked={() => hyprland.dispatch("workspace", id.toString())}
+            onClicked={() => hyprland.dispatch("", `hl.dsp.focus({workspace = ${id}})`)}
           >
             {id}
           </Button>
