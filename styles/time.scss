@@ -1,17 +1,23 @@
 @use 'colors';
 
 $background: colors.$common-background;
+$foreground-normal: colors.$base0E;
+$foreground-hover: colors.$base08;
 
-$date-foreground: colors.$base0E;
-$date-hover-foreground: colors.$base08;
+$date-foreground-normal: $foreground-normal;
+$date-foreground-hover: $foreground-hover;
 
-$calendar-background: $background;
+$calendar-background-normal: $background;
+$calendar-background-selected: colors.$base0E;
 
-$calendar-today-foreground: colors.$base0E;
-$calendar-today-outline: colors.$base0E;
+$calendar-foreground-normal: colors.$common-foreground;
+$calendar-foreground-today: colors.$base0E;
+$calendar-foreground-selected: colors.$common-background;
 
-$calendar-selected-background: colors.$base0E;
-$calendar-selected-foreground: colors.$common-background;
+$calendar-controls-foreground-normal: $foreground-normal;
+$calendar-controls-foreground-hover: $foreground-hover;
+
+$calendar-outline-today: colors.$base0E;
 
 $clock-foreground: colors.$base0E;
 
@@ -24,16 +30,16 @@ time {
   date {
     >button {
       label {
-        color: $date-foreground;
+        color: $date-foreground-normal;
       }
 
       &:hover label {
-        color: $date-hover-foreground;
+        color: $date-foreground-hover;
       }
     }
 
     pop-up {
-      background: $calendar-background;
+      background: $calendar-background-normal;
       padding: 0;
 
       calendar {
@@ -41,14 +47,14 @@ time {
         background: transparent;
         border: none;
         box-shadow: none;
-        color: colors.$common-foreground;
+        color: $calendar-foreground-normal;
 
         header,
         button {
-          color: $date-foreground;
+          color: $calendar-controls-foreground-normal;
 
           &:hover {
-            color: $date-hover-foreground;
+            color: $calendar-controls-foreground-hover;
           }
         }
 
@@ -59,8 +65,8 @@ time {
           transition: background 200ms ease;
 
           &.today {
-            background: $calendar-today-foreground;
-            outline: 2px solid $calendar-today-outline;
+            background: $calendar-foreground-today;
+            outline: 2px solid $calendar-outline-today;
             outline-offset: -1px;
 
             &:not(:selected) {
@@ -69,8 +75,8 @@ time {
           }
 
           &:selected {
-            background: $calendar-selected-background;
-            color: $calendar-selected-foreground;
+            background: $calendar-background-selected;
+            color: $calendar-foreground-selected;
           }
         }
       }
