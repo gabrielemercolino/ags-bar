@@ -1,0 +1,11 @@
+[[language]]
+name = "typescript"
+
+[language-server.typescript-language-server.config.typescript.inlayHints]
+includeInlayEnumMemberValueHints = true
+includeInlayFunctionLikeReturnTypeHints = false
+includeInlayFunctionParameterTypeHints = false
+includeInlayParameterNameHints = "literals"
+includeInlayParameterNameHintsWhenArgumentMatchesName = true
+includeInlayPropertyDeclarationTypeHints = false
+includeInlayVariableTypeHints = false
