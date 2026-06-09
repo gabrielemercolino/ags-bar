@@ -4,9 +4,6 @@ $background: colors.$common-background;
 $foreground-normal: colors.$base0E;
 $foreground-hover: colors.$base08;
 
-$date-foreground-normal: $foreground-normal;
-$date-foreground-hover: $foreground-hover;
-
 $calendar-background-normal: $background;
 $calendar-background-selected: colors.$base0E;
 
@@ -19,71 +16,58 @@ $calendar-controls-foreground-hover: $foreground-hover;
 
 $calendar-outline-today: colors.$base0E;
 
-$clock-foreground: colors.$base0E;
 
 time {
   background: $background;
   border-radius: 10px;
   padding: 4px 12px;
   margin: 0.1em 0.15em;
-
-  date {
-    >button {
-      label {
-        color: $date-foreground-normal;
-      }
-
-      &:hover label {
-        color: $date-foreground-hover;
-      }
-    }
-
-    pop-up {
-      background: $calendar-background-normal;
-      padding: 0;
-
-      calendar {
-        margin: 0;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        color: $calendar-foreground-normal;
-
-        header,
-        button {
-          color: $calendar-controls-foreground-normal;
-
-          &:hover {
-            color: $calendar-controls-foreground-hover;
-          }
-        }
-
-        label {
-          border-radius: 10px;
-          box-shadow: none;
-          outline: none;
-          transition: background 200ms ease;
-
-          &.today {
-            background: $calendar-foreground-today;
-            outline: 2px solid $calendar-outline-today;
-            outline-offset: -1px;
-
-            &:not(:selected) {
-              background: transparent;
-            }
-          }
-
-          &:selected {
-            background: $calendar-background-selected;
-            color: $calendar-foreground-selected;
-          }
-        }
-      }
-    }
+  
+  color: $foreground-normal;
+  &:hover {
+    color: $foreground-hover;
   }
 
-  clock {
-    color: $clock-foreground;
+  pop-up {
+    background: $calendar-background-normal;
+    padding: 0;
+
+    calendar {
+      margin: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      color: $calendar-foreground-normal;
+
+      header,
+      button {
+        color: $calendar-controls-foreground-normal;
+        &:hover {
+          color: $calendar-controls-foreground-hover;
+        }
+      }
+
+      label {
+        border-radius: 10px;
+        box-shadow: none;
+        outline: none;
+        transition: background 200ms ease;
+
+        &.today {
+          background: $calendar-foreground-today;
+          outline: 2px solid $calendar-outline-today;
+          outline-offset: -1px;
+
+          &:not(:selected) {
+            background: transparent;
+          }
+        }
+
+        &:selected {
+          background: $calendar-background-selected;
+          color: $calendar-foreground-selected;
+        }
+      }
+    }
   }
 }
