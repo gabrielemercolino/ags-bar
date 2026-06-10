@@ -23,6 +23,11 @@ base0D = "#7b93db"
 base0E = "#b88cce"
 base0F = "#e87d9a"
 
+[widgets.title]
+bg = "base01"
+fg = "base05"
+variant = "initialTitle"
+
 [widgets.time]
 bg = "base01"
 fg = "base0E"
