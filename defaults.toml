@@ -1,0 +1,44 @@
+#:schema schema.json
+
+[bar]
+left = ["system", "workspaces"]
+center = ["title"]
+right = ["connections", "audio", "battery", "time", "tray", "notifications"]
+
+[colors]
+base00 = "#1a141f"
+base01 = "#2a1e3b"
+base02 = "#3d2a52"
+base03 = "#544167"
+base04 = "#75658b"
+base05 = "#cfc0d9"
+base06 = "#e5dced"
+base07 = "#f4f0f7"
+base08 = "#ea6d9c"
+base09 = "#e89368"
+base0A = "#d4ac76"
+base0B = "#7abf9e"
+base0C = "#70b8d4"
+base0D = "#7b93db"
+base0E = "#b88cce"
+base0F = "#e87d9a"
+
+[widgets.time]
+bg = "base01"
+fg = "base0E"
+hover = { fg = "base08", bg = "base01" }
+clock = { show = true, format = "+%H:%M" }
+date = { show = true, format = "+%a %d %b" }
+
+[widgets.time.popup]
+bg = "base01"
+controls = { fg = "base0E", hover.fg = "base08" }
+
+[widgets.time.popup.calendar]
+week = { fg = "base05" }
+
+[widgets.time.popup.calendar.day]
+fg = "base05"
+bg = "transparent"
+selected = { fg = "base01", bg = "base0E" }
+today = { fg = "base01", bg = "base0E", outline = "base0E" }
