@@ -10,7 +10,6 @@ app.start({
   instanceName: "ags-bar",
   main(...argv: string[]) {
     cssManager.registerBase(style)
-    console.log(...argv)
     if (argv.length > 1) configManager.configPath = argv[1]
     const initialConfig = configManager.load()
 

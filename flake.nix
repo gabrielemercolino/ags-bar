@@ -80,6 +80,8 @@
             echo "To generate types run 'ags types -d .'"
             echo "To run the bar 'ags run app.ts'"
             echo
+
+            export AGS_BAR_DATADIR=$(pwd)
           '';
         };
       };

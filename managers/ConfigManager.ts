@@ -12,10 +12,26 @@ class ConfigManager {
   private timeout: ReturnType<typeof setTimeout> | null = null
   private lastMtime: number | null = null
   private callbacks: ConfigChangeCallback[] = []
+
+  public defaultsPath: string
   public configPath: string = `${GLib.get_user_config_dir()}/ags-bar/config.toml`
 
+  constructor() {
+    let defaultsPath = GLib.getenv("AGS_BAR_DATADIR");
+
+    if (defaultsPath !== null) defaultsPath += "/defaults.toml"
+    else
+      defaultsPath = GLib
+        .get_system_data_dirs()
+        .map(d => GLib.build_filenamev([d, "ags-bar", "defaults.toml"]))
+        .find(p => GLib.file_test(p, GLib.FileTest.EXISTS)) ?? null
+
+    if (defaultsPath === null) throw new Error("Failed to find defaults.toml")
+    this.defaultsPath = defaultsPath
+  }
+
   load() {
-    const defaults = this.readToml(`${GLib.get_current_dir()}/defaults.toml`)
+    const defaults = this.readToml(this.defaultsPath)
     const user = GLib.file_test(this.configPath, GLib.FileTest.EXISTS) ? this.readToml(this.configPath) : {}
     return deepMerge(defaults, user)
   }

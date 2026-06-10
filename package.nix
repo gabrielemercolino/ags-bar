@@ -25,8 +25,8 @@ pkgs.stdenv.mkDerivation {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/bin $out/share
-    cp defaults.toml $out/share/
+    mkdir -p $out/bin $out/share/${pname}
+    cp defaults.toml $out/share/${pname}
 
     ags bundle ${entry} $out/bin/${pname}
 
@@ -35,7 +35,7 @@ pkgs.stdenv.mkDerivation {
 
   postFixup = ''
     wrapProgram $out/bin/${pname} \
-      --add-flags "$out/share/defaults.toml"
+      --prefix XDG_DATA_DIRS : ${placeholder "out"}/share
   '';
 
   meta = {
