@@ -1,35 +1,20 @@
 @use 'colors';
 
-$background: colors.$common-background;
-$foreground-normal: colors.$base0E;
-$foreground-hover: colors.$base08;
-
-$calendar-background-normal: $background;
-$calendar-background-selected: colors.$base0E;
-
-$calendar-foreground-normal: colors.$common-foreground;
-$calendar-foreground-today: colors.$base0E;
-$calendar-foreground-selected: colors.$common-background;
-
-$calendar-controls-foreground-normal: $foreground-normal;
-$calendar-controls-foreground-hover: $foreground-hover;
-
-$calendar-outline-today: colors.$base0E;
-
-
 time {
-  background: $background;
+  background: var(--time-bg);
+  color: var(--time-fg);
+
   border-radius: 10px;
   padding: 4px 12px;
   margin: 0.1em 0.15em;
   
-  color: $foreground-normal;
   &:hover {
-    color: $foreground-hover;
+    color: var(--time-hover-fg);
+    background: var(--time-hover-bg);
   }
 
   pop-up {
-    background: $calendar-background-normal;
+    background: var(--time-popup-bg);
     padding: 0;
 
     calendar {
@@ -37,35 +22,38 @@ time {
       background: transparent;
       border: none;
       box-shadow: none;
-      color: $calendar-foreground-normal;
+      color: var(--time-popup-calendar-day-fg);
 
       header,
       button {
-        color: $calendar-controls-foreground-normal;
+        color: var(--time-popup-controls-fg);
         &:hover {
-          color: $calendar-controls-foreground-hover;
+          color: var(--time-popup-controls-hover-fg);
         }
       }
 
       label {
+        background: var(--time-popup-calendar-day-bg);
         border-radius: 10px;
         box-shadow: none;
         outline: none;
         transition: background 200ms ease;
 
         &.today {
-          background: $calendar-foreground-today;
-          outline: 2px solid $calendar-outline-today;
+          background: var(--time-popup-calendar-day-today-bg);
+          color: var(--time-popup-calendar-day-today-fg);
+          outline: 2px solid var(--time-popup-calendar-day-today-outline);
           outline-offset: -1px;
 
           &:not(:selected) {
             background: transparent;
+            color: var(--time-popup-calendar-day-fg);
           }
         }
 
         &:selected {
-          background: $calendar-background-selected;
-          color: $calendar-foreground-selected;
+          background: var(--time-popup-calendar-day-selected-bg);
+          color: var(--time-popup-calendar-day-selected-fg);
         }
       }
     }
