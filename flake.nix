@@ -8,7 +8,10 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
-    ags.url = "github:aylur/ags";
+    ags = {
+      url = "github:aylur/ags";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -22,7 +25,7 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
 
-      astalPackages = with ags.packages.${system}; [
+      extraPackages = with ags.packages.${system}; [
         io
         astal4
         hyprland
@@ -34,11 +37,21 @@
         notifd
       ];
 
-      extraPackages = astalPackages;
+      devPackages = with pkgs; [
+        # python
+        python3
+        python3Packages.pydantic
+        ty
+        # ts
+        typescript-language-server
+        # toml
+        taplo
+        yq
+        # utility
+        inotify-tools
+      ];
 
-      ags' = ags.packages.${system}.default.override {
-        inherit extraPackages;
-      };
+      ags' = ags.packages.${system}.default.override { inherit extraPackages; };
     in
     {
       packages.${system} = {
@@ -58,8 +71,8 @@
           buildInputs = [
             ags'
             pkgs.gjs
-            pkgs.typescript-language-server
-          ];
+          ]
+          ++ devPackages;
 
           shellHook = ''
             echo

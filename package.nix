@@ -3,128 +3,44 @@
   ags,
   pkgs,
   extraPackages,
-  colors ? {},
-  commands ? {},
-  fonts ? [],
   gitRev ? "unknown",
-}: let
-  entry = "app.ts";
+}:
+let
   pname = "ags-bar";
-
-  # Generate sed command to replace an SCSS variable
-  makeSedSubstitution = file: varName: value: ''sed -i '0,/${varName}:/s|${varName}: .*|${varName}: ${value};|' '${file}' '';
-
-  # Converts path to SCSS variable: ["a", "b", "c"] -> "$a-b-c"
-  pathToScssVar = path:
-    path
-    |> lib.concatStringsSep "-"
-    |> (name: "$" + name);
-
-  # Flatten nested attribute set into list of path-value pairs
-  # { a.b.c = "x"; } -> [ { path = ["a" "b" "c"]; value = "x"; } ]
-  flattenAttrs = prefix: attrs:
-    attrs
-    |> lib.mapAttrsToList (name: value: {
-      path = prefix ++ [name];
-      inherit value;
-      isNested = lib.isAttrs value && !lib.isDerivation value;
-    })
-    |> lib.concatMap (
-      item:
-        if item.isNested
-        then flattenAttrs item.path item.value
-        else [{inherit (item) path value;}]
-    );
-
-  # Generate substitutions for module-specific overrides
-  modulesSubstitutions =
-    colors.overrides or {}
-    |> lib.mapAttrsToList (
-      moduleName: moduleAttrs:
-        moduleAttrs
-        |> flattenAttrs []
-        |> map (
-          item:
-            makeSedSubstitution "styles/${moduleName}.scss" (pathToScssVar item.path) item.value
-        )
-        |> lib.concatStringsSep "\n"
-    )
-    |> lib.concatStringsSep "\n";
-
-  # Generate base16 color substitutions
-  base16Substitutions =
-    colors.base16 or {}
-    |> lib.filterAttrs (name: _: lib.hasPrefix "base" name)
-    |> lib.mapAttrsToList (
-      name: value:
-        makeSedSubstitution "styles/colors.scss" ("$" + name) value
-    )
-    |> lib.concatStringsSep "\n";
-
-  # Generate font family substitution
-  fontSubstitution =
-    fonts
-    |> map (f:
-      if lib.isString f
-      then f
-      else f.name)
-    |> lib.concatStringsSep ", "
-    |> (
-      families:
-        lib.optionalString (fonts != [])
-        (makeSedSubstitution "styles/style.scss" "$font-families" families)
-    );
-
-  # Generate command substitutions
-  commandSubstitutions = let
-    defaultCommands = {
-      shutdown = "systemctl poweroff";
-      reboot = "systemctl reboot";
-      lock = "swaylock";
-    };
-    finalCommands = defaultCommands // commands;
-  in ''echo '${builtins.toJSON finalCommands}' > commands.json'';
+  entry = "entry.ts";
 in
-  pkgs.stdenv.mkDerivation {
-    inherit pname;
-    src = ./.;
-    version = gitRev;
+pkgs.stdenv.mkDerivation {
+  inherit pname;
+  src = ./.;
+  version = gitRev;
 
-    nativeBuildInputs = with pkgs; [
-      makeWrapper
-      gobject-introspection
-      ags
-    ];
+  nativeBuildInputs = with pkgs; [
+    wrapGAppsHook4
+    gobject-introspection
+    ags
+  ];
 
-    buildInputs = extraPackages;
+  buildInputs = extraPackages;
 
-    passthru = {
-      inherit colors;
-    };
+  installPhase = ''
+    runHook preInstall
 
-    installPhase = ''
-      runHook preInstall
+    mkdir -p $out/bin $out/share
+    cp defaults.toml $out/share/
 
-      mkdir -p $out/bin
-      mkdir -p $out/share
+    ags bundle ${entry} $out/bin/${pname}
 
-      ${base16Substitutions}
-      ${modulesSubstitutions}
-      ${fontSubstitution}
-      ${commandSubstitutions}
+    runHook postInstall
+  '';
 
-      cp -r commands.{json,ts} app.ts components/ widget/ styles/ managers/ $out/share
+  postFixup = ''
+    wrapProgram $out/bin/${pname} \
+      --add-flags "$out/share/defaults.toml"
+  '';
 
-      makeWrapper ${ags}/bin/ags $out/bin/${pname} \
-        --run "cd $out/share" \
-        --add-flags "run $out/share/app.ts"
-
-      runHook postInstall
-    '';
-
-    meta = {
-      description = "Custom AGS bar";
-      license = lib.licenses.mit;
-      mainProgram = pname;
-    };
-  }
+  meta = {
+    description = "Custom AGS bar";
+    license = lib.licenses.mit;
+    mainProgram = pname;
+  };
+}
