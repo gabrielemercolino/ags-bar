@@ -1,6 +1,6 @@
 import { createBinding, With } from "ags"
 import AstalHyprland from "gi://AstalHyprland"
-import { Descriptor } from "../descriptor"
+import { Descriptor } from "../registry"
 
 const hyprland = AstalHyprland.get_default()
 
@@ -30,12 +30,9 @@ export function Widget({ variant }: TitleConfig) {
   )
 }
 
-export const descriptor: Descriptor<TitleConfig> = {
-  parseParams: (raw) => ({
-    variant: raw.variant
-  }),
+export const descriptor = {
   parseCss: (raw) => ({
     "--title-bg": raw.bg,
     "--title-fg": raw.fg
   }),
-}
+} satisfies Descriptor

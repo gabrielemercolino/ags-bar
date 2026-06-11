@@ -1,6 +1,6 @@
 import { Gtk, Gdk } from "ags/gtk4"
 import { createPoll } from "ags/time"
-import { Descriptor } from "../descriptor"
+import { Descriptor } from "../registry";
 
 interface TimeConfig {
   clock: { show: boolean; format: string }
@@ -28,11 +28,7 @@ export function Widget({ clock, date }: TimeConfig) {
   )
 }
 
-export const descriptor: Descriptor<TimeConfig> = {
-  parseParams: (raw) => ({
-    clock: { show: raw.clock.show, format: raw.clock.format },
-    date: { show: raw.date.show, format: raw.date.format },
-  }),
+export const descriptor = {
   parseCss: (raw) => ({
     "--time-bg": raw.bg,
     "--time-fg": raw.fg,
@@ -57,4 +53,4 @@ export const descriptor: Descriptor<TimeConfig> = {
     "--time-popup-calendar-day-today-bg": raw.popup.calendar.day.today.bg,
     "--time-popup-calendar-day-today-outline": raw.popup.calendar.day.today.outline,
   }),
-}
+} satisfies Descriptor

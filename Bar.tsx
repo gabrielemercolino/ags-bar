@@ -1,6 +1,6 @@
 import { Astal, Gtk, Gdk } from "ags/gtk4"
 import app from "ags/gtk4/app"
-import { registry } from "./widgets/registry"
+import { buildWidget, registry, WidgetName } from "./widgets/registry"
 import { cssManager } from "./managers/CssManager"
 
 const { TOP, LEFT, RIGHT } = Astal.WindowAnchor
@@ -49,21 +49,14 @@ function applyWidgetCss(config: any) {
   cssManager.apply(config.colors, widgetVars)
 }
 
-function resolveSection(names: string[], config: any) {
+function resolveSection(names: WidgetName[], config: any) {
   return names
-    .map(name => resolveWidget(name, config))
-    .filter((w) => w !== null)
-}
-
-function resolveWidget(name: string, config: any) {
-  const entry = registry[name]
-
-  if (!entry) {
-    console.warn(`Unknown widget: "${name}"`)
-    return null
-  }
-
-  const behaviorConfig = entry.descriptor.parseParams(config.widgets[name])
-  const Factory = entry.factory
-  return <Factory {...behaviorConfig} />
+    .filter(name => {
+      if (!Object.keys(registry).includes(name)) {
+        console.warn(`${name} widget not found`)
+        return false
+      }
+      return true
+    })
+    .map(name => buildWidget(name, config.widgets[name]))
 }
