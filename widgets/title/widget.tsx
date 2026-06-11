@@ -15,23 +15,23 @@ type TitleConfig = {
 
 export function Widget({ variant }: TitleConfig) {
   const focusedClient = createBinding(hyprland, "focusedClient")
-  const hasClient = focusedClient.as(fc => !!fc)
 
   return (
-    <box
-      visible={hasClient}
-      cssName="title"
-    >
-      <With value={focusedClient}>
-        {
-          (fc) => {
-            if (!fc) return <label />
-            const text = createBinding(fc, variant)
-            return <label label={text} />
-          }
-        }
-      </With>
-    </box>
+    <With value={focusedClient}>
+      {(fc) => {
+        if (!fc) return <box cssName="title" visible={false} />
+
+        const text = createBinding(fc, variant)
+        return (
+          <box
+            cssName="title"
+            visible={text.as((t) => t !== null && t.length > 0)}
+          >
+            <label label={text.as((t) => t ?? "")} />
+          </box>
+        )
+      }}
+    </With>
   ) as Gtk.Widget
 }
 
