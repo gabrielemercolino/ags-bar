@@ -1,15 +1,16 @@
+import { Gtk } from "ags/gtk4"
 import * as time from "./time/widget"
 import * as title from "./title/widget"
 
-export type Descriptor = { parseCss: (raw: any) => Record<string, string> }
+export type Descriptor<T> = { parseCss: (cfg: T) => Record<string, string> }
 export type WidgetName = keyof typeof registry
-type WidgetCfg = { [K in keyof typeof registry]: Parameters<typeof registry[K]["factory"]>[0] }
-type Item = { factory: (cfg: any) => any, descriptor: Descriptor }
+export type WidgetCfg = { [K in keyof typeof registry]: Parameters<typeof registry[K]["factory"]>[0] }
+type Item<T> = { factory: (cfg: T) => Gtk.Widget, descriptor: Descriptor<T> }
 
 export const registry = {
   time: { factory: time.Widget, descriptor: time.descriptor },
   title: { factory: title.Widget, descriptor: title.descriptor },
-} satisfies Record<string, Item>
+} satisfies Record<string, Item<any>>
 
 export function buildWidget<K extends WidgetName>(name: K, widgetCfg: WidgetCfg[K]) {
   const { factory } = registry[name]

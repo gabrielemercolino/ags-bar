@@ -38,12 +38,10 @@
       ];
 
       devPackages = with pkgs; [
-        # python
-        python3
-        python3Packages.pydantic
-        ty
         # ts
         typescript-language-server
+        # for schema generation
+        nodejs
         # toml
         taplo
         yq
@@ -79,6 +77,7 @@
             echo "To generate node_modules 'ags types -d . -u'"
             echo "To generate types run 'ags types -d .'"
             echo "To run the bar 'ags run app.ts'"
+            echo "To generate dev schema 'npm run gen-schema --silent > schema.json'"
             echo
 
             export AGS_BAR_DATADIR=$(pwd)

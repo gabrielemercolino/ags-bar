@@ -1,4 +1,5 @@
 import app from "ags/gtk4/app"
+import { Config } from "./ConfigManager"
 
 class CssManager {
   private baseCss = ""
@@ -7,7 +8,7 @@ class CssManager {
     this.baseCss = css
   }
 
-  apply(colors: Record<string, string>, vars: Record<string, string>) {
+  apply(colors: Config["colors"], vars: Record<string, string>) {
     const baseColors = Object.entries(colors)
       .map(([k, v]) => `\t--${k}: ${v};`)
       .join("\n")

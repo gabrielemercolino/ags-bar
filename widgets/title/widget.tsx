@@ -1,11 +1,16 @@
 import { createBinding, With } from "ags"
 import AstalHyprland from "gi://AstalHyprland"
 import { Descriptor } from "../registry"
+import { Gtk } from "ags/gtk4"
 
 const hyprland = AstalHyprland.get_default()
 
 type TitleConfig = {
-  variant: "title" | "initialTitle"
+  variant: "title" | "initialTitle",
+
+  // css
+  bg: string,
+  fg: string
 }
 
 export function Widget({ variant }: TitleConfig) {
@@ -27,12 +32,12 @@ export function Widget({ variant }: TitleConfig) {
         }
       </With>
     </box>
-  )
+  ) as Gtk.Widget
 }
 
 export const descriptor = {
-  parseCss: (raw) => ({
-    "--title-bg": raw.bg,
-    "--title-fg": raw.fg
+  parseCss: (cfg) => ({
+    "--title-bg": cfg.bg,
+    "--title-fg": cfg.fg
   }),
-} satisfies Descriptor
+} satisfies Descriptor<TitleConfig>

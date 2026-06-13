@@ -2,10 +2,11 @@ import { Astal, Gtk, Gdk } from "ags/gtk4"
 import app from "ags/gtk4/app"
 import { buildWidget, registry, WidgetName } from "./widgets/registry"
 import { cssManager } from "./managers/CssManager"
+import { Config } from "./managers/ConfigManager"
 
 const { TOP, LEFT, RIGHT } = Astal.WindowAnchor
 
-export function buildBar(monitor: Gdk.Monitor, config: any): Astal.Window {
+export function buildBar(monitor: Gdk.Monitor, config: Config): Astal.Window {
   applyWidgetCss(config)
 
   const left = resolveSection(config.bar.left, config)
@@ -39,24 +40,16 @@ export function buildBar(monitor: Gdk.Monitor, config: any): Astal.Window {
   ) as Astal.Window
 }
 
-function applyWidgetCss(config: any) {
+function applyWidgetCss(config: Config) {
   const widgetVars = Object
     .entries(registry)
     .reduce((acc, [name, entry]) => {
-      return { ...acc, ...entry.descriptor.parseCss(config.widgets[name]) }
+      return { ...acc, ...entry.descriptor.parseCss(config.widgets[name as WidgetName] as any) }
     }, {})
 
   cssManager.apply(config.colors, widgetVars)
 }
 
-function resolveSection(names: WidgetName[], config: any) {
-  return names
-    .filter(name => {
-      if (!Object.keys(registry).includes(name)) {
-        console.warn(`${name} widget not found`)
-        return false
-      }
-      return true
-    })
-    .map(name => buildWidget(name, config.widgets[name]))
+function resolveSection(names: WidgetName[], config: Config) {
+  return names.map(name => buildWidget(name, config.widgets[name]))
 }

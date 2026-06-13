@@ -3,13 +3,41 @@ import { exec } from "ags/process"
 
 import Gio from "gi://Gio"
 import GLib from "gi://GLib"
-import { createRoot } from "gnim"
+import { registry, WidgetCfg, WidgetName } from "../widgets/registry"
 
-export type ConfigChangeCallback = (config: any) => void
+export type Config = {
+  bar: {
+    left: WidgetName[]
+    center: WidgetName[]
+    right: WidgetName[]
+  },
+  colors: {
+    base00: string,
+    base01: string,
+    base02: string,
+    base03: string,
+    base04: string,
+    base05: string,
+    base06: string,
+    base07: string,
+    base08: string,
+    base09: string,
+    base0A: string,
+    base0B: string,
+    base0C: string,
+    base0D: string,
+    base0E: string,
+    base0F: string,
+  },
+  widgets: {
+    [K in WidgetName]: WidgetCfg[K]
+  }
+}
+
+export type ConfigChangeCallback = (config: Config) => void
 
 class ConfigManager {
   private monitor: Gio.FileMonitor | null = null
-  private timeout: ReturnType<typeof setTimeout> | null = null
   private lastMtime: number | null = null
   private callbacks: ConfigChangeCallback[] = []
 
@@ -33,7 +61,21 @@ class ConfigManager {
   load() {
     const defaults = this.readToml(this.defaultsPath)
     const user = GLib.file_test(this.configPath, GLib.FileTest.EXISTS) ? this.readToml(this.configPath) : {}
-    return deepMerge(defaults, user)
+    const final = deepMerge(defaults, user)
+
+    const isRegisteredWidget = (name: string) => {
+      if (!Object.keys(registry).includes(name)) {
+        console.warn(`${name} widget not found`)
+        return false
+      }
+      return true
+    }
+
+    final.bar.left = final.bar.left.filter(isRegisteredWidget)
+    final.bar.center = final.bar.center.filter(isRegisteredWidget)
+    final.bar.right = final.bar.right.filter(isRegisteredWidget)
+
+    return final
   }
 
   watch() {
@@ -55,7 +97,7 @@ class ConfigManager {
     return JSON.parse(stdout)
   }
 
-  private getMtime(): number | null {
+  private getMtime() {
     try {
       const file = Gio.File.new_for_path(this.configPath)
       const info = file.query_info("time::modified", Gio.FileQueryInfoFlags.NONE, null)
@@ -65,22 +107,20 @@ class ConfigManager {
     }
   }
 }
-createRoot
+
 export const configManager = new ConfigManager()
 
-function deepMerge(base: any, override: any) {
-  const result = { ...base }
-  for (const key in override) {
-    if (
-      override[key] !== null &&
-      typeof override[key] === "object" &&
-      !Array.isArray(override[key]) &&
-      typeof base[key] === "object"
-    )
-      result[key] = deepMerge(base[key], override[key])
-    else
-      result[key] = override[key]
-  }
-  return result
-}
+type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K] }
 
+function deepMerge(base: Config, override: DeepPartial<Config>) {
+  const result: any = { ...base }
+  for (const key in override as any) {
+    const b = (base as any)[key]
+    const o = (override as any)[key]
+    if (o !== null && typeof o === "object" && !Array.isArray(o) && typeof b === "object")
+      result[key] = deepMerge(b, o)
+    else
+      result[key] = o
+  }
+  return result as Config
+}

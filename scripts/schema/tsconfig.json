@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.json",
+  "types": ["node"],
+  "compilerOptions": {
+    "paths": {
+      "gi://*": ["./stubs/gi.d.ts"],
+      "ags/gtk4/*": ["./stubs/ags.d.ts"],
+      "@astal/*": ["./stubs/astal.d.ts"]
+    }
+  }
+}
