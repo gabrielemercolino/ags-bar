@@ -65,7 +65,7 @@
       };
 
       devShells.${system} = {
-        default = pkgs.mkShell {
+        default = pkgs.mkShellNoCC {
           buildInputs = [
             ags'
             pkgs.gjs

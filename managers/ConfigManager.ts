@@ -1,9 +1,9 @@
 import { monitorFile } from "ags/file"
 import { exec } from "ags/process"
-
 import Gio from "gi://Gio"
 import GLib from "gi://GLib"
 import { registry, WidgetCfg, WidgetName } from "../widgets/registry"
+import { getDataDir } from "../utils"
 
 export type Config = {
   bar: {
@@ -41,22 +41,8 @@ class ConfigManager {
   private lastMtime: number | null = null
   private callbacks: ConfigChangeCallback[] = []
 
-  public defaultsPath: string
+  public defaultsPath: string = `${getDataDir()}/defaults.toml`
   public configPath: string = `${GLib.get_user_config_dir()}/ags-bar/config.toml`
-
-  constructor() {
-    let defaultsPath = GLib.getenv("AGS_BAR_DATADIR");
-
-    if (defaultsPath !== null) defaultsPath += "/defaults.toml"
-    else
-      defaultsPath = GLib
-        .get_system_data_dirs()
-        .map(d => GLib.build_filenamev([d, "ags-bar", "defaults.toml"]))
-        .find(p => GLib.file_test(p, GLib.FileTest.EXISTS)) ?? null
-
-    if (defaultsPath === null) throw new Error("Failed to find defaults.toml")
-    this.defaultsPath = defaultsPath
-  }
 
   load() {
     const defaults = this.readToml(this.defaultsPath)
@@ -84,7 +70,8 @@ class ConfigManager {
       const mtime = this.getMtime()
       if (mtime === this.lastMtime) return
       this.lastMtime = mtime
-      this.callbacks.forEach(cb => cb(this.load()))
+      const newCfg = this.load()
+      this.callbacks.forEach(cb => cb(newCfg))
     })
   }
 
