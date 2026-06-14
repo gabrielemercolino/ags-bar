@@ -1,8 +1,11 @@
 import { Gtk } from "ags/gtk4"
+
 import * as time from "./time/widget"
 import * as title from "./title/widget"
 
-export type Descriptor<T> = { parseCss: (cfg: T) => Record<string, string> }
+export type Descriptor<T> = {
+  parseCss: (cfg: T) => { vars: Record<string, string>; css: string }
+}
 export type WidgetName = keyof typeof registry
 export type WidgetCfg = { [K in keyof typeof registry]: Parameters<typeof registry[K]["factory"]>[0] }
 type Item<T> = { factory: (cfg: T) => Gtk.Widget, descriptor: Descriptor<T> }

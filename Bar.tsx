@@ -1,14 +1,11 @@
 import { Astal, Gtk, Gdk } from "ags/gtk4"
 import app from "ags/gtk4/app"
-import { buildWidget, registry, WidgetName } from "./widgets/registry"
-import { cssManager } from "./managers/CssManager"
+import { buildWidget, WidgetName } from "./widgets/registry"
 import { Config } from "./managers/ConfigManager"
 
 const { TOP, LEFT, RIGHT } = Astal.WindowAnchor
 
 export function buildBar(monitor: Gdk.Monitor, config: Config): Astal.Window {
-  applyWidgetCss(config)
-
   const left = resolveSection(config.bar.left, config)
   const center = resolveSection(config.bar.center, config)
   const right = resolveSection(config.bar.right, config)
@@ -38,16 +35,6 @@ export function buildBar(monitor: Gdk.Monitor, config: Config): Astal.Window {
       </centerbox>
     </window>
   ) as Astal.Window
-}
-
-function applyWidgetCss(config: Config) {
-  const widgetVars = Object
-    .entries(registry)
-    .reduce((acc, [name, entry]) => {
-      return { ...acc, ...entry.descriptor.parseCss(config.widgets[name as WidgetName] as any) }
-    }, {})
-
-  cssManager.apply(config.colors, widgetVars)
 }
 
 function resolveSection(names: WidgetName[], config: Config) {

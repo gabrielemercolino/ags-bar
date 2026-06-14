@@ -1,6 +1,7 @@
 import { Gtk, Gdk } from "ags/gtk4"
 import { createPoll } from "ags/time"
 import { Descriptor } from "../registry";
+import style from "./style.scss"
 
 interface TimeConfig {
   clock: { show: boolean; format: string },
@@ -47,27 +48,30 @@ export function Widget({ clock, date }: TimeConfig) {
 
 export const descriptor = {
   parseCss: (cfg) => ({
-    "--time-bg": cfg.bg,
-    "--time-fg": cfg.fg,
+    vars: {
+      "--time-bg": cfg.bg,
+      "--time-fg": cfg.fg,
 
-    "--time-hover-fg": cfg.hover.fg,
-    "--time-hover-bg": cfg.hover.bg,
+      "--time-hover-fg": cfg.hover.fg,
+      "--time-hover-bg": cfg.hover.bg,
 
-    "--time-popup-bg": cfg.popup.bg,
+      "--time-popup-bg": cfg.popup.bg,
 
-    "--time-popup-controls-fg": cfg.popup.controls.fg,
-    "--time-popup-controls-hover-fg": cfg.popup.controls.hover.fg,
+      "--time-popup-controls-fg": cfg.popup.controls.fg,
+      "--time-popup-controls-hover-fg": cfg.popup.controls.hover.fg,
 
-    "--time-popup-calendar-week-fg": cfg.popup.calendar.week.fg,
+      "--time-popup-calendar-week-fg": cfg.popup.calendar.week.fg,
 
-    "--time-popup-calendar-day-fg": cfg.popup.calendar.day.fg,
-    "--time-popup-calendar-day-bg": cfg.popup.calendar.day.bg,
+      "--time-popup-calendar-day-fg": cfg.popup.calendar.day.fg,
+      "--time-popup-calendar-day-bg": cfg.popup.calendar.day.bg,
 
-    "--time-popup-calendar-day-selected-fg": cfg.popup.calendar.day.selected.fg,
-    "--time-popup-calendar-day-selected-bg": cfg.popup.calendar.day.selected.bg,
+      "--time-popup-calendar-day-selected-fg": cfg.popup.calendar.day.selected.fg,
+      "--time-popup-calendar-day-selected-bg": cfg.popup.calendar.day.selected.bg,
 
-    "--time-popup-calendar-day-today-fg": cfg.popup.calendar.day.today.fg,
-    "--time-popup-calendar-day-today-bg": cfg.popup.calendar.day.today.bg,
-    "--time-popup-calendar-day-today-outline": cfg.popup.calendar.day.today.outline,
+      "--time-popup-calendar-day-today-fg": cfg.popup.calendar.day.today.fg,
+      "--time-popup-calendar-day-today-bg": cfg.popup.calendar.day.today.bg,
+      "--time-popup-calendar-day-today-outline": cfg.popup.calendar.day.today.outline,
+    },
+    css: style
   }),
 } satisfies Descriptor<TimeConfig>

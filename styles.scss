@@ -1,14 +1,3 @@
-@use 'system';
-@use 'workspaces';
-@use 'title';
-@use 'connection';
-@use 'audio';
-@use 'battery';
-@use 'time';
-@use 'apps';
-
-$font-families: "";
-
 button {
   background-image: none;
   background-color: transparent;
@@ -24,7 +13,7 @@ pop-up {
 }
 
 window.Bar {
-  font-family: $font-families, JetBrainsMono Nerd Font;
+  font-family: JetBrainsMono Nerd Font;
   font-size: 14px;
   font-weight: 600;
   margin: 6px;

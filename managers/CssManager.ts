@@ -1,26 +1,45 @@
 import app from "ags/gtk4/app"
+import { registry } from "../widgets/registry"
 import { Config } from "./ConfigManager"
+import styles from "../styles.scss"
 
-class CssManager {
-  private baseCss = ""
-
-  registerBase(css: string) {
-    this.baseCss = css
+export class CssManager {
+  constructor(config: Config, additionalCss: string) {
+    this.apply(config, additionalCss)
   }
 
-  apply(colors: Config["colors"], vars: Record<string, string>) {
-    const baseColors = Object.entries(colors)
+  reset(config: Config, additionalCss: string) {
+    app.reset_css()
+    this.apply(config, additionalCss)
+  }
+
+  private apply(config: Config, additionalCss: string) {
+    const all = [...config.bar.left, ...config.bar.center, ...config.bar.right]
+    const unique = [...new Set(all)]
+
+    const widgetStyles = unique
+      .filter(name => name in registry)
+      .map(name => {
+        const original = registry[name].descriptor.parseCss
+        const parseCss = original as (cfg: any) => ReturnType<typeof original>
+        return parseCss(config.widgets[name])
+      })
+
+    const mergedVars: Record<string, string> = Object.assign({}, ...widgetStyles.map(w => w.vars))
+    const mergedCss = widgetStyles.flatMap(w => w.css ?? []).join("\n")
+
+    const baseColors = Object.entries(config.colors)
       .map(([k, v]) => `\t--${k}: ${v};`)
       .join("\n")
 
-    const widgetVars = Object.entries(vars)
+    const widgetVars = Object.entries(mergedVars)
       .map(([k, v]) => `\t${k}: ${v.startsWith("base") ? `var(--${v})` : v};`)
       .join("\n")
 
-    app.reset_css()
     app.apply_css(`* {\n${baseColors}\n}`)
-    app.apply_css(`* {\n${widgetVars}\n}`)
-    app.apply_css(this.baseCss)
+    if (widgetVars) app.apply_css(`* {\n${widgetVars}\n}`)
+    app.apply_css(styles)
+    if (mergedCss) app.apply_css(mergedCss)
+    app.apply_css(additionalCss)
   }
 }
-export const cssManager = new CssManager()

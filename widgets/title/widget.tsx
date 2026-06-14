@@ -2,6 +2,7 @@ import { createBinding, With } from "ags"
 import AstalHyprland from "gi://AstalHyprland"
 import { Descriptor } from "../registry"
 import { Gtk } from "ags/gtk4"
+import styles from "./styles.scss"
 
 const hyprland = AstalHyprland.get_default()
 
@@ -37,7 +38,10 @@ export function Widget({ variant }: TitleConfig) {
 
 export const descriptor = {
   parseCss: (cfg) => ({
-    "--title-bg": cfg.bg,
-    "--title-fg": cfg.fg
+    vars: {
+      "--title-bg": cfg.bg,
+      "--title-fg": cfg.fg
+    },
+    css: styles
   }),
 } satisfies Descriptor<TitleConfig>
