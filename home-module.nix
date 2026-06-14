@@ -16,7 +16,7 @@ in
     package = mkOption {
       type = package;
       default = basePackage;
-      readonly = true;
+      readOnly = true;
       internal = true;
     };
 

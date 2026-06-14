@@ -1,0 +1,38 @@
+system {
+  background: var(--system-bg);
+  color: var(--system-fg);
+  border-radius: 10px;
+  padding-left: 6px;
+  padding-right: 9px;
+}
+
+power-overlay {
+  background: transparent;
+
+  container {
+    background: var(--system-overlay-backdrop);
+
+    button-area {
+      background: var(--system-overlay-bg);
+      padding: 20px;
+      font-size: 40px;
+      border-radius: 20px;
+
+      shutdown {
+        color: var(--system-overlay-shutdown-fg);
+      }
+      
+      reboot {
+        color: var(--system-overlay-reboot-fg);
+      }
+
+      lock {
+        color: var(--system-overlay-lock-fg);
+      }
+
+      logout {
+        color: var(--system-overlay-logout-fg);
+      }
+    }
+  }
+}

@@ -26,7 +26,7 @@ pkgs.stdenv.mkDerivation {
     runHook preInstall
 
     mkdir -p $out/bin $out/share/${pname}
-    cp defaults.toml $out/share/${pname}
+    cp defaults.toml icons.toml $out/share/${pname}
 
     ags bundle ${entry} $out/bin/${pname}
 
@@ -35,7 +35,8 @@ pkgs.stdenv.mkDerivation {
 
   postFixup = ''
     wrapProgram $out/bin/${pname} \
-      --prefix XDG_DATA_DIRS : ${placeholder "out"}/share
+      --prefix XDG_DATA_DIRS : ${placeholder "out"}/share \
+      --prefix PATH : ${lib.makeBinPath [ pkgs.yq ]}
   '';
 
   meta = {

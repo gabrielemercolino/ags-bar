@@ -23,6 +23,25 @@ base0D = "#7b93db"
 base0E = "#b88cce"
 base0F = "#e87d9a"
 
+[widgets.system]
+os = "auto"
+bg = "base01"
+fg = "base0D"
+
+[widgets.system.commands]
+shutdown = "systemctl poweroff"
+reboot = "systemctl reboot"
+lock = "loginctl lock-session"
+logout = "hyprctl dispatch 'hl.dsp.exit()'"
+
+[widgets.system.overlay]
+bg = "base00"
+backdrop = "alpha(var(--base00), 0.5)"
+shutdown.fg = "base0F"
+reboot.fg = "base09"
+lock.fg = "base0D"
+logout.fg = "base0E"
+
 [widgets.title]
 bg = "base01"
 fg = "base05"
