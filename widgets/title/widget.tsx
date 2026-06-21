@@ -1,4 +1,4 @@
-import { createBinding, With } from "ags"
+import { createBinding, createComputed } from "ags"
 import AstalHyprland from "gi://AstalHyprland"
 import { Descriptor } from "../registry"
 import { Gtk } from "ags/gtk4"
@@ -16,23 +16,18 @@ type TitleConfig = {
 
 export function Widget({ variant }: TitleConfig) {
   const focusedClient = createBinding(hyprland, "focusedClient")
+  const text = createComputed(() => {
+    const fc = focusedClient()
+    if (!fc) return ""
+    return createBinding(fc, variant)() ?? ""
+  })
 
   return (
-    <With value={focusedClient}>
-      {(fc) => {
-        if (!fc) return <box cssName="title" visible={false} />
-
-        const text = createBinding(fc, variant)
-        return (
-          <box
-            cssName="title"
-            visible={text.as((t) => t !== null && t.length > 0)}
-          >
-            <label label={text.as((t) => t ?? "")} />
-          </box>
-        )
-      }}
-    </With>
+    <label
+      cssName="title"
+      visible={text.as(t => t.length > 0)}
+      label={text}
+    />
   ) as Gtk.Widget
 }
 
