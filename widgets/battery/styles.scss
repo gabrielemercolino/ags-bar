@@ -1,0 +1,11 @@
+battery {
+  color: var(--battery-fg);
+  background: var(--battery-bg);
+  border-radius: 10px;
+  padding: 4px 12px;
+  margin: 0.1em 0.15em;
+
+  &.charging {
+    color: var(--battery-charging-fg);
+  }
+}

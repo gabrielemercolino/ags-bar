@@ -66,3 +66,9 @@ fg = "base05"
 bg = "transparent"
 selected = { fg = "base01", bg = "base0E" }
 today = { fg = "base01", bg = "base0E", outline = "base0E" }
+
+[widgets.battery]
+show = true
+bg = "base01"
+fg = "base0A"
+charging.fg = "base09"

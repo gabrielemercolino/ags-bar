@@ -21,6 +21,11 @@ class IconManager {
 
     return this.icons.os[os] ?? this.icons.os.fallback
   }
+
+  getBatteryIcon(percentage: number, charging: boolean) {
+    const index = Math.min(Math.round(percentage / 10), 9)
+    return this.icons.battery[charging ? "charging" : "discharging"][index]
+  }
 }
 
 export const iconManager = new IconManager()
