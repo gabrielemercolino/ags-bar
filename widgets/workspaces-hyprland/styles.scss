@@ -1,0 +1,19 @@
+workspaces {
+  background: var(--workspaces-bg);
+  border-radius: 10px;
+  padding: 4px 2px;
+
+  workspace {
+    margin: 0px 2px;
+    padding: 4px 10px;
+    background: transparent;
+    color: var(--workspaces-fg);
+    border-radius: 6px;
+
+    &.active,
+    &:hover {
+      background: var(--workspaces-active-bg);
+      color: var(--workspaces-active-fg);
+    }
+  }
+}

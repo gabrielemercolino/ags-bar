@@ -1,7 +1,7 @@
 #:schema schema.json
 
 [bar]
-left = ["system", "workspaces"]
+left = ["system", "workspaces/hyprland"]
 center = ["title"]
 right = ["connections", "audio", "battery", "time", "tray", "notifications"]
 
@@ -72,3 +72,8 @@ show = true
 bg = "base01"
 fg = "base0A"
 charging.fg = "base09"
+
+[widgets."workspaces/hyprland"]
+bg = "base01"
+fg = "base05"
+active = { bg = "base05", fg = "base01" }
