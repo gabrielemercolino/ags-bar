@@ -5,6 +5,7 @@ import * as title from "./title/widget"
 import * as system from "./system/widget"
 import * as battery from "./battery/widget"
 import * as workspacesHyprland from "./workspaces-hyprland/widget"
+import * as audio from "./audio/widget"
 
 export type Descriptor<T> = {
   parseCss: (cfg: T) => { vars: Record<string, string>; css: string }
@@ -18,7 +19,8 @@ export const registry = {
   title: { factory: title.Widget, descriptor: title.descriptor },
   system: { factory: system.Widget, descriptor: system.descriptor },
   battery: {factory: battery.Widget, descriptor: battery.descriptor},
-  "workspaces/hyprland": { factory: workspacesHyprland.Widget, descriptor: workspacesHyprland.descriptor }
+  "workspaces/hyprland": { factory: workspacesHyprland.Widget, descriptor: workspacesHyprland.descriptor },
+  audio: { factory: audio.Widget, descriptor: audio.descriptor }
 } satisfies Record<string, Item<any>>
 
 export function buildWidget<K extends WidgetName>(name: K, widgetCfg: WidgetCfg[K]) {

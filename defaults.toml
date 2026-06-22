@@ -77,3 +77,23 @@ charging.fg = "base09"
 bg = "base01"
 fg = "base05"
 active = { bg = "base05", fg = "base01" }
+
+[widgets.audio]
+bg = "base01"
+fg = "base0A"
+hover.fg = "base09"
+
+[widgets.audio.popup]
+bg = "base01"
+fg = "base0A"
+title.fg = "base0A"
+slider.fg = "base0A"
+device = { fg = "base0A", selected = { bg = "base00", fg = "base09" } }
+
+[widgets.audio.osd]
+hideAfter = 500
+position = "center-center"
+compact = false
+bg = "base00"
+fg = "base09"
+trough.bg = "alpha(var(--base09), 0.15)"

@@ -5,7 +5,7 @@ import { getDataDir } from "../utils"
 const ICONS_PATH = `${getDataDir()}/icons.toml`
 
 class IconManager {
-  private icons: Record<string, Record<string, string>>
+  private icons: Record<string, Record<string, any>>
 
   constructor() {
     const json = exec(`tomlq -r '.' ${ICONS_PATH}`)
@@ -25,6 +25,13 @@ class IconManager {
   getBatteryIcon(percentage: number, charging: boolean) {
     const index = Math.min(Math.round(percentage / 10), 9)
     return this.icons.battery[charging ? "charging" : "discharging"][index]
+  }
+
+  getAudioIcon(type: "speaker" | "microphone", muted: boolean, volume: number) {
+    if (muted) return this.icons.audio[type].muted
+    const levels = this.icons.audio[type].levels
+    const index = Math.min(Math.floor(volume / (100 / levels.length)), levels.length - 1)
+    return levels[index]
   }
 }
 

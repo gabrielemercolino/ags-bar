@@ -2,6 +2,14 @@
 charging = ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]
 discharging = ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
 
+[audio.speaker]
+muted = " "
+levels = [" ", " ", " "]
+
+[audio.microphone]
+muted = "󰍭"
+levels = [""]
+
 [os]
 fallback = ""
 almalinux = ""

@@ -1,0 +1,106 @@
+audio {
+  background: var(--audio-bg);
+  color: var(--audio-fg);
+  border-radius: 10px;
+  padding: 4px 12px;
+
+  &:hover {
+    color: var(--audio-hover-fg);
+  }
+
+  pop-up {
+    background: var(--audio-popup-bg);
+    color: var(--audio-popup-fg);
+
+    column {
+
+      title {
+        font-size: 1.1em;
+        color: var(--audio-popup-title-fg);
+        background: transparent;
+      }
+
+      list {
+        margin: 0 10px 10px 10px;
+        background: transparent;
+
+        microphone,
+        speaker {
+          padding: 0 10px;
+          color: var(--audio-popup-device-fg);
+          border-radius: 10px;
+
+          &.selected {
+            color: var(--audio-popup-device-selected-fg);
+            background: var(--audio-popup-device-selected-bg);
+            border-radius: 10px;
+          }
+
+          scale {
+            highlight {
+              background: var(--audio-popup-slider-fg);
+              min-height: 10px;
+            }
+
+            &.selected highlight {
+              background: var(--audio-popup-device-selected-fg);
+            }
+
+            slider {
+              opacity: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+audio-osd {
+  background: transparent;
+
+  content {
+    background: var(--audio-osd-bg);
+    color: var(--audio-osd-fg);
+    border-radius: 10px;
+    padding: 10px 18px;
+    margin: 12px;
+
+    top-row {
+      font-size: 16px;
+
+      icon {
+        font-size: 20px;
+      }
+    }
+
+    levelbar {
+      trough {
+        background: var(--audio-osd-trough-bg);
+        border-radius: 4px;
+        min-height: 4px;
+      }
+
+      block.filled {
+        background: var(--audio-osd-fg);
+        min-height: 5px;
+        border-radius: 3px;
+        margin: 1px 0;
+      }
+
+      block.empty {
+        background: transparent;
+        min-height: 5px;
+        margin: 1px 0;
+      }
+    }
+
+    &.normal {
+      padding: 8px 10px;
+    }
+
+    &.vtop {
+      margin: 50px 12px 12px 12px;
+    }
+  }
+}
