@@ -9,7 +9,7 @@ import styles from "./styles.scss"
 app.start({
   instanceName: "ags-bar",
   main(...argv: string[]) {
-    if (argv.length > 1) configManager.configPath = argv[1]
+    if (argv.length > 0) configManager.configPath = argv[0]
     const initialConfig = configManager.load()
 
     const css = new CssManager(initialConfig, styles)
