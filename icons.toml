@@ -63,3 +63,23 @@ vanilla = ""
 void = ""
 xerolinux = ""
 zorin = ""
+
+[network]
+wired = "󰀂"
+offline = "󰖪"
+wifi_levels = ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"]
+lock = ""
+
+[bluetooth]
+connected = "󰂱"
+powered = ""
+off = "󰂲"
+paired = ""
+unpaired = ""
+
+[bluetooth.device_types]
+audio-headset = ""
+audio-headphones = ""
+phone = ""
+computer = ""
+fallback = ""

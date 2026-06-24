@@ -1,0 +1,88 @@
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+connection {
+  background: var(--connection-bg);
+  color: var(--connection-fg);
+  border-radius: 10px;
+  padding: 4px 12px;
+
+  &:hover {
+    color: var(--connection-hover-fg);
+  }
+
+  pop-up {
+    background: var(--connection-popup-bg);
+    color: var(--connection-popup-fg);
+    padding: 0 8px 8px;
+
+    current-device {
+      background: var(--connection-current-bg);
+      color: var(--connection-current-fg);
+      border-radius: 10px;
+      padding: 10px 8px;
+
+      icon {
+        font-size: 30px;
+      }
+
+      stats {
+        font-size: 12px;
+      }
+    }
+
+    section {
+      background: var(--connection-list-bg);
+      border-radius: 10px;
+
+      header {
+        padding: 0 8px;
+
+        switch {
+          min-width: 16px;
+          min-height: 16px;
+          margin: 4px 0;
+
+          &.on {
+            background: var(--connection-switch-enabled-bg);
+          }
+
+          slider {
+            min-width: 14px;
+            min-height: 14px;
+            margin: 1px;
+            border-radius: 999px;
+          }
+        }
+
+        button {
+          min-width: 24px;
+          min-height: 24px;
+
+          &.scanning label {
+            animation-name: spin;
+            animation-duration: 1s;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+          }
+
+          label {
+            font-size: 14px;
+          }
+        }
+      }
+
+      device {
+        padding: 0 8px;
+        color: var(--connection-device-fg);
+
+        &.connected {
+          color: var(--connection-device-connected-fg);
+        }
+      }
+    }
+  }
+}

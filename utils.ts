@@ -1,5 +1,21 @@
-import { createRoot } from "ags"
+import { Accessor, createEffect, createRoot, createState } from "ags"
 import GLib from "gi://GLib"
+
+export function debounced<T>(accessor: Accessor<T>, delayMs: number): Accessor<T> {
+  const [value, setValue] = createState(accessor())
+  let timeoutId: ReturnType<typeof setTimeout> | null = null
+
+  createEffect(() => {
+    const v = accessor()
+    if (timeoutId) clearTimeout(timeoutId)
+    timeoutId = setTimeout(() => {
+      setValue(v)
+      timeoutId = null
+    }, delayMs)
+  })
+
+  return value
+}
 
 export function getDataDir() {
   const fromEnv = GLib.getenv("AGS_BAR_DATADIR")

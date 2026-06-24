@@ -33,6 +33,20 @@ class IconManager {
     const index = Math.min(Math.floor(volume / (100 / levels.length)), levels.length - 1)
     return levels[index]
   }
+
+  getNetworkIcon(params: { type: "wired" | "offline" | "lock" }): string
+  getNetworkIcon(params: { type: "wifi"; strength: number }): string
+  getNetworkIcon(params: { type: "wired" | "offline" | "lock" | "wifi"; strength?: number }) {
+    if (params.type === "wifi")
+      return this.icons.network.wifi_levels[Math.min(Math.max(0, Math.floor(Number(params.strength!) / 20)), 4)]
+    return this.icons.network[params.type]
+  }
+
+  getBluetoothIcon(params: { state: "connected" | "powered" | "off" } | { deviceType: string } | { paired: boolean }): string {
+    if ("state" in params) return this.icons.bluetooth[params.state]
+    if ("deviceType" in params) return this.icons.bluetooth.device_types[params.deviceType] ?? this.icons.bluetooth.device_types.fallback
+    return this.icons.bluetooth[params.paired ? "paired" : "unpaired"]
+  }
 }
 
 export const iconManager = new IconManager()

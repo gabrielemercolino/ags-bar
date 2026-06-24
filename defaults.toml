@@ -97,3 +97,17 @@ compact = false
 bg = "base00"
 fg = "base09"
 trough.bg = "alpha(var(--base09), 0.15)"
+
+[widgets.connections]
+bg = "base01"
+fg = "base0C"
+hover.fg = "base0E"
+
+[widgets.connections.popup]
+bg = "base01"
+fg = "base05"
+switch.enabled.bg = "base0C"
+list.bg = "base00"
+device.fg = "base05"
+device.connected.fg = "base0C"
+current = { bg = "base00", fg = "base0C" }
