@@ -2,12 +2,14 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
   inherit (lib) mkOption mkEnableOption mkIf;
-  inherit (lib.types) package;
+  inherit (lib.types) package anything;
   cfg = config.programs.ags-bar;
+  tomlFormat = pkgs.formats.toml {};
 in
 {
   options.programs.ags-bar = {
@@ -20,11 +22,21 @@ in
       internal = true;
     };
 
+    settings = mkOption {
+      type = anything;
+      default = {};
+      description = "Configuration written to ~/.config/ags-bar/config.toml.";
+    };
+
     systemd.enable = mkEnableOption "systemd integration";
   };
 
   config = mkIf cfg.enable {
     home.packages = [ cfg.package ];
+
+    xdg.configFile."ags-bar/config.toml" = mkIf (cfg.settings != {}) {
+      source = tomlFormat.generate "ags-bar-config" cfg.settings;
+    };
 
     systemd.user.services.ags-bar = mkIf cfg.systemd.enable {
       Unit = {

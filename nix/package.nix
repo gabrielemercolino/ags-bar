@@ -11,7 +11,7 @@ let
 in
 pkgs.stdenv.mkDerivation {
   inherit pname;
-  src = ./.;
+  src = ../.;
   version = gitRev;
 
   nativeBuildInputs = with pkgs; [
