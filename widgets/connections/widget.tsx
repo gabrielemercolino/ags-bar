@@ -5,7 +5,7 @@ import AstalNetwork from "gi://AstalNetwork"
 import AstalBluetooth from "gi://AstalBluetooth"
 import NM from "gi://NM"
 import { iconManager } from "../../managers/IconManager"
-import { Descriptor } from "../registry"
+import type { Widget } from "../registry"
 import { WiFiSection } from "./wifi"
 import { BluetoothSection } from "./bluetooth"
 import styles from "./styles.scss"
@@ -33,7 +33,28 @@ type ConnectionConfig = {
   }
 }
 
-export function Widget({ }: ConnectionConfig) {
+export const widget = { render, css } satisfies Widget<ConnectionConfig>
+
+function css(cfg: ConnectionConfig) {
+  return {
+    vars: {
+      "--connection-bg": cfg.bg,
+      "--connection-fg": cfg.fg,
+      "--connection-hover-fg": cfg.hover.fg,
+      "--connection-popup-bg": cfg.popup.bg,
+      "--connection-popup-fg": cfg.popup.fg,
+      "--connection-switch-enabled-bg": cfg.popup.switch.enabled.bg,
+      "--connection-device-fg": cfg.popup.device.fg,
+      "--connection-device-connected-fg": cfg.popup.device.connected.fg,
+      "--connection-list-bg": cfg.popup.list.bg,
+      "--connection-current-bg": cfg.popup.current.bg,
+      "--connection-current-fg": cfg.popup.current.fg,
+    },
+    css: styles
+  }
+}
+
+function render({ }: ConnectionConfig) {
   return (
     <menubutton cssName="connection" cursor={Gdk.Cursor.new_from_name("pointer", null)}>
       <box spacing={12}>
@@ -276,22 +297,3 @@ function BluetoothBarIcon() {
 
   return <label label={icon} />
 }
-
-export const descriptor = {
-  parseCss: (cfg: ConnectionConfig) => ({
-    vars: {
-      "--connection-bg": cfg.bg,
-      "--connection-fg": cfg.fg,
-      "--connection-hover-fg": cfg.hover.fg,
-      "--connection-popup-bg": cfg.popup.bg,
-      "--connection-popup-fg": cfg.popup.fg,
-      "--connection-switch-enabled-bg": cfg.popup.switch.enabled.bg,
-      "--connection-device-fg": cfg.popup.device.fg,
-      "--connection-device-connected-fg": cfg.popup.device.connected.fg,
-      "--connection-list-bg": cfg.popup.list.bg,
-      "--connection-current-bg": cfg.popup.current.bg,
-      "--connection-current-fg": cfg.popup.current.fg,
-    },
-    css: styles
-  }),
-} satisfies Descriptor<ConnectionConfig>

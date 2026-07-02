@@ -1,6 +1,6 @@
 import { Gtk } from "ags/gtk4"
 import Button from "../../components/Button"
-import { Descriptor } from "../registry"
+import type { Widget } from "../registry"
 import { PowerOverlay } from "./powerOverlay"
 
 import { iconManager } from "../../managers/IconManager"
@@ -30,7 +30,25 @@ type SystemConfig = {
   }
 }
 
-export function Widget({ os, commands }: SystemConfig) {
+export const widget = { render, css } satisfies Widget<SystemConfig>
+
+function css(cfg: SystemConfig) {
+  return {
+    vars: {
+      "--system-bg": cfg.bg,
+      "--system-fg": cfg.fg,
+      "--system-overlay-backdrop": cfg.overlay.backdrop,
+      "--system-overlay-bg": cfg.overlay.bg,
+      "--system-overlay-shutdown-fg": cfg.overlay.shutdown.fg,
+      "--system-overlay-reboot-fg": cfg.overlay.reboot.fg,
+      "--system-overlay-lock-fg": cfg.overlay.lock.fg,
+      "--system-overlay-logout-fg": cfg.overlay.logout.fg
+    },
+    css: styles
+  }
+}
+
+function render({ os, commands }: SystemConfig) {
   const { monitor } = BarContext.use()
 
   const [power, destroyPower] = createLazyRoot(
@@ -50,19 +68,3 @@ export function Widget({ os, commands }: SystemConfig) {
 
   return widget
 }
-
-export const descriptor = {
-  parseCss: (cfg) => ({
-    vars: {
-      "--system-bg": cfg.bg,
-      "--system-fg": cfg.fg,
-      "--system-overlay-backdrop": cfg.overlay.backdrop,
-      "--system-overlay-bg": cfg.overlay.bg,
-      "--system-overlay-shutdown-fg": cfg.overlay.shutdown.fg,
-      "--system-overlay-reboot-fg": cfg.overlay.reboot.fg,
-      "--system-overlay-lock-fg": cfg.overlay.lock.fg,
-      "--system-overlay-logout-fg": cfg.overlay.logout.fg
-    },
-    css: styles
-  })
-} satisfies Descriptor<SystemConfig>

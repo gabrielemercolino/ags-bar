@@ -1,32 +1,30 @@
 import { Gtk } from "ags/gtk4"
 
-import * as time from "./time/widget"
-import * as title from "./title/widget"
-import * as system from "./system/widget"
-import * as battery from "./battery/widget"
-import * as workspacesHyprland from "./workspaces-hyprland/widget"
-import * as audio from "./audio/widget"
-import * as connections from "./connections/widget"
+import { widget as time } from "./time/widget"
+import { widget as title } from "./title/widget"
+import { widget as system } from "./system/widget"
+import { widget as battery } from "./battery/widget"
+import { widget as workspacesHyprland } from "./workspaces-hyprland/widget"
+import { widget as audio } from "./audio/widget"
+import { widget as connections } from "./connections/widget"
 
-export type Descriptor<T> = {
-  parseCss: (cfg: T) => { vars: Record<string, string>; css: string }
+export type Widget<T> = {
+  render: (cfg: T) => Gtk.Widget
+  css: (cfg: T) => { vars: Record<string, string>; css: string }
 }
 export type WidgetName = keyof typeof registry
-export type WidgetCfg = { [K in keyof typeof registry]: Parameters<typeof registry[K]["factory"]>[0] }
-type Item<T> = { factory: (cfg: T) => Gtk.Widget, descriptor: Descriptor<T> }
+export type WidgetCfg = { [K in WidgetName]: Parameters<(typeof registry)[K]["render"]>[0] }
 
 export const registry = {
-  time: { factory: time.Widget, descriptor: time.descriptor },
-  title: { factory: title.Widget, descriptor: title.descriptor },
-  system: { factory: system.Widget, descriptor: system.descriptor },
-  battery: {factory: battery.Widget, descriptor: battery.descriptor},
-  "workspaces/hyprland": { factory: workspacesHyprland.Widget, descriptor: workspacesHyprland.descriptor },
-  audio: { factory: audio.Widget, descriptor: audio.descriptor },
-  connections: { factory: connections.Widget, descriptor: connections.descriptor }
-} satisfies Record<string, Item<any>>
+  time,
+  title,
+  system,
+  battery,
+  "workspaces/hyprland": workspacesHyprland,
+  audio,
+  connections,
+} as const
 
-export function buildWidget<K extends WidgetName>(name: K, widgetCfg: WidgetCfg[K]) {
-  const { factory } = registry[name]
-  const Factory = factory as (cfg: any) => ReturnType<typeof factory>
-  return Factory(widgetCfg)
+export function buildWidget<K extends WidgetName>(name: K, cfg: WidgetCfg[K]) {
+  return registry[name].render(cfg as any)
 }

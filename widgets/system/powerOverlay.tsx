@@ -62,10 +62,10 @@ export function PowerOverlay(monitor: Gdk.Monitor, config: PowerConfig) {
           $={(self) => { buttonsBox = self }}
           spacing={30}
         >
-          <Button cssName="shutdown" tooltipText="Shutdown" onClicked={() => execAndClose(shutdown)}>󰐥</Button>
-          <Button cssName="reboot" tooltipText="Reboot" onClicked={() => execAndClose(reboot)}>󰜉</Button>
-          <Button cssName="lock" tooltipText="Lock" onClicked={() => execAndClose(lock)}>󰌾</Button>
-          <Button cssName="logout" tooltipText="Logout" onClicked={() => execAndClose(logout)}>󰍃</Button>
+          <Button cssName="shutdown" tooltipText="Shutdown" onLeftClick={() => execAndClose(shutdown)}>󰐥</Button>
+          <Button cssName="reboot" tooltipText="Reboot" onLeftClick={() => execAndClose(reboot)}>󰜉</Button>
+          <Button cssName="lock" tooltipText="Lock" onLeftClick={() => execAndClose(lock)}>󰌾</Button>
+          <Button cssName="logout" tooltipText="Logout" onLeftClick={() => execAndClose(logout)}>󰍃</Button>
         </box>
       </box>
     </window>

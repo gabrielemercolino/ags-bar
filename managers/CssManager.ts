@@ -20,9 +20,9 @@ export class CssManager {
     const widgetStyles = unique
       .filter(name => name in registry)
       .map(name => {
-        const original = registry[name].descriptor.parseCss
-        const parseCss = original as (cfg: any) => ReturnType<typeof original>
-        return parseCss(config.widgets[name])
+        const entry = registry[name]
+        const css = entry.css as (cfg: any) => ReturnType<typeof entry.css>
+        return css(config.widgets[name])
       })
 
     const mergedVars: Record<string, string> = Object.assign({}, ...widgetStyles.map(w => w.vars))

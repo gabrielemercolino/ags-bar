@@ -2,7 +2,7 @@ import { Accessor, createBinding, createComputed, createEffect, For, With } from
 import { Gdk, Gtk } from "ags/gtk4";
 import AstalWp from "gi://AstalWp";
 import Pango from "gi://Pango";
-import { Descriptor } from "../registry";
+import type { Widget } from "../registry";
 import Button from "../../components/Button";
 import { iconManager } from "../../managers/IconManager";
 import { createLazyRoot } from "../../utils";
@@ -31,7 +31,30 @@ type AudioConfig = {
   }
 }
 
-export function Widget(cfg: AudioConfig) {
+export const widget = { render, css } satisfies Widget<AudioConfig>
+
+function css(cfg: AudioConfig) {
+  return {
+    vars: {
+      "--audio-bg": cfg.bg,
+      "--audio-fg": cfg.fg,
+      "--audio-hover-fg": cfg.hover.fg,
+      "--audio-popup-bg": cfg.popup.bg,
+      "--audio-popup-fg": cfg.popup.fg,
+      "--audio-popup-title-fg": cfg.popup.title.fg,
+      "--audio-popup-device-fg": cfg.popup.device.fg,
+      "--audio-popup-device-selected-fg": cfg.popup.device.selected.fg,
+      "--audio-popup-device-selected-bg": cfg.popup.device.selected.bg,
+      "--audio-popup-slider-fg": cfg.popup.slider.fg,
+      "--audio-osd-bg": cfg.osd.bg,
+      "--audio-osd-fg": cfg.osd.fg,
+      "--audio-osd-trough-bg": cfg.osd.trough.bg,
+    },
+    css: styles
+  }
+}
+
+function render(cfg: AudioConfig) {
   if (!audio) return <label label="Audio N/A" /> as Gtk.Widget;
 
   const { monitor } = BarContext.use()
@@ -43,39 +66,35 @@ export function Widget(cfg: AudioConfig) {
     (o) => o?.destroy()
   )
 
-  let speakerRef: AstalWp.Endpoint | null = null
-  let speakerVolumeHandlerId = 0
+  function watchEndpoint(label: "speaker" | "microphone", endpoint: Accessor<AstalWp.Endpoint | null>) {
+    let ref: AstalWp.Endpoint | null = null
+    let ids: number[] = []
 
-  let microphoneRef: AstalWp.Endpoint | null = null
-  let microphoneVolumeHandlerId = 0
+    createEffect(() => {
+      const ep = endpoint()
+      if (ref && ref !== ep) {
+        ids.forEach(id => ref?.disconnect(id))
+        ids = []
+        ref = null
+      }
+      ref = ep
+      if (!ep) return
 
-  createEffect(() => {
-    const spk = defaultSpeaker()
-    if (speakerRef && speakerRef !== spk) {
-      speakerRef.disconnect(speakerVolumeHandlerId)
-      speakerRef = null
+      const show = () => osd().show(label, ep.volume * 100, ep.mute)
+      ids.push(ep.connect("notify::volume", show))
+      ids.push(ep.connect("notify::mute", show))
+    })
+
+    return () => {
+      if (ref) ids.forEach(id => ref?.disconnect(id))
+      ids = []
     }
-    speakerRef = spk
-    if (!spk) return
-    speakerVolumeHandlerId = spk.connect(
-      "notify",
-      () => osd().show("speaker", spk.volume * 100, spk.mute)
-    )
-  })
+  }
 
-  createEffect(() => {
-    const mic = defaultMicrophone()
-    if (microphoneRef && microphoneRef !== mic) {
-      microphoneRef.disconnect(microphoneVolumeHandlerId)
-      microphoneRef = null
-    }
-    microphoneRef = mic
-    if (!mic) return
-    microphoneVolumeHandlerId = mic.connect(
-      "notify",
-      () => osd().show("microphone", mic.volume * 100, mic.mute)
-    )
-  })
+  const cleanups = [
+    watchEndpoint("speaker", defaultSpeaker),
+    watchEndpoint("microphone", defaultMicrophone),
+  ]
 
   const widget = (
     <menubutton cssName="audio" cursor={Gdk.Cursor.new_from_name("pointer", null)}>
@@ -90,7 +109,10 @@ export function Widget(cfg: AudioConfig) {
     </menubutton>
   ) as Gtk.Widget
 
-  widget.connect("unrealize", destroyOsd)
+  widget.connect("unrealize", () => {
+    destroyOsd()
+    cleanups.forEach(cleanup => cleanup())
+  })
 
   return widget
 }
@@ -253,23 +275,4 @@ function AudioDeviceEntry({ endpoint, type, getIcon }: AudioDeviceEntryParams) {
 }
 
 
-export const descriptor = {
-  parseCss: (cfg) => ({
-    vars: {
-      "--audio-bg": cfg.bg,
-      "--audio-fg": cfg.fg,
-      "--audio-hover-fg": cfg.hover.fg,
-      "--audio-popup-bg": cfg.popup.bg,
-      "--audio-popup-fg": cfg.popup.fg,
-      "--audio-popup-title-fg": cfg.popup.title.fg,
-      "--audio-popup-device-fg": cfg.popup.device.fg,
-      "--audio-popup-device-selected-fg": cfg.popup.device.selected.fg,
-      "--audio-popup-device-selected-bg": cfg.popup.device.selected.bg,
-      "--audio-popup-slider-fg": cfg.popup.slider.fg,
-      "--audio-osd-bg": cfg.osd.bg,
-      "--audio-osd-fg": cfg.osd.fg,
-      "--audio-osd-trough-bg": cfg.osd.trough.bg,
-    },
-    css: styles
-  }),
-} satisfies Descriptor<AudioConfig>
+

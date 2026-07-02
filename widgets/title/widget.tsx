@@ -1,6 +1,6 @@
 import { createBinding, createComputed } from "ags"
 import AstalHyprland from "gi://AstalHyprland"
-import { Descriptor } from "../registry"
+import type { Widget } from "../registry"
 import { Gtk } from "ags/gtk4"
 import styles from "./styles.scss"
 
@@ -14,7 +14,19 @@ type TitleConfig = {
   fg: string
 }
 
-export function Widget({ variant }: TitleConfig) {
+export const widget = { render, css } satisfies Widget<TitleConfig>
+
+function css(cfg: TitleConfig) {
+  return {
+    vars: {
+      "--title-bg": cfg.bg,
+      "--title-fg": cfg.fg
+    },
+    css: styles
+  }
+}
+
+function render({ variant }: TitleConfig) {
   const focusedClient = createBinding(hyprland, "focusedClient")
   const text = createComputed(() => {
     const fc = focusedClient()
@@ -30,13 +42,3 @@ export function Widget({ variant }: TitleConfig) {
     />
   ) as Gtk.Widget
 }
-
-export const descriptor = {
-  parseCss: (cfg) => ({
-    vars: {
-      "--title-bg": cfg.bg,
-      "--title-fg": cfg.fg
-    },
-    css: styles
-  }),
-} satisfies Descriptor<TitleConfig>

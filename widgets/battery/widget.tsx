@@ -1,7 +1,7 @@
 import { createBinding, createComputed } from "ags";
 import { Gtk } from "ags/gtk4";
 import AstalBattery from "gi://AstalBattery";
-import { Descriptor } from "../registry";
+import type { Widget } from "../registry";
 import { iconManager } from "../../managers/IconManager";
 import styles from "./styles.scss";
 
@@ -16,7 +16,20 @@ type BatteryConfig = {
   charging: { fg: string }
 }
 
-export function Widget({ show }: BatteryConfig) {
+export const widget = { render, css } satisfies Widget<BatteryConfig>
+
+function css(cfg: BatteryConfig) {
+  return {
+    vars: {
+      "--battery-bg": cfg.bg,
+      "--battery-fg": cfg.fg,
+      "--battery-charging-fg": cfg.charging.fg
+    },
+    css: styles
+  }
+}
+
+function render({ show }: BatteryConfig) {
   const charging = createBinding(battery, "charging")
   const percentage = createBinding(battery, "percentage")
     .as(p => Math.round(p * 100))
@@ -37,17 +50,6 @@ export function Widget({ show }: BatteryConfig) {
     </box>
   ) as Gtk.Widget
 }
-
-export const descriptor = {
-  parseCss: (cfg) => ({
-    vars: {
-      "--battery-bg": cfg.bg,
-      "--battery-fg": cfg.fg,
-      "--battery-charging-fg": cfg.charging.fg
-    },
-    css: styles
-  }),
-} satisfies Descriptor<BatteryConfig>
 
 function secondsToHM(seconds: number) {
   var hours = Math.floor((seconds % (3600 * 24)) / 3600)

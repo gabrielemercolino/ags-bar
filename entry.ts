@@ -13,7 +13,7 @@ app.start({
     const initialConfig = configManager.load()
 
     const css = new CssManager(initialConfig, styles)
-    let bars = app.get_monitors().map(monitor => createRoot(() => buildBar(monitor, initialConfig)))
+    let bars = app.get_monitors().map(monitor => buildBar(monitor, initialConfig))
 
     configManager.watch()
 
