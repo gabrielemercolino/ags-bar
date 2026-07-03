@@ -1,52 +1,60 @@
-@use 'colors';
-
-$background: colors.$common-background;
-$foreground: colors.$common-foreground;
-
-$notifications-background: $background;
-
-$notifications-group-background: colors.$base00;
-
-$notifications-group-app-foreground: colors.$base08;
-$notifications-group-summary-foreground: colors.$base0C;
-$notifications-group-delete-foreground: colors.$base08;
-$notifications-group-expand-foreground: colors.$base08;
-
 apps {
-  background: $background;
+  background: var(--apps-bg);
   border-radius: 10px;
-  margin: 0.1em 0.15em;
   padding: 4px;
 
-  tray item {
-    padding: 4px;
+  tray {
+    background: transparent;
+
+    item-container {
+      item {
+        background: transparent;
+        border: none;
+        padding: 2px;
+        border-radius: 8px;
+
+        &:hover {
+          background: var(--tray-hover-bg);
+        }
+      }
+    }
+  }
+
+  notifications {
+    background: transparent;
+    padding: 0 4px;
+    border-radius: 8px;
+
+    &:hover {
+      background: var(--notifications-hover-bg);
+    }
   }
 
   pop-up {
-    background: $notifications-background;
+    background: var(--notifications-popup-bg);
 
     notifications-container {
       background: transparent;
       padding: 8px;
 
       notification-group {
-        background: $notifications-group-background;
+        background: var(--notifications-group-bg);
         border-radius: 10px;
         padding: 10px;
 
         app-name {
           font-size: 0.8em;
-          color: $notifications-group-app-foreground;
+          color: var(--notifications-app-fg);
         }
 
         summary {
           font-size: 1em;
           font-weight: bold;
-          color: $notifications-group-summary-foreground;
+          color: var(--notifications-summary-fg);
         }
 
         delete-button {
-          color: $notifications-group-delete-foreground;
+          color: var(--notifications-delete-fg);
         }
 
         bodies-button {
@@ -72,7 +80,7 @@ apps {
           background: transparent;
           border: none;
           box-shadow: none;
-          color: $notifications-group-expand-foreground;
+          color: var(--notifications-expand-fg);
           padding: 2px 8px;
         }
       }

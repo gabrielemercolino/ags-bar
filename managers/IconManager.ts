@@ -42,6 +42,10 @@ class IconManager {
     return this.icons.network[params.type]
   }
 
+  getNotificationsIcon(key: string) {
+    return this.icons.notifications[key]
+  }
+
   getBluetoothIcon(params: { state: "connected" | "powered" | "off" } | { deviceType: string } | { paired: boolean }): string {
     if ("state" in params) return this.icons.bluetooth[params.state]
     if ("deviceType" in params) return this.icons.bluetooth.device_types[params.deviceType] ?? this.icons.bluetooth.device_types.fallback

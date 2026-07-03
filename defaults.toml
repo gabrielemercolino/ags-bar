@@ -3,7 +3,7 @@
 [bar]
 left = ["system", "workspaces/hyprland"]
 center = ["title"]
-right = ["connections", "audio", "battery", "time", "tray", "notifications"]
+right = ["connections", "audio", "battery", "time", "apps"]
 
 [colors]
 base00 = "#1a141f"
@@ -111,3 +111,22 @@ list.bg = "base00"
 device.fg = "base05"
 device.connected.fg = "base0C"
 current = { bg = "base00", fg = "base0C" }
+
+[widgets.apps]
+bg = "base01"
+
+[widgets.apps.tray]
+hover.bg = "alpha(var(--base05), 0.15)"
+
+[widgets.apps.notifications]
+hover.bg = "alpha(var(--base05), 0.15)"
+
+[widgets.apps.notifications.popup]
+bg = "base01"
+
+[widgets.apps.notifications.popup.group]
+bg = "base00"
+app.fg = "base08"
+summary.fg = "base0C"
+delete.fg = "base08"
+expand.fg = "base08"

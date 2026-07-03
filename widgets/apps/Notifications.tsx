@@ -1,13 +1,14 @@
+import { createBinding, createState, With } from "ags"
 import { Gdk, Gtk } from "ags/gtk4"
-import { With, createBinding, createState } from "ags"
 import AstalNotifd from "gi://AstalNotifd"
-import { NotificationsManager } from "../../managers/Notifications"
-import Button from "../../components/Button"
 import Pango from "gi://Pango"
+import { iconManager } from "../../managers/IconManager"
+import Button from "../../components/Button"
+import { NotificationsManager } from "./NotificationsManager"
 
 const manager = new NotificationsManager()
 
-export default function Notifications() {
+export function Notifications() {
   return (
     <menubutton
       cssName="notifications"
@@ -34,13 +35,13 @@ export default function Notifications() {
           </With>
         </scrolledwindow>
       </popover>
-      
+      {iconManager.getNotificationsIcon("bell")}
     </menubutton>
   )
 }
 
 type NotificationGroupParams = {
-  groupKey: string,
+  groupKey: string
   notifications: Array<AstalNotifd.Notification>
 }
 
@@ -68,7 +69,7 @@ function NotificationGroup({ groupKey, notifications }: NotificationGroupParams)
             cssName="summary"
           />
         </box>
-        <Button cssName="delete-button" onLeftClick={() => manager.dismiss(groupKey)} valign={Gtk.Align.START}></Button>
+        <Button cssName="delete-button" onLeftClick={() => manager.dismiss(groupKey)} valign={Gtk.Align.START}>{iconManager.getGeneralIcon("close")}</Button>
       </box>
 
       <Button onLeftClick={handleBodyClick} cssName="bodies-button">
@@ -89,7 +90,7 @@ function NotificationGroup({ groupKey, notifications }: NotificationGroupParams)
           halign={Gtk.Align.START}
           cssName="expand-button"
         >
-          <label label={expanded(e => e ? "" : "")} />
+          <label label={expanded(e => e ? iconManager.getGeneralIcon("collapsedv") : iconManager.getGeneralIcon("expanded"))} />
         </Button>
       )}
     </box>
@@ -122,4 +123,3 @@ function NotificationBody({ notification }: NotificationBodyParams) {
     </box>
   )
 }
-

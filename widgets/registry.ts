@@ -7,6 +7,7 @@ import { widget as battery } from "./battery/widget"
 import { widget as workspacesHyprland } from "./workspaces-hyprland/widget"
 import { widget as audio } from "./audio/widget"
 import { widget as connections } from "./connections/widget"
+import { widget as apps } from "./apps/widget"
 
 export type Widget<T> = {
   render: (cfg: T) => Gtk.Widget
@@ -23,6 +24,7 @@ export const registry = {
   "workspaces/hyprland": workspacesHyprland,
   audio,
   connections,
+  apps,
 } as const
 
 export function buildWidget<K extends WidgetName>(name: K, cfg: WidgetCfg[K]) {
