@@ -30,9 +30,34 @@ If it still doesn't work, report the issue and stop
 
 ### Widget system
 
-Each widget lives in `widgets/<name>/widget.tsx` and MUST export:
-- `Widget(cfg) → Gtk.Widget` — the factory function
-- `descriptor` — object that satisfies `Descriptor<T>` where `T` is the `cfg` type
+`Widget<T>` is defined in `widgets/registry.ts`:
+
+```ts
+export type Widget<T> = {
+  render: (cfg: T) => Gtk.Widget
+  css: (cfg: T) => { vars: Record<string, string>; css: string }
+}
+```
+
+Each widget lives in `widgets/<name>/widget.tsx` with this file structure:
+
+```
+1. imports
+2. widget config type
+3. export const widget = { render, css } satisfies Widget<MyConfig>
+4. function css(cfg: MyConfig) { ... }
+5. function render(cfg: MyConfig) { ... }
+6. everything else
+```
+
+The `render` and `css` functions should not be inlined,
+they should preferably be standalone functions referenced by the `widget` object.
+
+Widgets are registered in `widgets/registry.ts`:
+```ts
+import { widget as myName } from "./my-name/widget"
+// then added to the registry const object
+```
 
 ### Coding style
 
