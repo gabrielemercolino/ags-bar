@@ -119,10 +119,26 @@ bg = "base01"
 hover.bg = "alpha(var(--base05), 0.15)"
 
 [widgets.apps.notifications]
-hover.bg = "alpha(var(--base05), 0.15)"
+fg = "base0D"
+dnd = false
+
+[widgets.apps.notifications.sound]
+enable = true
+# should be between 0 and 1
+volume = 1
+# default audio from https://mixkit.co/free-sound-effects/notification/
+# for a custom one you have to specify the full path, eg: "/home/me/audio.mp3"
+file = "sounds/notification.wav"
+
+[widgets.apps.notifications.osd]
+duration = 2000
+maxMessages = 2
+progress.fg = "base0B"
 
 [widgets.apps.notifications.popup]
 bg = "base01"
+header.fg = "base0D"
+placeholder.fg = "base05"
 
 [widgets.apps.notifications.popup.group]
 bg = "base00"

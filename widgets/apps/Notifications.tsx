@@ -6,19 +6,63 @@ import { iconManager } from "../../managers/IconManager"
 import Button from "../../components/Button"
 import { notifications } from "./NotificationsManager"
 import AnimatedScrolledWindow from "../../components/AnimatedScrolledWindow"
+import { createLazyRoot } from "../../utils"
+import { BarContext } from "../../BarContext"
+import { NotificationsOSD, type NotifOSDConfig } from "./NotificationsOSD"
+
+export type NotificationsConfig = {
+  dnd: boolean,
+  osd: NotifOSDConfig,
+  sound: { enable: boolean; volume: number; file: string },
+
+  // css
+  fg: string,
+  popup: {
+    bg: string,
+    header: { fg: string },
+    placeholder: { fg: string },
+    group: {
+      bg: string,
+      app: { fg: string },
+      summary: { fg: string },
+      delete: { fg: string },
+      expand: { fg: string }
+    }
+  }
+}
 
 let popupRef: Gtk.Popover | null = null
 
-export function Notifications() {
+export function Notifications({ dnd: defaultDND, osd, sound }: NotificationsConfig) {
+  const { monitor } = BarContext.use()
+
+  const [getOsd, destroyOsd] = createLazyRoot(
+    () => NotificationsOSD(monitor, osd),
+    (o) => o?.destroy()
+  )
+  getOsd()
+
+  notifications.dnd = defaultDND
+  notifications.soundEnable = sound.enable
+  notifications.soundFile = sound.file
+  notifications.soundVolume = sound.volume
+
   const groups = createBinding(notifications, "tree").as(t => Array.from(t))
   const showPlaceholder = createBinding(notifications, "tree").as(t => t.size === 0)
   const showGroups = showPlaceholder.as(p => !p)
+  const dnd = createBinding(notifications, "dnd")
+  const barIcon = createBinding(notifications, "changed")
+    .as(() =>
+      iconManager.getNotificationsIcon(notifications.dnd ? "dnd" : notifications.tree.size > 0 ? "some" : "none")
+    )
 
-  return (
+  const widget = (
     <menubutton
       cssName="notifications"
       cursor={Gdk.Cursor.new_from_name("pointer", null)}
     >
+      <label cssName="icon" label={barIcon} />
+
       <popover cssName="pop-up" widthRequest={300} $={(self) => { popupRef = self }}>
         <AnimatedScrolledWindow
           trigger={groups}
@@ -27,9 +71,19 @@ export function Notifications() {
           maxContentWidth={250}
           propagateNaturalHeight
         >
-          <box orientation={Gtk.Orientation.VERTICAL} spacing={12} cssName="notifications-container">
-            <label label="No notifications" cssName="placeholder" visible={showPlaceholder} />
-            <box orientation={Gtk.Orientation.VERTICAL} spacing={12} visible={showGroups}>
+          <box cssName="container" orientation={Gtk.Orientation.VERTICAL} spacing={6} >
+            <box cssName="header" orientation={Gtk.Orientation.HORIZONTAL}>
+              <label cssName="title" label="Notifications" hexpand halign={Gtk.Align.START} />
+              <Button
+                cssName="dnd-toggle"
+                halign={Gtk.Align.END}
+                onLeftClick={() => { notifications.dnd = !notifications.dnd }}
+              >
+                <label label={dnd.as(d => iconManager.getNotificationsIcon(d ? "dnd" : "none"))} />
+              </Button>
+            </box>
+            <label label="Nothing happened" cssName="placeholder" visible={showPlaceholder} />
+            <box orientation={Gtk.Orientation.VERTICAL} spacing={6} visible={showGroups}>
               <For each={groups}>
                 {([key, notifs]) => <NotificationGroup groupKey={key} notifications={notifs} />}
               </For>
@@ -37,9 +91,12 @@ export function Notifications() {
           </box>
         </AnimatedScrolledWindow>
       </popover>
-      {iconManager.getNotificationsIcon("bell")}
     </menubutton>
-  )
+  ) as Gtk.Widget
+
+  widget.connect("unrealize", destroyOsd)
+
+  return widget
 }
 
 type NotificationGroupProps = {
@@ -105,11 +162,11 @@ function NotificationGroup({ groupKey, notifications: notifs }: NotificationGrou
   )
 }
 
-type NotificationBodyParams = {
+type NotificationBodyProps = {
   notification: AstalNotifd.Notification
 }
 
-function NotificationBody({ notification }: NotificationBodyParams) {
+function NotificationBody({ notification }: NotificationBodyProps) {
   const image = createBinding(notification, "image")
 
   return (

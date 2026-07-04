@@ -1,5 +1,9 @@
+import { Gtk } from "ags/gtk4";
 import GObject from "ags/gobject";
 import AstalNotifd from "gi://AstalNotifd";
+import GLib from "gi://GLib";
+import Gio from "gi://Gio";
+import { getDataDir } from "../../utils";
 
 type NotificationTree = Map<string, Array<AstalNotifd.Notification>>
 
@@ -8,6 +12,10 @@ class NotificationsManager extends GObject.Object {
     GObject.registerClass({
       Properties: {
         "tree": GObject.ParamSpec.jsobject("tree", "tree", "tree", GObject.ParamFlags.READABLE),
+        "dnd": GObject.ParamSpec.boolean("dnd", "dnd", "dnd",
+          GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE, false),
+        "changed": GObject.ParamSpec.jsobject("changed", "changed", "changed",
+          GObject.ParamFlags.READABLE),
       },
     }, this)
   }
@@ -15,6 +23,10 @@ class NotificationsManager extends GObject.Object {
   private readonly notifd = AstalNotifd.get_default()
   private _tree: NotificationTree = new Map()
   private idToKey = new Map<number, string>()
+  private _dnd: boolean = false
+  private _soundEnable: boolean = true
+  private _soundFile: string = "sounds/notification.oga"
+  private _soundVolume: number = 0.5
 
   constructor() {
     super()
@@ -24,6 +36,34 @@ class NotificationsManager extends GObject.Object {
 
   get tree(): NotificationTree {
     return this._tree
+  }
+
+  get dnd(): boolean { return this._dnd }
+  set dnd(v: boolean) {
+    if (this._dnd === v) return
+    this._dnd = v
+    this.notify("dnd")
+    this.notify("changed")
+  }
+
+  get changed(): boolean { return true }
+
+  get soundEnable(): boolean { return this._soundEnable }
+  set soundEnable(v: boolean) {
+    if (this._soundEnable === v) return
+    this._soundEnable = v
+  }
+
+  get soundFile(): string { return this._soundFile }
+  set soundFile(v: string) {
+    if (this._soundFile === v) return
+    this._soundFile = v
+  }
+
+  get soundVolume(): number { return this._soundVolume }
+  set soundVolume(v: number) {
+    if (this._soundVolume === v) return
+    this._soundVolume = v
   }
 
   dismiss(key: string) {
@@ -43,6 +83,9 @@ class NotificationsManager extends GObject.Object {
     this.idToKey.set(id, key)
     this._tree = tree
     this.notify("tree")
+    this.notify("changed")
+
+    if (!this._dnd && this._soundEnable) this.playSound()
   }
 
   private remove(id: number) {
@@ -66,6 +109,23 @@ class NotificationsManager extends GObject.Object {
     this.idToKey.delete(id)
     this._tree = tree
     this.notify("tree")
+    this.notify("changed")
+  }
+
+  private playSound() {
+    const raw = this._soundFile
+    const path = raw.startsWith("/") ? raw : `${getDataDir()}/${raw}`
+
+    if (!GLib.file_test(path, GLib.FileTest.IS_REGULAR)) {
+      console.warn(`[Notifications] sound file not found: ${path}`)
+      return
+    }
+
+    const file = Gio.File.new_for_path(path)
+    const media = Gtk.MediaFile.new_for_file(file)
+
+    media.volume = this._soundVolume
+    media.play()
   }
 }
 

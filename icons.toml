@@ -6,7 +6,9 @@ collapsedv = ""
 refresh = "󰑓"
 
 [notifications]
-bell = ""
+none = "󰂚"
+some = "󱅫"
+dnd = "󱏧"
 
 [battery]
 charging = ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]

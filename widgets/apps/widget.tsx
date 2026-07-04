@@ -5,26 +5,15 @@ import GLib from "gi://GLib"
 import type { Widget } from "../registry"
 import Button from "../../components/Button"
 import { Notifications } from "./Notifications"
+import type { NotificationsConfig } from "./Notifications"
 import styles from "./styles.scss"
 
-const trayService = AstalTray.get_default()
+const tray = AstalTray.get_default()
 
 type AppsConfig = {
   bg: string
   tray: { hover: { bg: string } }
-  notifications: {
-    hover: { bg: string }
-    popup: {
-      bg: string
-      group: {
-        bg: string
-        app: { fg: string }
-        summary: { fg: string }
-        delete: { fg: string }
-        expand: { fg: string }
-      }
-    }
-  }
+  notifications: NotificationsConfig
 }
 
 export const widget = { render, css } satisfies Widget<AppsConfig>
@@ -34,29 +23,32 @@ function css(cfg: AppsConfig) {
     vars: {
       "--apps-bg": cfg.bg,
       "--tray-hover-bg": cfg.tray.hover.bg,
-      "--notifications-hover-bg": cfg.notifications.hover.bg,
+      "--notifications-fg": cfg.notifications.fg,
       "--notifications-popup-bg": cfg.notifications.popup.bg,
-      "--notifications-group-bg": cfg.notifications.popup.group.bg,
-      "--notifications-app-fg": cfg.notifications.popup.group.app.fg,
-      "--notifications-summary-fg": cfg.notifications.popup.group.summary.fg,
-      "--notifications-delete-fg": cfg.notifications.popup.group.delete.fg,
-      "--notifications-expand-fg": cfg.notifications.popup.group.expand.fg,
+      "--notifications-popup-header-fg": cfg.notifications.popup.header.fg,
+      "--notifications-popup-placeholder-fg": cfg.notifications.popup.placeholder.fg,
+      "--notifications-popup-group-bg": cfg.notifications.popup.group.bg,
+      "--notifications-popup-app-fg": cfg.notifications.popup.group.app.fg,
+      "--notifications-popup-summary-fg": cfg.notifications.popup.group.summary.fg,
+      "--notifications-popup-delete-fg": cfg.notifications.popup.group.delete.fg,
+      "--notifications-popup-expand-fg": cfg.notifications.popup.group.expand.fg,
+      "--notifications-osd-progress-fg": cfg.notifications.osd.progress.fg,
     },
     css: styles,
   }
 }
 
-function render({ }: AppsConfig) {
+function render({ notifications }: AppsConfig) {
   return (
     <box cssName="apps" spacing={2}>
       <Tray />
-      <Notifications />
+      <Notifications {...notifications} />
     </box>
   ) as Gtk.Widget
 }
 
 function Tray() {
-  const items = createBinding(trayService, "items")
+  const items = createBinding(tray, "items")
     // filters a weird empty entry
     .as((its) => its.filter((it) => it.get_title() !== null))
 
