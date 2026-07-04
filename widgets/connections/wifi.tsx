@@ -47,7 +47,7 @@ function WiFiControls({ enabled }: WiFiControlsProps) {
         sensitive={enabled.as(e => e && !scanning())}
         onLeftClick={() => { if (wifi.enabled && !wifi.scanning) wifi.scan() }}
       >
-        <label label="󰑓" />
+        <label label={iconManager.getGeneralIcon("refresh")} />
       </Button>
     </>
   )

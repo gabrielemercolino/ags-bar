@@ -39,7 +39,7 @@ function BluetoothControls({ powered }: BluetoothControlsProps) {
         sensitive={powered.as(p => p && !discovering())}
         onLeftClick={() => { if (powered.peek() && !adapter.discovering) adapter.start_discovery() }}
       >
-        <label label="󰑓" />
+        <label label={iconManager.getGeneralIcon("refresh")} />
       </Button>
     </>
   )

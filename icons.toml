@@ -1,3 +1,10 @@
+[general]
+close = ""
+expanded = ""
+collapsedh = ""
+collapsedv = ""
+refresh = "󰑓"
+
 [notifications]
 bell = ""
 

@@ -42,6 +42,11 @@ class IconManager {
     return this.icons.network[params.type]
   }
 
+
+  getGeneralIcon(key: string) {
+    return this.icons.general[key]
+  }
+
   getNotificationsIcon(key: string) {
     return this.icons.notifications[key]
   }

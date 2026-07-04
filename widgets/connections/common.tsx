@@ -1,5 +1,6 @@
 import { Accessor, For } from "ags"
 import { Gtk } from "ags/gtk4"
+import { iconManager } from "../../managers/IconManager"
 import Button from "../../components/Button"
 import AnimatedScrolledWindow from "../../components/AnimatedScrolledWindow"
 
@@ -13,7 +14,7 @@ export function SectionHeader({ title, expanded, onToggle }: SectionHeaderProps)
   return (
     <Button onLeftClick={onToggle} hexpand>
       <box spacing={8}>
-        <label label={expanded.as(e => e ? "▼" : "▶")} />
+        <label label={expanded.as(e => e ? iconManager.getGeneralIcon("expanded") : iconManager.getGeneralIcon("collapsedh"))} />
         <label label={title} halign={Gtk.Align.START} hexpand />
       </box>
     </Button>
