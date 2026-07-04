@@ -1,25 +1,33 @@
-import { Accessor, createState } from "ags";
+import GObject from "ags/gobject";
 import AstalNotifd from "gi://AstalNotifd";
 
 type NotificationTree = Map<string, Array<AstalNotifd.Notification>>
 
-export class NotificationsManager {
-  private readonly notifd = AstalNotifd.get_default()
+class NotificationsManager extends GObject.Object {
+  static {
+    GObject.registerClass({
+      Properties: {
+        "tree": GObject.ParamSpec.jsobject("tree", "tree", "tree", GObject.ParamFlags.READABLE),
+      },
+    }, this)
+  }
 
-  private tree = createState<NotificationTree>(new Map())
+  private readonly notifd = AstalNotifd.get_default()
+  private _tree: NotificationTree = new Map()
   private idToKey = new Map<number, string>()
 
   constructor() {
+    super()
     this.notifd.connect("notified", (_, id) => this.add(id))
     this.notifd.connect("resolved", (_, id) => this.remove(id))
   }
 
-  getTree(): Accessor<NotificationTree> {
-    return this.tree[0]
+  get tree(): NotificationTree {
+    return this._tree
   }
 
   dismiss(key: string) {
-    this.tree[0]().get(key)?.forEach(n => n.dismiss())
+    this._tree.get(key)?.forEach(n => n.dismiss())
   }
 
   private add(id: number) {
@@ -28,23 +36,20 @@ export class NotificationsManager {
     const summary = notification.get_summary()
     const key = `${app}:${summary}`
 
-    const [getTree, setTree] = this.tree
-    const tree = new Map(getTree())
-
+    const tree = new Map(this._tree)
     const group = tree.get(key) || []
     tree.set(key, [...group, notification])
 
     this.idToKey.set(id, key)
-    setTree(tree)
+    this._tree = tree
+    this.notify("tree")
   }
 
   private remove(id: number) {
     const key = this.idToKey.get(id)
     if (key === undefined) return
 
-    const [getTree, setTree] = this.tree
-    const tree = new Map(getTree())
-
+    const tree = new Map(this._tree)
     const notifications = tree.get(key)
     if (!notifications) {
       this.idToKey.delete(id)
@@ -59,6 +64,9 @@ export class NotificationsManager {
     }
 
     this.idToKey.delete(id)
-    setTree(tree)
+    this._tree = tree
+    this.notify("tree")
   }
 }
+
+export const notifications = new NotificationsManager()

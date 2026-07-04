@@ -1,57 +1,60 @@
-import { createBinding, createState, With } from "ags"
+import { createBinding, createState, For } from "ags"
 import { Gdk, Gtk } from "ags/gtk4"
 import AstalNotifd from "gi://AstalNotifd"
 import Pango from "gi://Pango"
 import { iconManager } from "../../managers/IconManager"
 import Button from "../../components/Button"
-import { NotificationsManager } from "./NotificationsManager"
+import { notifications } from "./NotificationsManager"
+import AnimatedScrolledWindow from "../../components/AnimatedScrolledWindow"
 
-const manager = new NotificationsManager()
+let popupRef: Gtk.Popover | null = null
 
 export function Notifications() {
+  const groups = createBinding(notifications, "tree").as(t => Array.from(t))
+  const showPlaceholder = createBinding(notifications, "tree").as(t => t.size === 0)
+  const showGroups = showPlaceholder.as(p => !p)
+
   return (
     <menubutton
       cssName="notifications"
       cursor={Gdk.Cursor.new_from_name("pointer", null)}
     >
-      <popover cssName="pop-up" widthRequest={300}>
-        <scrolledwindow
+      <popover cssName="pop-up" widthRequest={300} $={(self) => { popupRef = self }}>
+        <AnimatedScrolledWindow
+          trigger={groups}
           hscrollbarPolicy={Gtk.PolicyType.NEVER}
           maxContentHeight={300}
           maxContentWidth={250}
           propagateNaturalHeight
         >
-          <With value={manager.getTree()}>
-            {
-              (tree) => (
-                <box orientation={Gtk.Orientation.VERTICAL} spacing={12} cssName="notifications-container">
-                  {tree.size === 0 ? <label label="No notifications" cssName="placeholder" />
-                    : Array.from(tree)
-                      .map(([key, notifications]) => <NotificationGroup groupKey={key} notifications={notifications} />)
-                  }
-                </box>
-              )
-            }
-          </With>
-        </scrolledwindow>
+          <box orientation={Gtk.Orientation.VERTICAL} spacing={12} cssName="notifications-container">
+            <label label="No notifications" cssName="placeholder" visible={showPlaceholder} />
+            <box orientation={Gtk.Orientation.VERTICAL} spacing={12} visible={showGroups}>
+              <For each={groups}>
+                {([key, notifs]) => <NotificationGroup groupKey={key} notifications={notifs} />}
+              </For>
+            </box>
+          </box>
+        </AnimatedScrolledWindow>
       </popover>
       {iconManager.getNotificationsIcon("bell")}
     </menubutton>
   )
 }
 
-type NotificationGroupParams = {
+type NotificationGroupProps = {
   groupKey: string
   notifications: Array<AstalNotifd.Notification>
 }
 
-function NotificationGroup({ groupKey, notifications }: NotificationGroupParams) {
+function NotificationGroup({ groupKey, notifications: notifs }: NotificationGroupProps) {
   const [expanded, setExpanded] = createState(false)
-  const first = notifications[0]
+  const first = notifs[0]
 
   const handleBodyClick = () => {
     first.get_actions().at(0)?.invoke()
-    manager.dismiss(groupKey)
+    notifications.dismiss(groupKey)
+    popupRef?.popdown()
   }
 
   return (
@@ -69,22 +72,27 @@ function NotificationGroup({ groupKey, notifications }: NotificationGroupParams)
             cssName="summary"
           />
         </box>
-        <Button cssName="delete-button" onLeftClick={() => manager.dismiss(groupKey)} valign={Gtk.Align.START}>{iconManager.getGeneralIcon("close")}</Button>
+        <Button
+          cssName="delete-button"
+          onLeftClick={() => notifications.dismiss(groupKey)}
+          valign={Gtk.Align.START}
+        >
+          {iconManager.getGeneralIcon("close")}
+        </Button>
       </box>
 
       <Button onLeftClick={handleBodyClick} cssName="bodies-button">
-        <With value={expanded}>
-          {(isExpanded) => (
-            <box orientation={Gtk.Orientation.VERTICAL} cssName="bodies" spacing={4}>
-              {(isExpanded ? notifications : notifications.slice(-3)).map(n => (
-                <NotificationBody notification={n} />
-              ))}
-            </box>
-          )}
-        </With>
+        <box orientation={Gtk.Orientation.VERTICAL} cssName="bodies" spacing={4}>
+          <box visible={notifs.length > 3}>
+            <revealer revealChild={expanded} transitionType={Gtk.RevealerTransitionType.SLIDE_DOWN}>
+              {notifs.slice(0, -3).map(n => <NotificationBody notification={n} />)}
+            </revealer>
+          </box>
+          {notifs.slice(-3).map(n => <NotificationBody notification={n} />)}
+        </box>
       </Button>
 
-      {notifications.length > 3 && (
+      {notifs.length > 3 && (
         <Button
           onLeftClick={() => setExpanded(!expanded())}
           halign={Gtk.Align.START}
