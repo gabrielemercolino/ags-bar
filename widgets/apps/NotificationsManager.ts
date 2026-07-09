@@ -27,11 +27,14 @@ class NotificationsManager extends GObject.Object {
   private _soundEnable: boolean = true
   private _soundFile: string = "sounds/notification.oga"
   private _soundVolume: number = 0.5
+  private _media: Gtk.MediaFile | null = null
+  private _soundFilePath: string | null = null
+  private notifdHandlers: number[] = []
 
   constructor() {
     super()
-    this.notifd.connect("notified", (_, id) => this.add(id))
-    this.notifd.connect("resolved", (_, id) => this.remove(id))
+    this.notifdHandlers.push(this.notifd.connect("notified", (_, id) => this.add(id)))
+    this.notifdHandlers.push(this.notifd.connect("resolved", (_, id) => this.remove(id)))
   }
 
   get tree(): NotificationTree {
@@ -121,11 +124,32 @@ class NotificationsManager extends GObject.Object {
       return
     }
 
-    const file = Gio.File.new_for_path(path)
-    const media = Gtk.MediaFile.new_for_file(file)
+    if (this._media && this._soundFilePath !== path) {
+      this._media.pause()
+      this._media.set_file(Gio.File.new_for_path(path))
+      this._soundFilePath = path
+    } else if (this._media === null) {
+      this._media = Gtk.MediaFile.new_for_file(Gio.File.new_for_path(path))
+      this._soundFilePath = path
+    }
 
-    media.volume = this._soundVolume
-    media.play()
+    if (this._media) {
+      this._media.pause()
+      this._media.seek(0)
+      this._media.volume = this._soundVolume
+      this._media.play()
+    }
+  }
+
+  destroy() {
+    this._media?.pause()
+    this._media = null
+    this._soundFilePath = null
+
+    for (const id of this.notifdHandlers) {
+      this.notifd.disconnect(id)
+    }
+    this.notifdHandlers = []
   }
 }
 

@@ -126,6 +126,8 @@ export class NotificationsOSDManager extends GObject.Object {
   private _list: OSDMessage[] = []
   private config: NotifOSDConfig
   private nextId = 0
+  private notifdHandlers: number[] = []
+  private timerIds: number[] = []
 
   get list(): OSDMessage[] {
     return this._list
@@ -135,19 +137,19 @@ export class NotificationsOSDManager extends GObject.Object {
     super()
     this.config = config
 
-    this.notifd.connect("notified", (_src, id: number) => {
+    this.notifdHandlers.push(this.notifd.connect("notified", (_src, id: number) => {
       const notification = this.notifd.get_notification(id)
       if (notification) this.add(notification)
-    })
+    }))
 
-    this.notifd.connect("resolved", (_src, id: number) => {
+    this.notifdHandlers.push(this.notifd.connect("resolved", (_src, id: number) => {
       for (const entry of this._list) {
         if (entry.notification.get_id() === id) {
           this.remove(entry.id, false)
           return
         }
       }
-    })
+    }))
   }
 
   private add(notification: AstalNotifd.Notification) {
@@ -158,12 +160,12 @@ export class NotificationsOSDManager extends GObject.Object {
       oldest.hide()
       oldest.removing = true
 
-      GLib.timeout_add(GLib.PRIORITY_DEFAULT, 250, () => {
+      this.timerIds.push(GLib.timeout_add(GLib.PRIORITY_DEFAULT, 250, () => {
         oldest.destroy()
         this._list = this._list.filter(e => e.id !== oldest.id)
         this.addEntry(notification)
         return GLib.SOURCE_REMOVE
-      })
+      }))
       return
     }
 
@@ -176,10 +178,10 @@ export class NotificationsOSDManager extends GObject.Object {
     })
     this._list = [...this._list, entry]
     this.notify("list")
-    GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
+    this.timerIds.push(GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
       entry.show()
       return GLib.SOURCE_REMOVE
-    })
+    }))
   }
 
   remove(id: number, immediate: boolean = false) {
@@ -191,12 +193,12 @@ export class NotificationsOSDManager extends GObject.Object {
       this.removeFromList(entry)
     } else {
       entry.hide()
-      GLib.timeout_add(GLib.PRIORITY_DEFAULT, 250, () => {
+      this.timerIds.push(GLib.timeout_add(GLib.PRIORITY_DEFAULT, 250, () => {
         if (this._list.includes(entry)) {
           this.removeFromList(entry)
         }
         return GLib.SOURCE_REMOVE
-      })
+      }))
     }
   }
 
@@ -212,5 +214,15 @@ export class NotificationsOSDManager extends GObject.Object {
     }
     this._list = []
     this.notify("list")
+
+    for (const id of this.notifdHandlers) {
+      this.notifd.disconnect(id)
+    }
+    this.notifdHandlers = []
+
+    for (const id of this.timerIds) {
+      GLib.source_remove(id)
+    }
+    this.timerIds = []
   }
 }

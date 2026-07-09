@@ -40,7 +40,7 @@ export function Notifications({ dnd: defaultDND, osd, sound }: NotificationsConf
     () => NotificationsOSD(monitor, osd),
     (o) => o?.destroy()
   )
-  getOsd()
+  if (!defaultDND) getOsd()
 
   notifications.dnd = defaultDND
   notifications.soundEnable = sound.enable
@@ -94,7 +94,12 @@ export function Notifications({ dnd: defaultDND, osd, sound }: NotificationsConf
     </menubutton>
   ) as Gtk.Widget
 
-  widget.connect("unrealize", destroyOsd)
+  const dndHandler = notifications.connect("notify::dnd", () => notifications.dnd ? destroyOsd() : getOsd())
+
+  widget.connect("unrealize", () => {
+    notifications.disconnect(dndHandler)
+    destroyOsd()
+  })
 
   return widget
 }
