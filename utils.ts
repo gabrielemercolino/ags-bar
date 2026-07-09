@@ -32,11 +32,30 @@ export function getDataDir() {
 
 export function createLazyRoot<T>(factory: () => T, destructor: (val: T | null) => void) {
   let value: T | null = null
-  const get = () => (value ??= createRoot(() => factory()))
+  let disposer: (() => void) | null = null
+
+  // 1. create a reactive root on first call
+  // 2. store the value and the createRoot disposer for later cleanup
+  const get = () => {
+    if (value === null) {
+      value = createRoot((dispose) => {
+        disposer = dispose
+        return factory()
+      })
+    }
+    return value
+  }
+
+  // 1. nulls the cached value
+  // 2. disposes the reactive scop
+  // 3. runs the external destructor with the old value
   const dispose = () => {
     const old = value
     value = null
+    disposer?.()
+    disposer = null
     destructor(old)
   }
+
   return [get, dispose] as const
 }
