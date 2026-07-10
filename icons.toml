@@ -77,7 +77,7 @@ xerolinux = ""
 zorin = ""
 
 [network]
-wired = "󰀂"
+wired = ""
 offline = "󰖪"
 wifi_levels = ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"]
 lock = ""

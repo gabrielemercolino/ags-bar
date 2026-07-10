@@ -182,9 +182,9 @@ function CurrentNetworkDevice() {
   })
 
   return (
-    <box cssName="current-device" orientation={Gtk.Orientation.VERTICAL} spacing={4} hexpand valign={Gtk.Align.END} tooltipText={tooltipName}>
-      <label cssName="icon" label={icon} halign={Gtk.Align.CENTER} hexpand />
-      <label cssName="stats" label={speedLabel} halign={Gtk.Align.CENTER} hexpand />
+    <box cssName="current-device" orientation={Gtk.Orientation.VERTICAL} spacing={4} hexpand tooltipText={tooltipName}>
+      <label cssName="icon" label={icon} hexpand />
+      <label cssName="stats" label={speedLabel} hexpand />
     </box>
   )
 }
@@ -268,7 +268,7 @@ function NetworkBarIcon() {
     return iconManager.getNetworkIcon({ type: "offline" })
   })
 
-  const label = createComputed(() => {
+  const tooltip = createComputed(() => {
     const c = connectivity()
     if (c === AstalNetwork.Primary.WIRED)
       return wiredDevice()?.get_iface() ?? "Unknown"
@@ -277,7 +277,7 @@ function NetworkBarIcon() {
     return "offline"
   })
 
-  return <label label={icon} tooltipText={label} />
+  return <label label={icon} tooltipText={tooltip} />
 }
 
 function BluetoothBarIcon() {
