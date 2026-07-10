@@ -79,7 +79,10 @@ export function Notifications({ dnd: defaultDND, osd, sound }: NotificationsConf
                 halign={Gtk.Align.END}
                 onLeftClick={() => { notifications.dnd = !notifications.dnd }}
               >
-                <label label={dnd.as(d => iconManager.getNotificationsIcon(d ? "dnd" : "none"))} />
+                <label
+                  label={dnd.as(d => iconManager.getNotificationsIcon(d ? "dnd" : "none"))}
+                  tooltipText={dnd.as(d => d ? "DND on" : "DND off")}
+                />
               </Button>
             </box>
             <label label="Nothing happened" cssName="placeholder" visible={showPlaceholder} />
