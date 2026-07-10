@@ -86,3 +86,56 @@ connection {
     }
   }
 }
+
+wifi-auth-overlay {
+  background: transparent;
+
+  container {
+    background: var(--connection-wifi-auth-overlay-backdrop);
+
+    auth-area {
+      background: var(--connection-wifi-auth-overlay-bg);
+      color: var(--connection-wifi-auth-overlay-fg);
+      border-radius: 12px;
+      padding: 24px;
+      min-width: 260px;
+
+      ssid {
+        font-size: 16px;
+      }
+
+      password {
+        background: var(--connection-wifi-auth-overlay-entry-bg);
+        color: var(--connection-wifi-auth-overlay-entry-fg);
+        border-radius: 6px;
+        padding: 6px 10px;
+      }
+
+      error {
+        font-size: 12px;
+        color: red;
+      }
+
+      connect {
+        background: var(--connection-wifi-auth-overlay-button-bg);
+        color: var(--connection-wifi-auth-overlay-button-fg);
+        border-radius: 6px;
+        padding: 6px 14px;
+        font-weight: bold;
+
+        &.scanning label {
+          animation-name: spin;
+          animation-duration: 1s;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+        }
+      }
+
+      cancel {
+        color: var(--connection-wifi-auth-overlay-fg);
+        border-radius: 6px;
+        padding: 6px 14px;
+      }
+    }
+  }
+}

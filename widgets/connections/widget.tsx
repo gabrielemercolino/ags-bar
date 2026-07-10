@@ -8,6 +8,7 @@ import { iconManager } from "../../managers/IconManager"
 import type { Widget } from "../registry"
 import { WiFiSection } from "./wifi"
 import { BluetoothSection } from "./bluetooth"
+import { type WifiAuthOverlayConfig } from "./wifiAuthOverlay"
 import styles from "./styles.scss"
 
 const network = AstalNetwork.get_default()
@@ -17,6 +18,7 @@ const wired = network.get_wired()
 const wifi = network.get_wifi()
 
 type ConnectionConfig = {
+  wifi: { auth_overlay: WifiAuthOverlayConfig },
   bg: string,
   fg: string,
   hover: { fg: string },
@@ -49,12 +51,19 @@ function css(cfg: ConnectionConfig) {
       "--connection-list-bg": cfg.popup.list.bg,
       "--connection-current-bg": cfg.popup.current.bg,
       "--connection-current-fg": cfg.popup.current.fg,
+      "--connection-wifi-auth-overlay-bg": cfg.wifi.auth_overlay.bg,
+      "--connection-wifi-auth-overlay-fg": cfg.wifi.auth_overlay.fg,
+      "--connection-wifi-auth-overlay-backdrop": cfg.wifi.auth_overlay.backdrop,
+      "--connection-wifi-auth-overlay-entry-bg": cfg.wifi.auth_overlay.entry.bg,
+      "--connection-wifi-auth-overlay-entry-fg": cfg.wifi.auth_overlay.entry.fg,
+      "--connection-wifi-auth-overlay-button-bg": cfg.wifi.auth_overlay.button.bg,
+      "--connection-wifi-auth-overlay-button-fg": cfg.wifi.auth_overlay.button.fg,
     },
     css: styles
   }
 }
 
-function render({ }: ConnectionConfig) {
+function render(cfg: ConnectionConfig) {
   return (
     <menubutton cssName="connection" cursor={Gdk.Cursor.new_from_name("pointer", null)}>
       <box spacing={12}>
@@ -63,13 +72,17 @@ function render({ }: ConnectionConfig) {
       </box>
 
       <popover cssName="pop-up">
-        <ConnectionContent />
+        <ConnectionContent authConfig={cfg.wifi.auth_overlay} />
       </popover>
     </menubutton>
   ) as Gtk.Widget
 }
 
-function ConnectionContent() {
+type ConnectionContentProps = {
+  authConfig: WifiAuthOverlayConfig
+}
+
+function ConnectionContent({ authConfig }: ConnectionContentProps) {
   return (
     <box orientation={Gtk.Orientation.VERTICAL} spacing={10} widthRequest={280}>
       <box spacing={10} homogeneous>
@@ -77,7 +90,7 @@ function ConnectionContent() {
         <CurrentBluetoothDevice />
       </box>
 
-      <WiFiSection />
+      <WiFiSection config={authConfig} />
       <BluetoothSection />
     </box>
   )

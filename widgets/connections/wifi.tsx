@@ -1,25 +1,69 @@
 import { Accessor, createBinding, createComputed, createState } from "ags"
 import { Gtk } from "ags/gtk4"
 import AstalNetwork from "gi://AstalNetwork"
+import GLib from "gi://GLib"
+import NM from "gi://NM"
 import Pango from "gi://Pango"
 import { iconManager } from "../../managers/IconManager"
-import { debounced } from "../../utils"
+import { createLazyRoot, debounced } from "../../utils"
+import { BarContext } from "../../BarContext"
+import { WifiAuthOverlay, type WifiAuthOverlayConfig } from "./wifiAuthOverlay"
 import { SectionHeader, SectionContent } from "./common"
 import Button from "../../components/Button"
 
-const wifi = AstalNetwork.get_default().get_wifi()
+const network = AstalNetwork.get_default()
+const wifi = network.get_wifi()
+const nmClient = network.get_client()
 
-function startScanWithRetry(dev: AstalNetwork.Wifi, maxAttempts = 20) {
-  let attempts = 0
+type WifiSectionProps = {
+  config: WifiAuthOverlayConfig
+}
 
-  const id = setInterval(() => {
-    attempts++
-    if (!dev.enabled || dev.scanning || attempts >= maxAttempts) {
-      clearInterval(id)
-      return
-    }
-    try { dev.scan() } catch { }
-  }, 500)
+export function WiFiSection({ config }: WifiSectionProps) {
+  const [expanded, setExpanded] = createState(false)
+
+  const { monitor } = BarContext.use()
+  const [getOverlay, destroyOverlay] = createLazyRoot(
+    () => WifiAuthOverlay(monitor, config),
+    (o) => o?.destroy()
+  )
+
+  const enabled = wifi
+    ? createBinding(wifi, "enabled")
+    : new Accessor(() => false)
+
+  const debouncedEnabled = debounced(enabled, 150)
+
+  const currentAP = wifi
+    ? createBinding(wifi, "active_access_point")
+    : new Accessor(() => null)
+
+  const allAP = wifi
+    ? createBinding(wifi, "access_points")
+    : new Accessor(() => [])
+
+  const sortedAP = createComputed(() =>
+    (allAP() ?? []).toSorted((a, b) => {
+      if (a === currentAP()) return -1
+      if (b === currentAP()) return 1
+      return b.strength - a.strength
+    })
+  )
+
+  const shouldReveal = createComputed(() => expanded() && sortedAP().length > 0)
+
+  return (
+    <box cssName="section" orientation={Gtk.Orientation.VERTICAL} $={(self) => { self.connect("unrealize", destroyOverlay) }}>
+      <box cssName="header" spacing={8}>
+        <SectionHeader title="WiFi" expanded={expanded} onToggle={() => setExpanded(!expanded.peek())} />
+        <WiFiControls enabled={debouncedEnabled} />
+      </box>
+
+      <SectionContent show={shouldReveal} items={sortedAP}>
+        {(ap) => <WiFiDeviceRow accessPoint={ap} activeAp={currentAP} onPasswordRequired={(ssid, connect) => getOverlay().open(ssid, connect)} />}
+      </SectionContent>
+    </box >
+  )
 }
 
 type WiFiControlsProps = {
@@ -56,9 +100,10 @@ function WiFiControls({ enabled }: WiFiControlsProps) {
 type WiFiDeviceRowProps = {
   accessPoint: AstalNetwork.AccessPoint
   activeAp: Accessor<AstalNetwork.AccessPoint | null>
+  onPasswordRequired?: (ssid: string, connect: (password: string, onSuccess: () => void, onFailure: () => void) => void) => void
 }
 
-function WiFiDeviceRow({ accessPoint, activeAp }: WiFiDeviceRowProps) {
+function WiFiDeviceRow({ accessPoint, activeAp, onPasswordRequired }: WiFiDeviceRowProps) {
   const connected = activeAp.as(c => c?.get_bssid() === accessPoint.get_bssid() || false)
   const strength = createBinding(accessPoint, "strength")
   const name = accessPoint.get_ssid() || accessPoint.get_bssid()
@@ -68,7 +113,24 @@ function WiFiDeviceRow({ accessPoint, activeAp }: WiFiDeviceRowProps) {
     <Button
       cssName="device"
       class={connected.as(c => c ? "connected" : "")}
-      onLeftClick={() => accessPoint.activate(null, () => { })}>
+      onLeftClick={() => {
+        const profile = findProfileForAp(accessPoint)
+        const isBssidPinned = profile?.get_setting_wireless()?.get_mac_address() != null
+        const showPrompt = isSecured(accessPoint) && !profile
+
+        if (showPrompt) {
+          onPasswordRequired?.(name, (password, onSuccess) => {
+            accessPoint.activate(password, () => { })
+            onSuccess()
+          })
+        } else if (profile && !isBssidPinned) {
+          nmClient.activate_connection_async(profile, wifi?.device ?? null, accessPoint.get_path(), null, (_client, result) => {
+            nmClient.activate_connection_finish(result)
+          })
+        } else {
+          accessPoint.activate(null, () => { })
+        }
+      }}>
       <box spacing={8}>
         <label label={strength.as(s => iconManager.getNetworkIcon({ type: "wifi", strength: s }))} />
         <label
@@ -84,43 +146,75 @@ function WiFiDeviceRow({ accessPoint, activeAp }: WiFiDeviceRowProps) {
   )
 }
 
-export function WiFiSection() {
-  const [expanded, setExpanded] = createState(false)
+function isSecured(ap: AstalNetwork.AccessPoint): boolean {
+  return (ap.wpa_flags ?? 0) > 0 || (ap.rsn_flags ?? 0) > 0
+}
 
-  const enabled = wifi
-    ? createBinding(wifi, "enabled")
-    : new Accessor(() => false)
+function ssidToString(ssid: GLib.Bytes): string {
+  return String.fromCharCode(...ssid.toArray())
+}
 
-  const debouncedEnabled = debounced(enabled, 150)
+function findProfileForAp(ap: AstalNetwork.AccessPoint): NM.RemoteConnection | null {
+  const bssid = ap.get_bssid().toLowerCase()
+  const ssid = ap.get_ssid()
 
-  const currentAP = wifi
-    ? createBinding(wifi, "active_access_point")
-    : new Accessor(() => null)
+  let ssidMatch: NM.RemoteConnection | null = null
 
-  const allAP = wifi
-    ? createBinding(wifi, "access_points")
-    : new Accessor(() => [])
+  for (const conn of nmClient.get_connections()) {
+    const wireless = conn.get_setting_wireless()
+    if (!wireless) continue
 
-  const sortedAP = createComputed(() =>
-    (allAP() ?? []).toSorted((a, b) => {
-      if (a === currentAP()) return -1
-      if (b === currentAP()) return 1
-      return b.strength - a.strength
-    })
-  )
+    // Tier 1: BSSID match
+    const connMac = wireless.get_mac_address()
+    if (connMac && String(connMac).toLowerCase() === bssid) {
+      const security = conn.get_setting_wireless_security()
+      if (security || conn.get_setting_802_1x())
+        return conn
+    }
 
-  const shouldReveal = createComputed(() => expanded() && sortedAP().length > 0)
+    // Tier 2: SSID fallback
+    if (!connMac && ssid) {
+      const connSsid = wireless.get_ssid()
+      if (!connSsid || ssidToString(connSsid) !== ssid) continue
+      const security = conn.get_setting_wireless_security()
+      if (!security && !conn.get_setting_802_1x()) continue
+      if (!hasStoredPassword(conn)) continue
+      if (!ssidMatch)
+        ssidMatch = conn
+    }
+  }
 
-  return (
-    <box cssName="section" orientation={Gtk.Orientation.VERTICAL}>
-      <box cssName="header" spacing={8}>
-        <SectionHeader title="WiFi" expanded={expanded} onToggle={() => setExpanded(!expanded.peek())} />
-        <WiFiControls enabled={debouncedEnabled} />
-      </box>
+  return ssidMatch
+}
 
-      <SectionContent show={shouldReveal} items={sortedAP}>
-        {(ap) => <WiFiDeviceRow accessPoint={ap} activeAp={currentAP} />}
-      </SectionContent>
-    </box >
-  )
+function hasStoredPassword(conn: NM.RemoteConnection): boolean {
+  const security = conn.get_setting_wireless_security()
+  if (!security) return false
+
+  const keyMgmt = security.get_key_mgmt()
+
+  if (keyMgmt === "ieee8021x" || keyMgmt === "wpa-eap") {
+    const ieee8021x = conn.get_setting_802_1x()
+    if (!ieee8021x) return false
+    return ieee8021x.get_password_flags() === NM.SettingSecretFlags.NONE
+  }
+
+  const flags = keyMgmt === "none"
+    ? security.get_wep_key_flags()
+    : security.get_psk_flags()
+
+  return flags === NM.SettingSecretFlags.NONE
+}
+
+function startScanWithRetry(dev: AstalNetwork.Wifi, maxAttempts = 20) {
+  let attempts = 0
+
+  const id = setInterval(() => {
+    attempts++
+    if (!dev.enabled || dev.scanning || attempts >= maxAttempts) {
+      clearInterval(id)
+      return
+    }
+    try { dev.scan() } catch { }
+  }, 500)
 }

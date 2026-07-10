@@ -112,6 +112,19 @@ device.fg = "base05"
 device.connected.fg = "base0C"
 current = { bg = "base00", fg = "base0C" }
 
+[widgets.connections.wifi.auth_overlay]
+bg = "base00"
+fg = "base05"
+backdrop = "alpha(var(--base00), 0.5)"
+
+[widgets.connections.wifi.auth_overlay.entry]
+bg = "base01"
+fg = "base05"
+
+[widgets.connections.wifi.auth_overlay.button]
+bg = "base0C"
+fg = "base01"
+
 [widgets.apps]
 bg = "base01"
 
