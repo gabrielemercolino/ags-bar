@@ -151,7 +151,7 @@ function CurrentNetworkDevice() {
     if (c === AstalNetwork.Primary.WIRED)
       return iconManager.getNetworkIcon({ type: "wired" })
     if (c === AstalNetwork.Primary.WIFI)
-      return iconManager.getNetworkIcon({ type: "wifi", strength: wifi?.strength ?? 0 })
+      return iconManager.getNetworkIcon({ type: "wifi", strength: createBinding(wifi!, "strength")() })
     return iconManager.getNetworkIcon({ type: "offline" })
   })
 
@@ -264,7 +264,7 @@ function NetworkBarIcon() {
     if (c === AstalNetwork.Primary.WIRED)
       return iconManager.getNetworkIcon({ type: "wired" })
     if (c === AstalNetwork.Primary.WIFI)
-      return iconManager.getNetworkIcon({ type: "wifi", strength: wifi?.strength ?? 0 })
+      return iconManager.getNetworkIcon({ type: "wifi", strength: createBinding(wifi!, "strength")() })
     return iconManager.getNetworkIcon({ type: "offline" })
   })
 
