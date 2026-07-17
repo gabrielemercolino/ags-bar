@@ -56,7 +56,7 @@ function secondsToHM(seconds: number) {
   var minutes = Math.floor((seconds % 3600) / 60)
 
   const h = hours <= 0 ? "" : `${hours}`
-  const m = minutes <= 0 ? "" : `:${minutes > 10 ? minutes : `0${minutes}`}`
+  const m = minutes <= 0 ? "" : `:${minutes >= 10 ? minutes : `0${minutes}`}`
 
   return h + m
 }
