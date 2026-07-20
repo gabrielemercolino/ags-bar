@@ -40,7 +40,7 @@ function css(cfg: AppsConfig) {
 
 function render({ notifications }: AppsConfig) {
   return (
-    <box cssName="apps" spacing={2}>
+    <box cssName="apps" spacing={8}>
       <Tray />
       <Notifications {...notifications} />
     </box>

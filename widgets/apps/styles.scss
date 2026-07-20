@@ -1,7 +1,7 @@
 apps {
   background: var(--apps-bg);
   border-radius: 10px;
-  padding: 4px;
+  padding: 4px 10px;
 
   tray {
     background: transparent;
@@ -10,7 +10,6 @@ apps {
       item {
         background: transparent;
         border: none;
-        padding: 2px;
         border-radius: 8px;
 
         &:hover {
@@ -22,12 +21,11 @@ apps {
 
   notifications {
     background: transparent;
-    padding: 0 4px;
     border-radius: 8px;
 
     icon {
       color: var(--notifications-fg);
-      font-size: 1.1em;
+      font-size: 1.2em;
     }
   }
 
