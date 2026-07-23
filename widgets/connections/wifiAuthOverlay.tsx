@@ -109,9 +109,21 @@ export function WifiAuthOverlay(monitor: Gdk.Monitor, { }: WifiAuthOverlayConfig
               cssName="connect"
               onClicked={handleConnect}
               sensitive={connecting.as(c => !c)}
-              class={connecting.as(c => c ? "scanning" : "")}
             >
-              <label label={connecting.as(c => c ? iconManager.getGeneralIcon("refresh") : "Connect")} />
+              <box>
+                <label
+                  halign={Gtk.Align.CENTER}
+                  valign={Gtk.Align.CENTER}
+                  visible={connecting.as(c => !c)}
+                  label="Connect"
+                />
+                <Gtk.Spinner
+                  visible={connecting}
+                  spinning={connecting}
+                  widthRequest={14}
+                  heightRequest={14}
+                />
+              </box>
             </button>
           </box>
         </box>

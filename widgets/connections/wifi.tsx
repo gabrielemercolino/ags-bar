@@ -87,11 +87,23 @@ function WiFiControls({ enabled }: WiFiControlsProps) {
         }}
       />
       <Button
-        class={scanning.as(s => s ? "scanning" : "")}
         sensitive={enabled.as(e => e && !scanning())}
         onLeftClick={() => { if (wifi.enabled && !wifi.scanning) wifi.scan() }}
       >
-        <label label={iconManager.getGeneralIcon("refresh")} />
+        <box>
+          <label
+            halign={Gtk.Align.CENTER}
+            valign={Gtk.Align.CENTER}
+            visible={scanning.as(s => !s)}
+            label={iconManager.getGeneralIcon("refresh")}
+          />
+          <Gtk.Spinner
+            visible={scanning}
+            spinning={scanning}
+            widthRequest={14}
+            heightRequest={14}
+          />
+        </box>
       </Button>
     </>
   )

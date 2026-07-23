@@ -35,11 +35,23 @@ function BluetoothControls({ powered }: BluetoothControlsProps) {
         }}
       />
       <Button
-        class={discovering.as(d => d ? "scanning" : "")}
         sensitive={powered.as(p => p && !discovering())}
         onLeftClick={() => { if (powered.peek() && !adapter.discovering) adapter.start_discovery() }}
       >
-        <label label={iconManager.getGeneralIcon("refresh")} />
+        <box>
+          <label
+            halign={Gtk.Align.CENTER}
+            valign={Gtk.Align.CENTER}
+            visible={discovering.as(d => !d)}
+            label={iconManager.getGeneralIcon("refresh")}
+          />
+          <Gtk.Spinner
+            visible={discovering}
+            spinning={discovering}
+            widthRequest={14}
+            heightRequest={14}
+          />
+        </box>
       </Button>
     </>
   )
