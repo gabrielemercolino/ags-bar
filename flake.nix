@@ -2,7 +2,7 @@
   description = "My Ags bar";
 
   inputs = {
-    nixpkgs.url = "nixpkgs/421eebfd0ec7bccd4abe826ce62d7e6e83129493";
+    nixpkgs.url = "nixpkgs/e7439b6b14ad3cc35d05608ebca9bce01a25f5f8";
     ags = {
       url = "github:aylur/ags";
       inputs.nixpkgs.follows = "nixpkgs";
