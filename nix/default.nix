@@ -8,11 +8,16 @@ let
   system = "x86_64-linux";
   pkgs = import nixpkgs { inherit system; };
 
+  astal-toplevel = pkgs.callPackage ./astal-toplevel {
+    astal-wl = ags.packages.${system}.wl;
+  };
+
   extraPackages = with ags.packages.${system}; [
     io
     astal4
     workspace
     wl
+    astal-toplevel
     network
     bluetooth
     wireplumber
