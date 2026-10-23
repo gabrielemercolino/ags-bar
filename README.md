@@ -1,6 +1,6 @@
 # AGS Bar
 
-My status bar for Hyprland built with [AGS](https://github.com/Aylur/ags).
+A status bar for Wayland compositors built with [AGS](https://github.com/Aylur/ags).
 
 ## Features
 
@@ -80,7 +80,7 @@ The bar automatically restarts on configuration changes via systemd if enabled.
 
 - **Power Controls**: Shutdown, reboot, lock buttons
 - **System Tray**: Application indicators
-- **Workspaces**: Hyprland workspace switcher
+- **Workspaces**: Workspace switcher via `ext-workspace-v1`
 - **Window Title**: Active window title
 - **Network**: WiFi/Ethernet status
 - **Bluetooth**: Device management with connect/disconnect

@@ -1,7 +1,7 @@
 #:schema schema.json
 
 [bar]
-left = ["system", "workspaces/hyprland"]
+left = ["system", "workspaces"]
 center = ["title"]
 right = ["connections", "audio", "battery", "time", "apps"]
 
@@ -32,7 +32,7 @@ fg = "base0D"
 shutdown = "systemctl poweroff"
 reboot = "systemctl reboot"
 lock = "loginctl lock-session"
-logout = "hyprctl dispatch 'hl.dsp.exit()'"
+logout = "sh -c 'loginctl terminate-session $XDG_SESSION_ID'"
 
 [widgets.system.overlay]
 bg = "base00"
@@ -73,7 +73,7 @@ bg = "base01"
 fg = "base0A"
 charging.fg = "base09"
 
-[widgets."workspaces/hyprland"]
+[widgets.workspaces]
 bg = "base01"
 fg = "base05"
 active = { bg = "base05", fg = "base01" }

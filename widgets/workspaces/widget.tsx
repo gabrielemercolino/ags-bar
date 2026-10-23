@@ -1,11 +1,9 @@
 import { createBinding, For } from "ags"
 import { Gtk } from "ags/gtk4"
-import AstalHyprland from "gi://AstalHyprland"
 import type { Widget } from "../registry"
 import Button from "../../components/Button"
 import styles from "./styles.scss"
-
-const hyprland = AstalHyprland.get_default()
+import { compositor, type Workspace } from "../../managers/Compositor"
 
 type WorkspacesConfig = {
   // css
@@ -29,18 +27,14 @@ function css(cfg: WorkspacesConfig) {
 }
 
 function render({ }: WorkspacesConfig) {
-  const workspaces = createBinding(hyprland, "workspaces")
-    .as(wss => wss.toSorted((a, b) => a.id - b.id))
-  const focusedWorkspace = createBinding(hyprland, "focusedWorkspace")
-
   return (
     <box cssName="workspaces">
-      <For each={workspaces}>
-        {(workspace) => (
+      <For each={compositor.workspaces}>
+        {(workspace: Workspace) => (
           <Button
             cssName="workspace"
-            class={focusedWorkspace.as(focused => focused.id === workspace.id ? "active" : "")}
-            onLeftClick={() => hyprland.dispatch("", `hl.dsp.focus({workspace = ${workspace.name}})`)}
+            class={createBinding(workspace, "state").as(() => compositor.isActive(workspace) ? "active" : "")}
+            onLeftClick={() => compositor.activate(workspace)}
           >
             {workspace.name}
           </Button>

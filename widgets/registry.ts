@@ -4,7 +4,7 @@ import { widget as time } from "./time/widget"
 import { widget as title } from "./title/widget"
 import { widget as system } from "./system/widget"
 import { widget as battery } from "./battery/widget"
-import { widget as workspacesHyprland } from "./workspaces-hyprland/widget"
+import { widget as workspaces } from "./workspaces/widget"
 import { widget as audio } from "./audio/widget"
 import { widget as connections } from "./connections/widget"
 import { widget as apps } from "./apps/widget"
@@ -21,7 +21,7 @@ export const registry = {
   title,
   system,
   battery,
-  "workspaces/hyprland": workspacesHyprland,
+  workspaces,
   audio,
   connections,
   apps,

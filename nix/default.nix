@@ -11,7 +11,8 @@ let
   extraPackages = with ags.packages.${system}; [
     io
     astal4
-    hyprland
+    workspace
+    wl
     network
     bluetooth
     wireplumber

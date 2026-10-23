@@ -1,10 +1,8 @@
-import { createBinding, createComputed } from "ags"
-import AstalHyprland from "gi://AstalHyprland"
+import { createComputed } from "ags"
 import type { Widget } from "../registry"
 import { Gtk } from "ags/gtk4"
 import styles from "./styles.scss"
-
-const hyprland = AstalHyprland.get_default()
+import { compositor } from "../../managers/Compositor"
 
 type TitleConfig = {
   variant: "title" | "initialTitle",
@@ -26,13 +24,10 @@ function css(cfg: TitleConfig) {
   }
 }
 
-function render({ variant }: TitleConfig) {
-  const focusedClient = createBinding(hyprland, "focusedClient")
-  const text = createComputed(() => {
-    const fc = focusedClient()
-    if (!fc) return ""
-    return createBinding(fc, variant)() ?? ""
-  })
+function render({ }: TitleConfig) {
+  // `variant` (title vs initialTitle) is honored once the cross-compositor
+  // title source (AstalToplevel) is wired into Compositor.focusedTitle.
+  const text = createComputed(() => compositor.focusedTitle())
 
   return (
     <label

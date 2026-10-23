@@ -24,6 +24,7 @@ If it still doesn't work, report the issue and stop
 | `BarContext.ts` | Monitor context |
 | `managers/ConfigManager.ts` | Config loading & watching (merges `defaults.toml` + user config) |
 | `managers/CssManager.ts` | CSS application |
+| `managers/Compositor.ts` | Compositor integration (workspaces + window title) |
 | `widgets/registry.ts` | Widget registry (all available widgets registered here) |
 | `defaults.toml` | Default configs |
 | `components/` | Reusable UI components |
