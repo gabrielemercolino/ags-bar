@@ -16,6 +16,15 @@ public class Toplevel : Object {
      */
     public string app_id { get; private set; default = ""; }
     /**
+     * The live title, falling back to the app id when the title is empty.
+     */
+    public string live_title { get; private set; default = ""; }
+    /**
+     * What to display for the "initialTitle" variant: the initial title,
+     * falling back to the live title, then the app id.
+     */
+    public string display_title { get; private set; default = ""; }
+    /**
      * Whether the toplevel is currently activated (focused).
      */
     public bool activated { get; private set; default = false; }
@@ -52,10 +61,17 @@ public class Toplevel : Object {
             title_initialized = true;
         }
         this.title = title;
+        refresh_display();
     }
 
     private void handle_app_id(ZwlrForeignToplevelHandleV1 handle, string app_id) {
         this.app_id = app_id;
+        refresh_display();
+    }
+
+    private void refresh_display() {
+        live_title = title != "" ? title : app_id;
+        display_title = initial_title != "" ? initial_title : (title != "" ? title : app_id);
     }
 
     private void handle_output_enter(ZwlrForeignToplevelHandleV1 handle, Wl.Output output) {

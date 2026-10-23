@@ -12,7 +12,6 @@ export class Compositor {
   readonly toplevels: Accessor<Toplevel[]>
   readonly focusedTitle: Accessor<string>
   readonly focusedInitialTitle: Accessor<string>
-  readonly focusedAppId: Accessor<string>
 
   private workspaceManager = AstalWorkspace.get_default()
   private toplevelManager = AstalToplevel.get_default()
@@ -38,17 +37,12 @@ export class Compositor {
 
     this.focusedTitle = createComputed(() => {
       const toplevel = focused()
-      return toplevel ? createBinding(toplevel, "title")() : ""
+      return toplevel ? createBinding(toplevel, "live_title")() : ""
     })
 
     this.focusedInitialTitle = createComputed(() => {
       const toplevel = focused()
-      return toplevel ? createBinding(toplevel, "initial_title")() : ""
-    })
-
-    this.focusedAppId = createComputed(() => {
-      const toplevel = focused()
-      return toplevel ? createBinding(toplevel, "app_id")() : ""
+      return toplevel ? createBinding(toplevel, "display_title")() : ""
     })
   }
 

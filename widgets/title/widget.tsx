@@ -25,6 +25,8 @@ function css(cfg: TitleConfig) {
 }
 
 function render({ variant }: TitleConfig) {
+  // Fallback (initialTitle -> title -> app_id, or title -> app_id) is handled
+  // by the native `display_title`/`live_title` properties on Toplevel.
   const source = variant === "title" ? compositor.focusedTitle : compositor.focusedInitialTitle
   const text = createComputed(() => source())
 
