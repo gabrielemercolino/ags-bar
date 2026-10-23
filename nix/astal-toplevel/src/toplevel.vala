@@ -8,6 +8,10 @@ public class Toplevel : Object {
      */
     public string title { get; private set; default = ""; }
     /**
+     * The title the toplevel had when it was first mapped.
+     */
+    public string initial_title { get; private set; default = ""; }
+    /**
      * The toplevel's app id.
      */
     public string app_id { get; private set; default = ""; }
@@ -27,6 +31,8 @@ public class Toplevel : Object {
         handle_parent,
     };
 
+    private bool title_initialized = false;
+
     internal Toplevel(ToplevelManager manager, ZwlrForeignToplevelHandleV1 handle) {
         this.manager = manager;
         this.handle = handle;
@@ -41,6 +47,10 @@ public class Toplevel : Object {
     }
 
     private void handle_title(ZwlrForeignToplevelHandleV1 handle, string title) {
+        if (!title_initialized) {
+            initial_title = title;
+            title_initialized = true;
+        }
         this.title = title;
     }
 

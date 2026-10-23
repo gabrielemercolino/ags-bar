@@ -64,6 +64,8 @@ public class ToplevelManager : Object, ListModel {
     }
 
     public ToplevelManager() {
+        toplevels = new GenericArray<Toplevel>();
+
         var registry = AstalWl.get_default();
         var global = registry.find_globals("zwlr_foreign_toplevel_manager_v1").nth_data(0);
         if (global == null) {
@@ -72,7 +74,6 @@ public class ToplevelManager : Object, ListModel {
         }
         manager = registry.get_registry().bind(global.name, ref ZwlrForeignToplevelManagerV1.iface, uint.min(global.version, 3));
         manager.add_listener(manager_listener, this);
-        toplevels = new GenericArray<Toplevel>();
     }
 
     private void handle_toplevel(ZwlrForeignToplevelManagerV1 manager, ZwlrForeignToplevelHandleV1 handle) {

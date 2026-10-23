@@ -24,10 +24,9 @@ function css(cfg: TitleConfig) {
   }
 }
 
-function render({ }: TitleConfig) {
-  // `variant` (title vs initialTitle) is honored once the cross-compositor
-  // title source (AstalToplevel) is wired into Compositor.focusedTitle.
-  const text = createComputed(() => compositor.focusedTitle())
+function render({ variant }: TitleConfig) {
+  const source = variant === "title" ? compositor.focusedTitle : compositor.focusedInitialTitle
+  const text = createComputed(() => source())
 
   return (
     <label
