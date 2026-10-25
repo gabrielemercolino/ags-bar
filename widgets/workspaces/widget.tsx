@@ -36,7 +36,7 @@ function render({ }: WorkspacesConfig) {
             class={createBinding(workspace, "state").as(() => compositor.isActive(workspace) ? "active" : "")}
             onLeftClick={() => compositor.activate(workspace)}
           >
-            {workspace.name}
+            <label label={createBinding(workspace, "name")} />
           </Button>
         )}
       </For>
