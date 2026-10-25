@@ -1,0 +1,8 @@
+{
+  "scripts": { "gen": "tsx genSchema.ts" },
+  "dependencies": {
+    "@types/node": "^25.9.3",
+    "ts-morph": "^24.0.0",
+    "tsx": "^4.0.0"
+  }
+}

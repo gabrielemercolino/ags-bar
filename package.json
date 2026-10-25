@@ -1,4 +1,5 @@
 {
+  "scripts": { "gen-schema": "cd scripts/schema && npm run gen" },
   "dependencies": {
     "ags": "*",
     "gnim": "*"

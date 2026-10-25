@@ -1,5 +1,0 @@
-{
-  "shutdown": "systemctl poweroff",
-  "reboot": "systemctl reboot",
-  "lock": "swaylock"
-}

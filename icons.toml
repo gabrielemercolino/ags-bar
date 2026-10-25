@@ -1,0 +1,97 @@
+[general]
+close = ""
+expanded = ""
+collapsedh = ""
+collapsedv = ""
+refresh = "󰑓"
+
+[notifications]
+none = "󰂚"
+some = "󱅫"
+dnd = "󱏧"
+
+[battery]
+charging = ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]
+discharging = ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+
+[audio.speaker]
+muted = " "
+levels = [" ", " ", " "]
+
+[audio.microphone]
+muted = "󰍭"
+levels = [""]
+
+[os]
+fallback = ""
+almalinux = ""
+alpine = ""
+aosc = ""
+archcraft = ""
+archlabs = ""
+archlinux = ""
+arcolinux = ""
+artix = ""
+biglinux = ""
+centos = ""
+coreos = ""
+debian = ""
+devuan = ""
+elementary = ""
+endeavour = ""
+fedora = ""
+garuda = ""
+gentoo = ""
+gnu_guix = ""
+hyperbola = ""
+kali_linux = ""
+kubuntu = ""
+leap = ""
+linuxmint = ""
+mageia = ""
+mandriva = ""
+manjaro = ""
+mxlinux = ""
+nixos = ""
+nobara = ""
+opensuse = ""
+parabola = ""
+parrot = ""
+pop_os = ""
+postmarketos = ""
+puppy = ""
+qubesos = ""
+raspbian = ""
+redhat = ""
+rocky_linux = ""
+sabayon = ""
+slackware = ""
+solus = ""
+tails = ""
+trisquel = ""
+tumbleweed = ""
+ubuntu = ""
+vanilla = ""
+void = ""
+xerolinux = ""
+zorin = ""
+
+[network]
+wired = ""
+offline = "󰖪"
+wifi_levels = ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"]
+lock = ""
+
+[bluetooth]
+connected = "󰂱"
+powered = ""
+off = "󰂲"
+paired = ""
+unpaired = ""
+
+[bluetooth.device_types]
+audio-headset = ""
+audio-headphones = ""
+phone = ""
+computer = ""
+fallback = ""

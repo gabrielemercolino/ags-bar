@@ -1,0 +1,161 @@
+#:schema schema.json
+
+[bar]
+left = ["system", "workspaces"]
+center = ["title"]
+right = ["connections", "audio", "battery", "time", "apps"]
+
+[colors]
+base00 = "#1a141f"
+base01 = "#2a1e3b"
+base02 = "#3d2a52"
+base03 = "#544167"
+base04 = "#75658b"
+base05 = "#cfc0d9"
+base06 = "#e5dced"
+base07 = "#f4f0f7"
+base08 = "#ea6d9c"
+base09 = "#e89368"
+base0A = "#d4ac76"
+base0B = "#7abf9e"
+base0C = "#70b8d4"
+base0D = "#7b93db"
+base0E = "#b88cce"
+base0F = "#e87d9a"
+
+[widgets.system]
+os = "auto"
+bg = "base01"
+fg = "base0D"
+
+[widgets.system.commands]
+shutdown = "systemctl poweroff"
+reboot = "systemctl reboot"
+lock = "loginctl lock-session"
+logout = "sh -c 'loginctl terminate-session $XDG_SESSION_ID'"
+
+[widgets.system.overlay]
+bg = "base00"
+backdrop = "alpha(var(--base00), 0.5)"
+shutdown.fg = "base0F"
+reboot.fg = "base09"
+lock.fg = "base0D"
+logout.fg = "base0E"
+
+[widgets.title]
+bg = "base01"
+fg = "base05"
+variant = "initialTitle"
+
+[widgets.time]
+bg = "base01"
+fg = "base0E"
+hover = { fg = "base08", bg = "base01" }
+clock = { show = true, format = "+%H:%M" }
+date = { show = true, format = "+%a %d %b" }
+
+[widgets.time.popup]
+bg = "base01"
+controls = { fg = "base0E", hover.fg = "base08" }
+
+[widgets.time.popup.calendar]
+week = { fg = "base05" }
+
+[widgets.time.popup.calendar.day]
+fg = "base05"
+bg = "transparent"
+selected = { fg = "base01", bg = "base0E" }
+today = { fg = "base01", bg = "base0E", outline = "base0E" }
+
+[widgets.battery]
+show = true
+bg = "base01"
+fg = "base0A"
+charging.fg = "base09"
+
+[widgets.workspaces]
+bg = "base01"
+fg = "base05"
+active = { bg = "base05", fg = "base01" }
+
+[widgets.audio]
+bg = "base01"
+fg = "base0A"
+hover.fg = "base09"
+
+[widgets.audio.popup]
+bg = "base01"
+fg = "base0A"
+title.fg = "base0A"
+slider.fg = "base0A"
+device = { fg = "base0A", selected = { bg = "base00", fg = "base09" } }
+
+[widgets.audio.osd]
+hideAfter = 500
+position = "center-center"
+compact = false
+bg = "base00"
+fg = "base09"
+trough.bg = "alpha(var(--base09), 0.15)"
+
+[widgets.connections]
+bg = "base01"
+fg = "base0C"
+hover.fg = "base0E"
+
+[widgets.connections.popup]
+bg = "base01"
+fg = "base05"
+switch.enabled.bg = "base0C"
+list.bg = "base00"
+device.fg = "base05"
+device.connected.fg = "base0C"
+current = { bg = "base00", fg = "base0C" }
+
+[widgets.connections.wifi.auth_overlay]
+bg = "base00"
+fg = "base05"
+backdrop = "alpha(var(--base00), 0.5)"
+
+[widgets.connections.wifi.auth_overlay.entry]
+bg = "base01"
+fg = "base05"
+
+[widgets.connections.wifi.auth_overlay.button]
+bg = "base0C"
+fg = "base01"
+
+[widgets.apps]
+bg = "base01"
+
+[widgets.apps.tray]
+hover.bg = "alpha(var(--base05), 0.15)"
+
+[widgets.apps.notifications]
+fg = "base0D"
+dnd = false
+
+[widgets.apps.notifications.sound]
+enable = true
+# should be between 0 and 1
+volume = 1
+# default audio from https://mixkit.co/free-sound-effects/notification/
+# for a custom one you have to specify the full path, eg: "/home/me/audio.mp3"
+file = "sounds/notification.wav"
+
+[widgets.apps.notifications.osd]
+duration = 2000
+maxMessages = 2
+progress.fg = "base0B"
+
+[widgets.apps.notifications.popup]
+bg = "base01"
+header.fg = "base0D"
+placeholder.fg = "base05"
+
+[widgets.apps.notifications.popup.group]
+bg = "base00"
+app.fg = "base08"
+summary.fg = "base0C"
+delete.fg = "base08"
+expand.fg = "base08"

@@ -1,112 +1,130 @@
 # AGS Bar
 
-My status bar for Hyprland built with [AGS](https://github.com/Aylur/ags).
+A GTK4 status bar for Wayland compositors, built with [AGS](https://github.com/Aylur/ags) (Astal), TypeScript, and JSX.
 
 ## Features
 
-- **Modular Design**: Workspaces, window title, system tray, audio, battery, bluetooth, notifications, and clock widgets
-- **Full Nix Integration**: Declarative home-manager module
-- **Themeable**: Base16 color scheme support with granular per-module overrides
-- **Stylix Compatible**: Seamless integration with Stylix for automatic theming
+- **Modular widgets**: power controls, workspaces, window title, network, bluetooth, audio, battery, clock, system tray, and notifications
+- **Base16 theming**: define a base16 palette (`base00`–`base0F`) and reference it from any widget color
+- **Live reload**: config changes are applied without restarting the bar
+- **Multi-monitor**: one bar per monitor, driven by the same config
+- **Declarative home-manager module** with systemd integration
 
 ## Requirements
 
-This flake requires the `pipe-operators` experimental feature. Add to your `configuration.nix`:
-```nix
-nix.settings.experimental-features = ["pipe-operators"];
-```
+- A Wayland compositor supporting `ext-workspace-v1` (workspaces) and `wlr-foreign-toplevel-management-v1` (window title)
+- Per-widget services, as needed:
+  - **Network** — NetworkManager
+  - **Audio** — WirePlumber
+  - **Bluetooth** — bluez (`hardware.bluetooth.enable = true;`)
+  - **Battery** — UPower
 
 ## Installation
 
 Add to your `flake.nix`:
+
 ```nix
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    ags-bar.url = "github:gabrielemercolino/ags-bar";
+    # primary (Codeberg), or the GitHub mirror:
+    ags-bar.url = "git+https://codeberg.org/Ciruzzo032/ags-bar";
+    # ags-bar.url = "github:gabrielemercolino/ags-bar";
     ags-bar.inputs.nixpkgs.follows = "nixpkgs";
   };
 }
 ```
 
 Import the home-manager module:
+
 ```nix
-imports = [
-  inputs.ags-bar.homeManagerModules.default
-];
+{
+  homeManagerModules = [ inputs.ags-bar.homeManagerModules.default ];
+}
 ```
 
 ## Configuration
+
+Configuration is a TOML file (`~/.config/ags-bar/config.toml`) deep-merged over the [defaults](defaults.toml). The bar watches this file and applies changes live.
+
+With home-manager, set `programs.ags-bar.settings`:
+
 ```nix
 programs.ags-bar = {
   enable = true;
   systemd.enable = true;
 
-  # Widget commands
-  commands = {
-    lock = "${pkgs.swaylock-effects}/bin/swaylock";
-  };
-
-  # Font configuration
-  fonts = [
-    config.stylix.fonts.monospace  # from stylix
-    pkgs.fira-code                 # package
-    "Fira Code"                    # or name directly
-  ];
-
-  # Color configuration
-  colors = {
-    # Base16 scheme
-    base16 = config.lib.stylix.colors.withHashtag;
-    # or manually:
-    # base16.base00 = "#123456";
-
-    # Per-module overrides
-    overrides = {
-      apps.notifications.popup.app = {
-        foreground = "rgba(10, 50, 10, 1.0)";
-        outline = "#ff0000";
-      };
+  settings = {
+    # Widgets on the left / center / right
+    bar = {
+      left = [ "system" "workspaces" ];
+      center = [ "title" ];
+      right = [ "connections" "audio" "battery" "time" "apps" ];
     };
+
+    # Base16 palette
+    colors = {
+      base00 = "#1a141f";
+      base01 = "#2a1e3b";
+      base02 = "#3d2a52";
+      base03 = "#544167";
+      base04 = "#75658b";
+      base05 = "#cfc0d9";
+      base06 = "#e5dced";
+      base07 = "#f4f0f7";
+      base08 = "#ea6d9c";
+      base09 = "#e89368";
+      base0A = "#d4ac76";
+      base0B = "#7abf9e";
+      base0C = "#70b8d4";
+      base0D = "#7b93db";
+      base0E = "#b88cce";
+      base0F = "#e87d9a";
+    };
+
+    # Per-widget overrides
+    widgets.audio.popup.title.fg = "base08";
+    widgets.time.clock.format = "+%H:%M";
   };
 };
 ```
 
-Color overrides map to SCSS variables: `apps.notifications.popup.app.outline` → `$apps-notifications-popup-app-outline` in `styles/apps.scss`.
+### Colors
 
-The bar automatically restarts on configuration changes via systemd if enabled.
+Every widget color accepts either a raw CSS value or a base16 key. Keys starting with `base` resolve to the palette defined under `colors`:
+
+```toml
+[widgets.battery]
+bg = "base01"
+fg = "base0A"
+charging.fg = "rgba(255, 0, 0, 0.5)" # raw CSS values work too
+```
 
 ## Widgets
 
-- **Power Controls**: Shutdown, reboot, lock buttons
-- **System Tray**: Application indicators
-- **Workspaces**: Hyprland workspace switcher
-- **Window Title**: Active window title
-- **Network**: WiFi/Ethernet status
-- **Bluetooth**: Device management with connect/disconnect
-- **Audio**: Volume control with popups
-- **Battery**: Charge level and status
-- **Clock**: Time and calendar popup
-- **Notifications**: Grouped notification center
-
-### Bluetooth
-
-Requires `hardware.bluetooth.enable = true;` in your NixOS configuration.
+| Widget | Description |
+|---|---|
+| `system` | Power controls (shutdown, reboot, lock, logout) with an OS logo |
+| `workspaces` | Workspace switcher (`ext-workspace-v1`) |
+| `title` | Active window title |
+| `connections` | Network (Wi-Fi/Ethernet) and Bluetooth management |
+| `audio` | Volume control with device picker popup and OSD |
+| `battery` | Charge level and charging status |
+| `time` | Clock with calendar popup |
+| `apps` | System tray and notification center |
 
 ## Development
+
 ```sh
-# Generate types
-ags types -d .
-
-# Test without building
-ags run app.ts
-
-# Build
-nix build
-
-# Run
-nix run
+nix develop                     # enter the dev shell
+ags types -d .                  # generate Gtk/Astal types
+ags run entry.ts                # run the bar
+ags run entry.ts defaults.toml  # run against a specific config file
+nix build                       # build the package
+nix run                         # run the built package
 ```
+
+The dev shell exports `AGS_BAR_DATADIR`, so `defaults.toml` is found from the repository root.
 
 ## License
 
@@ -114,6 +132,9 @@ MIT
 
 ## Credits
 
-Inspiration: [sameeul-haque](https://github.com/sameemul-haque/dotfiles), [brunoanesio](https://github.com/brunoanesio/waybar-config), [woioeow](https://github.com/woioeow/hyprland-dotfiles)
+Inspiration:
+- [sameeul-haque](https://github.com/sameemul-haque/dotfiles)
+- [brunoanesio](https://github.com/brunoanesio/waybar-config)
+- [woioeow](https://github.com/woioeow/hyprland-dotfiles)
 
 Built with [AGS](https://github.com/Aylur/ags) and [Astal](https://github.com/Aylur/astal).

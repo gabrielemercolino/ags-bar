@@ -1,74 +1,21 @@
 {
   description = "My Ags bar";
 
-  nixConfig = {
-    extra-substituters = [ "https://ags.cachix.org" ];
-    extra-trusted-public-keys = [ "ags.cachix.org-1:naAvMrz0CuYqeyGNyLgE010iUiuf/qx6kYrUv3NwAJ8=" ];
-  };
-
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-unstable";
-    ags.url = "github:aylur/ags";
+    nixpkgs.url = "nixpkgs/e7439b6b14ad3cc35d05608ebca9bce01a25f5f8";
+    ags = {
+      url = "github:aylur/ags";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.astal.follows = "astal";
+    };
+
+    # Pinned forward of ags v3.1.2's astal so we get the `workspace`
+    # (ext-workspace-v1) and `wl` libraries, which that release predates.
+    astal = {
+      url = "github:aylur/astal/cbcd9f49dd6b9638dc5623b56cc6e1e0a60b593e";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs =
-    {
-      self,
-      nixpkgs,
-      ags,
-      ...
-    }:
-    let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
-
-      astalPackages = with ags.packages.${system}; [
-        io
-        astal4
-        hyprland
-        network
-        bluetooth
-        wireplumber
-        battery
-        tray
-        notifd
-      ];
-
-      extraPackages = astalPackages;
-
-      ags' = ags.packages.${system}.default.override {
-        inherit extraPackages;
-      };
-    in
-    {
-      packages.${system} = {
-        default = pkgs.callPackage ./package.nix {
-          inherit extraPackages;
-          gitRev = self.rev or "dirty";
-          ags = ags';
-        };
-      };
-
-      homeManagerModules.default = import ./home-module.nix {
-        basePackage = self.packages.${system}.default;
-      };
-
-      devShells.${system} = {
-        default = pkgs.mkShell {
-          buildInputs = [
-            ags'
-            pkgs.gjs
-            pkgs.typescript-language-server
-          ];
-
-          shellHook = ''
-            echo
-            echo "To generate node_modules 'ags types -d . -u'"
-            echo "To generate types run 'ags types -d .'"
-            echo "To run the bar 'ags run app.ts'"
-            echo
-          '';
-        };
-      };
-    };
+  outputs = inputs: import ./nix inputs;
 }

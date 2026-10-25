@@ -1,0 +1,154 @@
+apps {
+  background: var(--apps-bg);
+  border-radius: 10px;
+  padding: 4px 10px;
+
+  tray {
+    background: transparent;
+
+    item-container {
+      item {
+        background: transparent;
+        border: none;
+        border-radius: 8px;
+
+        &:hover {
+          background: var(--tray-hover-bg);
+        }
+      }
+    }
+  }
+
+  notifications {
+    background: transparent;
+    border-radius: 8px;
+
+    icon {
+      color: var(--notifications-fg);
+      font-size: 1.2em;
+    }
+  }
+
+  pop-up {
+    background: var(--notifications-popup-bg);
+
+    container {
+      background: transparent;
+      padding: 0 8px 8px 8px;
+
+      header {
+        padding: 0 4px;
+      
+        title {
+          padding: 0px;
+          font-weight: bold;
+          font-size: 1.1em;
+          color: var(--notifications-popup-header-fg);
+        }
+
+        dnd-toggle {
+          font-size: 1.5em;
+          color: var(--notifications-popup-header-fg);
+        }
+      }
+
+      placeholder {
+        color: var(--notifications-popup-placeholder-fg);
+      }
+
+      notification-group {
+        background: var(--notifications-popup-group-bg);
+        border-radius: 10px;
+        padding: 10px;
+
+        app-name {
+          font-size: 0.8em;
+          color: var(--notifications-popup-app-fg);
+        }
+
+        summary {
+          font-size: 1em;
+          font-weight: bold;
+          color: var(--notifications-popup-summary-fg);
+        }
+
+        delete-button {
+          color: var(--notifications-popup-delete-fg);
+        }
+
+        bodies-button {
+          margin: 0 1rem;
+          border-radius: 6px;
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.05);
+          }
+        }
+
+        bodies {
+          image {
+            margin-right: 6px;
+          }
+
+          body {
+            font-size: 1em;
+          }
+        }
+
+        expand-button {
+          background: transparent;
+          border: none;
+          box-shadow: none;
+          color: var(--notifications-popup-expand-fg);
+          padding: 2px 8px;
+        }
+      }
+    }
+  }
+}
+
+notif-osd {
+  margin-top: 40px;
+  background: transparent;
+
+  osd-container {
+    padding: 8px 0;
+
+    osd-card {
+      background: var(--notifications-popup-group-bg);
+      border-radius: 10px;
+      padding: 10px;
+
+      app-name {
+        font-size: 0.8em;
+        color: var(--notifications-popup-app-fg);
+      }
+
+      summary {
+        font-size: 1em;
+        font-weight: bold;
+        color: var(--notifications-popup-summary-fg);
+      }
+
+      body {
+        font-size: 0.9em;
+        color: inherit;
+      }
+    }
+
+    osd-progress {
+      trough {
+        min-height: 4px;
+        background: transparent;
+        border: none;
+
+        block {
+          &.full, &.high, &.low {
+            background: var(--notifications-osd-progress-fg);
+            border-radius: 2px;
+          }
+        }
+      }
+    }
+  }
+}

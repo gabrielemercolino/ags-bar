@@ -1,11 +1,11 @@
+import { CCProps } from "ags"
 import { Gdk, Gtk } from "ags/gtk4"
 
-type ButtonProps = {
+type Props<T extends Gtk.Widget, Props> = CCProps<T, Partial<Props>>
+type ButtonProps = Omit<Props<Gtk.Button, Gtk.Button.ConstructorProps>, "onClicked"> & {
   onLeftClick?: (self: Gtk.Widget) => void
   onRightClick?: (self: Gtk.Widget) => void
-  cssName?: string
   children?: JSX.Element | JSX.Element[] | string | number
-  [key: string]: any
 }
 
 export default function Button({
