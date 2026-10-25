@@ -24,6 +24,10 @@ public class ToplevelManager : Object, ListModel {
 
     private ZwlrForeignToplevelManagerV1? manager;
     public GenericArray<Toplevel> toplevels { get; private set; }
+    /**
+     * The currently activated (focused) toplevel, or null if none.
+     */
+    public Toplevel? focused { get; private set; default = null; }
 
     /**
      * Emitted whenever a toplevel is added or removed.
@@ -78,7 +82,15 @@ public class ToplevelManager : Object, ListModel {
 
     private void handle_toplevel(ZwlrForeignToplevelManagerV1 manager, ZwlrForeignToplevelHandleV1 handle) {
         debug("create toplevel %p", handle);
-        toplevels.add(new Toplevel(this, handle));
+        var toplevel = new Toplevel(this, handle);
+        toplevel.notify["activated"].connect(() => {
+            if (toplevel.activated && focused != toplevel) {
+                focused = toplevel;
+            } else if (!toplevel.activated && focused == toplevel) {
+                focused = null;
+            }
+        });
+        toplevels.add(toplevel);
         items_changed(toplevels.length - 1, 0, 1);
         updated();
     }
@@ -89,6 +101,9 @@ public class ToplevelManager : Object, ListModel {
 
     internal void handle_toplevel_closed(Toplevel toplevel) {
         debug("destroy toplevel %p", toplevel);
+        if (focused == toplevel) {
+            focused = null;
+        }
         uint index;
         if (toplevels.find(toplevel, out index)) {
             toplevels.remove_index(index);
