@@ -8,7 +8,7 @@ let
   system = "x86_64-linux";
   pkgs = import nixpkgs { inherit system; };
 
-  astal-toplevel = pkgs.callPackage ./astal-toplevel {
+  astal-toplevel = pkgs.callPackage ../lib/astal-toplevel {
     astal-wl = ags.packages.${system}.wl;
   };
 
